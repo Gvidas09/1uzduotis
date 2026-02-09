@@ -53,6 +53,13 @@ int main() {
 }
 
 void outputas(const vector<Studentas> &grupe) {
+    cout << left << setw(10) << "Vardas"
+         << left << setw(20) << "Pavarde"
+         << setw(20) << "Galutinis"
+         << std::endl;
+
+    cout << "---------------------------------------------" << std::endl;
+
     for (auto A : grupe) {
         cout << left << setw(10) << A.Vardas
              << left << setw(20) << A.Pavarde
