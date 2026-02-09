@@ -21,11 +21,42 @@ struct Studentas {
 void outputas(const vector<Studentas> &grupe);
 
 int main() {
+    Studentas A;
     vector<Studentas> grupe;
+
+    for (int ii = 0; ii < 2; ii++) {
+        cout << "Iveskite varda ir pavarde: ";
+        cin >> A.Vardas >> A.Pavarde;
+
+        cout << "Iveskite semestro pazymius:\nKiek pazymiu bus? ";
+        int n, temp, sum = 0;
+        cin >> n;
+
+        for (int i = 0; i < n; i++) {
+            cout << "Iveskite " << i + 1 << " pazymi is " << n << ": ";
+            cin >> temp;
+            A.paz.push_back(temp);
+            sum += temp;
+        }
+
+        cout << "Iveskite egzamino paz: ";
+        cin >> A.exam;
+
+        A.rez = 0; // dar nedarau
+
+        grupe.push_back(A);
+        A.paz.clear();
+    }
+
     outputas(grupe);
     return 0;
 }
 
 void outputas(const vector<Studentas> &grupe) {
-    // kol kas nieko neisvedam
+    for (auto A : grupe) {
+        cout << left << setw(10) << A.Vardas
+             << left << setw(20) << A.Pavarde
+             << std::fixed << std::setprecision(2)
+             << setw(20) << A.rez << std::endl;
+    }
 }
