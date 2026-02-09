@@ -42,7 +42,7 @@ int main() {
         cout << "Iveskite egzamino paz: ";
         cin >> A.exam;
 
-        A.rez = 0; // dar nedarau
+        A.rez = sum * 1.0 / (A.paz.size() * 1.0) * 0.4 + A.exam * 0.6;
 
         grupe.push_back(A);
         A.paz.clear();
