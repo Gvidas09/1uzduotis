@@ -104,10 +104,18 @@ int main() {
 }
 
 void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
-    cout << left << setw(10) << "Vardas"
-         << left << setw(20) << "Pavarde"
-         << setw(20) << "Galutinis"
-         << std::endl;
+    if (pasirinkimas == 'M' || pasirinkimas == 'm') {
+        cout << left << setw(10) << "Vardas"
+             << left << setw(20) << "Pavarde"
+             << setw(20) << "Galutinis (Med.)"
+             << std::endl;
+    } else {
+        
+        cout << left << setw(10) << "Vardas"
+             << left << setw(20) << "Pavarde"
+             << setw(20) << "Galutinis (Vid.)"
+             << std::endl;
+    }
 
     cout << "---------------------------------------------" << std::endl;
 
