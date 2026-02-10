@@ -29,11 +29,22 @@ double mediana(vector<int> paz) {
     return (paz[n / 2 - 1] + paz[n / 2]) / 2.0;
 }
 
-void outputas(const vector<Studentas> &grupe);
+void outputas(const vector<Studentas> &grupe, char pasirinkimas);
 
 int main() {
     Studentas A;
     vector<Studentas> grupe;
+
+    char pasirinkimas;
+    cout << "Skaiciuoti pagal (V)idurkį ar (M)ediana? ";
+    cin >> pasirinkimas;
+
+    while (!cin || (pasirinkimas != 'V' && pasirinkimas != 'v' && pasirinkimas != 'M' && pasirinkimas != 'm')) {
+        cout << "Klaida: iveskite tik V arba M: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> pasirinkimas;
+    }
 
     for (int ii = 0; ii < 2; ii++) {
         cout << "Iveskite varda ir pavarde: ";
@@ -75,17 +86,24 @@ int main() {
             cin >> A.exam;
         }
 
-        A.rez = sum * 1.0 / (A.paz.size() * 1.0) * 0.4 + A.exam * 0.6;
+        double vid = sum * 1.0 / (A.paz.size() * 1.0);
+        double med = mediana(A.paz);
+
+        if (pasirinkimas == 'M' || pasirinkimas == 'm') {
+            A.rez = med * 0.4 + A.exam * 0.6;
+        } else {
+            A.rez = vid * 0.4 + A.exam * 0.6;
+        }
 
         grupe.push_back(A);
         A.paz.clear();
     }
 
-    outputas(grupe);
+    outputas(grupe, pasirinkimas);
     return 0;
 }
 
-void outputas(const vector<Studentas> &grupe) {
+void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
     cout << left << setw(10) << "Vardas"
          << left << setw(20) << "Pavarde"
          << setw(20) << "Galutinis"
