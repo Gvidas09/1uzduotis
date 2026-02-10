@@ -42,6 +42,14 @@ int main() {
         for (int i = 0; i < n; i++) {
             cout << "Iveskite " << i + 1 << " pazymi is " << n << ": ";
             cin >> temp;
+
+            while (!cin || temp < 1 || temp > 10) {
+                cout << "Klaida: pazymys turi buti nuo 1 iki 10. Iveskite dar karta: ";
+                cin.clear();
+                cin.ignore(10000, '\n');
+                cin >> temp;
+            }
+
             A.paz.push_back(temp);
             sum += temp;
         }
