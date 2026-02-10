@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <algorithm>
 
 using std::string;
 using std::vector;
@@ -17,6 +18,16 @@ struct Studentas {
     int exam;
     double rez;
 };
+
+double mediana(vector<int> paz) {
+    if (paz.size() == 0) return 0;
+
+    std::sort(paz.begin(), paz.end());
+    int n = paz.size();
+
+    if (n % 2 == 1) return paz[n / 2];
+    return (paz[n / 2 - 1] + paz[n / 2]) / 2.0;
+}
 
 void outputas(const vector<Studentas> &grupe);
 
