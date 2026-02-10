@@ -32,6 +32,13 @@ int main() {
         int n, temp, sum = 0;
         cin >> n;
 
+        while (!cin || n <= 0) {
+            cout << "Klaida: pazymiu skaicius turi buti bent 1. Iveskite dar karta: ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cin >> n;
+        }
+
         for (int i = 0; i < n; i++) {
             cout << "Iveskite " << i + 1 << " pazymi is " << n << ": ";
             cin >> temp;
