@@ -57,6 +57,13 @@ int main() {
         cout << "Iveskite egzamino paz: ";
         cin >> A.exam;
 
+        while (!cin || A.exam < 1 || A.exam > 10) {
+            cout << "Klaida: egzamino pazymys turi buti nuo 1 iki 10. Iveskite dar karta: ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cin >> A.exam;
+        }
+
         A.rez = sum * 1.0 / (A.paz.size() * 1.0) * 0.4 + A.exam * 0.6;
 
         grupe.push_back(A);
