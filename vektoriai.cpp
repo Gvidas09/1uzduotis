@@ -37,8 +37,10 @@ double mediana(vector<int> paz) {
 
 void outputas(const vector<Studentas> &grupe, char pasirinkimas);
 
+
+
 int atsitiktinisPazymys() {
-    return rand() % 10 + 1;
+    return rand() % 10 + 1; // 1..10
 }
 
 int meniu() {
@@ -46,7 +48,7 @@ int meniu() {
     cout << "\nMeniu:\n";
     cout << "1 - Ivesti ranka\n";
     cout << "2 - Generuoti tik pazymius (vardas/pavarde ranka)\n";
-    cout << "3 - Generuoti varda, pavarde ir pazymius (dar neigyvendinta)\n";
+    cout << "3 - Generuoti varda, pavarde ir pazymius\n";
     cout << "4 - Baigti\n";
     cout << "Pasirinkimas: ";
     cin >> x;
@@ -60,7 +62,21 @@ int meniu() {
     return x;
 }
 
-int ivestiKieki(const string& tekstas) {
+int ivestiSkaiciu(string tekstas, int nuo, int iki) {
+    int x;
+    cout << tekstas;
+    cin >> x;
+
+    while (!cin || x < nuo || x > iki) {
+        cout << "Klaida: iveskite skaiciu nuo " << nuo << " iki " << iki << ": ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> x;
+    }
+    return x;
+}
+
+int ivestiKieki(string tekstas) {
     int x;
     cout << tekstas;
     cin >> x;
@@ -74,19 +90,24 @@ int ivestiKieki(const string& tekstas) {
     return x;
 }
 
-int ivestiSkaiciu(const string& tekstas, int nuo, int iki) {
-    int x;
-    cout << tekstas;
-    cin >> x;
+void skaiciuoti(Studentas &A, char pasirinkimas) {
+    double vid = 0.0;
 
-    while (!cin || x < nuo || x > iki) {
-        cout << "Klaida: iveskite skaiciu nuo " << nuo << " iki " << iki << ": ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cin >> x;
+    if (A.paz.size() != 0) {
+        int sum = 0;
+        for (int x : A.paz) sum += x;
+        vid = sum * 1.0 / (A.paz.size() * 1.0);
     }
-    return x;
+
+    double med = mediana(A.paz);
+
+    if (pasirinkimas == 'M' || pasirinkimas == 'm')
+        A.rez = med * 0.4 + A.exam * 0.6;
+    else
+        A.rez = vid * 0.4 + A.exam * 0.6;
 }
+
+
 
 int main() {
     srand((unsigned)time(NULL));
@@ -111,11 +132,12 @@ int main() {
         A.paz.clear();
 
         if (p == 1) {
+            
             cout << "Iveskite varda ir pavarde: ";
             cin >> A.Vardas >> A.Pavarde;
 
             cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
-            int temp, sum = 0;
+            int temp;
 
             while (true) {
                 cout << "Pazymys: ";
@@ -131,7 +153,7 @@ int main() {
                 if (temp == 0) break;
 
                 while (!cin || temp < 1 || temp > 10) {
-                    cout << "Klaida: pazymys turi buti 1-10 (arba 0 pabaigai). Iveskite dar karta: ";
+                    cout << "Klaida: pazymys turi buti 1-10. Iveskite dar karta: ";
                     cin.clear();
                     cin.ignore(10000, '\n');
                     cin >> temp;
@@ -140,23 +162,15 @@ int main() {
                 if (temp == 0) break;
 
                 A.paz.push_back(temp);
-                sum += temp;
             }
 
             A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
 
-            double vid = 0.0;
-            if (!A.paz.empty()) vid = sum * 1.0 / (A.paz.size() * 1.0);
-            double med = mediana(A.paz);
-
-            if (pasirinkimas == 'M' || pasirinkimas == 'm')
-                A.rez = med * 0.4 + A.exam * 0.6;
-            else
-                A.rez = vid * 0.4 + A.exam * 0.6;
-
+            skaiciuoti(A, pasirinkimas);
             grupe.push_back(A);
         }
         else if (p == 2) {
+            
             cout << "Iveskite varda ir pavarde: ";
             cin >> A.Vardas >> A.Pavarde;
 
@@ -165,21 +179,25 @@ int main() {
 
             A.exam = atsitiktinisPazymys();
 
-            // skaiciavimas
-            int sum = 0;
-            for (int x : A.paz) sum += x;
-            double vid = sum * 1.0 / (A.paz.size() * 1.0);
-            double med = mediana(A.paz);
-
-            if (pasirinkimas == 'M' || pasirinkimas == 'm')
-                A.rez = med * 0.4 + A.exam * 0.6;
-            else
-                A.rez = vid * 0.4 + A.exam * 0.6;
-
+            skaiciuoti(A, pasirinkimas);
             grupe.push_back(A);
         }
-        else {
-            cout << "Sis pasirinkimas dar neigyvendintas. Pasirinkite 1, 2 arba 4.\n";
+        else if (p == 3) {
+            
+            vector<string> vardai = {"Jonas","Ona","Ieva","Mantas","Egle","Tomas","Ruta","Paulius","Greta","Lukas"};
+            vector<string> pavardes = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
+                                       "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
+
+            A.Vardas = vardai[rand() % vardai.size()];
+            A.Pavarde = pavardes[rand() % pavardes.size()];
+
+            int kiek = ivestiKieki("Kiek ND generuoti? ");
+            for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
+
+            A.exam = atsitiktinisPazymys();
+
+            skaiciuoti(A, pasirinkimas);
+            grupe.push_back(A);
         }
     }
 
@@ -187,15 +205,18 @@ int main() {
     return 0;
 }
 
+
 void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
     if (pasirinkimas == 'M' || pasirinkimas == 'm') {
         cout << left << setw(10) << "Vardas"
              << left << setw(20) << "Pavarde"
-             << setw(20) << "Galutinis (Med.)" << endl;
+             << setw(20) << "Galutinis (Med.)"
+             << endl;
     } else {
         cout << left << setw(10) << "Vardas"
              << left << setw(20) << "Pavarde"
-             << setw(20) << "Galutinis (Vid.)" << endl;
+             << setw(20) << "Galutinis (Vid.)"
+             << endl;
     }
 
     cout << "---------------------------------------------" << endl;
