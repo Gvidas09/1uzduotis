@@ -3,6 +3,8 @@
 #include <string>
 #include <iomanip>
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 using std::string;
 using std::vector;
@@ -35,11 +37,15 @@ double mediana(vector<int> paz) {
 
 void outputas(const vector<Studentas> &grupe, char pasirinkimas);
 
+int atsitiktinisPazymys() {
+    return rand() % 10 + 1;
+}
+
 int meniu() {
     int x;
     cout << "\nMeniu:\n";
     cout << "1 - Ivesti ranka\n";
-    cout << "2 - Generuoti tik pazymius (dar neigyvendinta)\n";
+    cout << "2 - Generuoti tik pazymius (vardas/pavarde ranka)\n";
     cout << "3 - Generuoti varda, pavarde ir pazymius (dar neigyvendinta)\n";
     cout << "4 - Baigti\n";
     cout << "Pasirinkimas: ";
@@ -54,7 +60,37 @@ int meniu() {
     return x;
 }
 
+int ivestiKieki(const string& tekstas) {
+    int x;
+    cout << tekstas;
+    cin >> x;
+
+    while (!cin || x <= 0) {
+        cout << "Klaida: skaicius turi buti bent 1. Iveskite dar karta: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> x;
+    }
+    return x;
+}
+
+int ivestiSkaiciu(const string& tekstas, int nuo, int iki) {
+    int x;
+    cout << tekstas;
+    cin >> x;
+
+    while (!cin || x < nuo || x > iki) {
+        cout << "Klaida: iveskite skaiciu nuo " << nuo << " iki " << iki << ": ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> x;
+    }
+    return x;
+}
+
 int main() {
+    srand((unsigned)time(NULL));
+
     Studentas A;
     vector<Studentas> grupe;
 
@@ -72,66 +108,79 @@ int main() {
         int p = meniu();
         if (p == 4) break;
 
-        if (p != 1) {
-            cout << "Sis pasirinkimas dar neigyvendintas. Pasirinkite 1 arba 4.\n";
-            continue;
-        }
-
-        cout << "Iveskite varda ir pavarde: ";
-        cin >> A.Vardas >> A.Pavarde;
-
         A.paz.clear();
-        cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
 
-        int temp;
-        int sum = 0;
+        if (p == 1) {
+            cout << "Iveskite varda ir pavarde: ";
+            cin >> A.Vardas >> A.Pavarde;
 
-        while (true) {
-            cout << "Pazymys: ";
-            cin >> temp;
+            cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
+            int temp, sum = 0;
 
-            while (!cin) {
-                cout << "Klaida: iveskite skaiciu: ";
-                cin.clear();
-                cin.ignore(10000, '\n');
+            while (true) {
+                cout << "Pazymys: ";
                 cin >> temp;
-            }
 
-            if (temp == 0) break;
+                while (!cin) {
+                    cout << "Klaida: iveskite skaiciu: ";
+                    cin.clear();
+                    cin.ignore(10000, '\n');
+                    cin >> temp;
+                }
 
-            while (!cin || temp < 1 || temp > 10) {
-                cout << "Klaida: pazymys turi buti 1-10 (arba 0 pabaigai). Iveskite dar karta: ";
-                cin.clear();
-                cin.ignore(10000, '\n');
-                cin >> temp;
                 if (temp == 0) break;
+
+                while (!cin || temp < 1 || temp > 10) {
+                    cout << "Klaida: pazymys turi buti 1-10 (arba 0 pabaigai). Iveskite dar karta: ";
+                    cin.clear();
+                    cin.ignore(10000, '\n');
+                    cin >> temp;
+                    if (temp == 0) break;
+                }
+                if (temp == 0) break;
+
+                A.paz.push_back(temp);
+                sum += temp;
             }
-            if (temp == 0) break;
 
-            A.paz.push_back(temp);
-            sum += temp;
+            A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
+
+            double vid = 0.0;
+            if (!A.paz.empty()) vid = sum * 1.0 / (A.paz.size() * 1.0);
+            double med = mediana(A.paz);
+
+            if (pasirinkimas == 'M' || pasirinkimas == 'm')
+                A.rez = med * 0.4 + A.exam * 0.6;
+            else
+                A.rez = vid * 0.4 + A.exam * 0.6;
+
+            grupe.push_back(A);
         }
+        else if (p == 2) {
+            cout << "Iveskite varda ir pavarde: ";
+            cin >> A.Vardas >> A.Pavarde;
 
-        cout << "Iveskite egzamino paz: ";
-        cin >> A.exam;
+            int kiek = ivestiKieki("Kiek ND generuoti? ");
+            for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
 
-        while (!cin || A.exam < 1 || A.exam > 10) {
-            cout << "Klaida: egzamino pazymys turi buti nuo 1 iki 10. Iveskite dar karta: ";
-            cin.clear();
-            cin.ignore(10000, '\n');
-            cin >> A.exam;
+            A.exam = atsitiktinisPazymys();
+
+            // skaiciavimas
+            int sum = 0;
+            for (int x : A.paz) sum += x;
+            double vid = sum * 1.0 / (A.paz.size() * 1.0);
+            double med = mediana(A.paz);
+
+            if (pasirinkimas == 'M' || pasirinkimas == 'm')
+                A.rez = med * 0.4 + A.exam * 0.6;
+            else
+                A.rez = vid * 0.4 + A.exam * 0.6;
+
+            grupe.push_back(A);
         }
-
-        double vid = 0.0;
-        if (!A.paz.empty()) vid = sum * 1.0 / (A.paz.size() * 1.0);
-        double med = mediana(A.paz);
-
-        if (pasirinkimas == 'M' || pasirinkimas == 'm')
-            A.rez = med * 0.4 + A.exam * 0.6;
-        else
-            A.rez = vid * 0.4 + A.exam * 0.6;
-
-        grupe.push_back(A);
+        else {
+            cout << "Sis pasirinkimas dar neigyvendintas. Pasirinkite 1, 2 arba 4.\n";
+        }
     }
 
     outputas(grupe, pasirinkimas);
