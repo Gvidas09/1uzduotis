@@ -35,6 +35,25 @@ double mediana(vector<int> paz) {
 
 void outputas(const vector<Studentas> &grupe, char pasirinkimas);
 
+int meniu() {
+    int x;
+    cout << "\nMeniu:\n";
+    cout << "1 - Ivesti ranka\n";
+    cout << "2 - Generuoti tik pazymius (dar neigyvendinta)\n";
+    cout << "3 - Generuoti varda, pavarde ir pazymius (dar neigyvendinta)\n";
+    cout << "4 - Baigti\n";
+    cout << "Pasirinkimas: ";
+    cin >> x;
+
+    while (!cin || x < 1 || x > 4) {
+        cout << "Klaida: iveskite skaiciu nuo 1 iki 4: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> x;
+    }
+    return x;
+}
+
 int main() {
     Studentas A;
     vector<Studentas> grupe;
@@ -50,6 +69,14 @@ int main() {
     }
 
     while (true) {
+        int p = meniu();
+        if (p == 4) break;
+
+        if (p != 1) {
+            cout << "Sis pasirinkimas dar neigyvendintas. Pasirinkite 1 arba 4.\n";
+            continue;
+        }
+
         cout << "Iveskite varda ir pavarde: ";
         cin >> A.Vardas >> A.Pavarde;
 
@@ -105,11 +132,6 @@ int main() {
             A.rez = vid * 0.4 + A.exam * 0.6;
 
         grupe.push_back(A);
-
-        char cont;
-        cout << "Ar norite ivesti dar viena studenta? (t/n): ";
-        cin >> cont;
-        if (cont == 'n' || cont == 'N') break;
     }
 
     outputas(grupe, pasirinkimas);
