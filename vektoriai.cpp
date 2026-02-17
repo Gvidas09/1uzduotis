@@ -1,1 +1,127 @@
+#include <iostream>
+#include <vector>
+#include <string>
+#include <iomanip>
+#include <algorithm>
 
+using std::string;
+using std::vector;
+using std::cin;
+using std::cout;
+using std::left;
+using std::setw;
+using std::fixed;
+using std::setprecision;
+using std::endl;
+using std::sort;
+
+struct Studentas {
+    string Vardas = "A";
+    string Pavarde = "BB";
+    vector<int> paz;
+    int exam;
+    double rez;
+};
+
+double mediana(vector<int> paz) {
+    if (paz.size() == 0) return 0;
+
+    sort(paz.begin(), paz.end());
+    int n = (int)paz.size();
+
+    if (n % 2 == 1) return paz[n / 2];
+    return (paz[n / 2 - 1] + paz[n / 2]) / 2.0;
+}
+
+void outputas(const vector<Studentas> &grupe, char pasirinkimas);
+
+int main() {
+    Studentas A;
+    vector<Studentas> grupe;
+
+    char pasirinkimas;
+    cout << "Skaiciuoti pagal (V)idurki ar (M)ediana? ";
+    cin >> pasirinkimas;
+    while (!cin || (pasirinkimas != 'V' && pasirinkimas != 'v' && pasirinkimas != 'M' && pasirinkimas != 'm')) {
+        cout << "Klaida: iveskite tik V arba M: ";
+        cin.clear();
+        cin.ignore(10000, '\n');
+        cin >> pasirinkimas;
+    }
+
+    for (int ii = 0; ii < 2; ii++) {
+        cout << "Iveskite varda ir pavarde: ";
+        cin >> A.Vardas >> A.Pavarde;
+
+        cout << "Iveskite semestro pazymius:\nKiek pazymiu bus? ";
+        int n, temp, sum = 0;
+        cin >> n;
+
+        while (!cin || n <= 0) {
+            cout << "Klaida: pazymiu skaicius turi buti bent 1. Iveskite dar karta: ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cin >> n;
+        }
+
+        A.paz.clear();
+        for (int i = 0; i < n; i++) {
+            cout << "Iveskite " << i + 1 << " pazymi is " << n << ": ";
+            cin >> temp;
+
+            while (!cin || temp < 1 || temp > 10) {
+                cout << "Klaida: pazymys turi buti nuo 1 iki 10. Iveskite dar karta: ";
+                cin.clear();
+                cin.ignore(10000, '\n');
+                cin >> temp;
+            }
+
+            A.paz.push_back(temp);
+            sum += temp;
+        }
+
+        cout << "Iveskite egzamino paz: ";
+        cin >> A.exam;
+
+        while (!cin || A.exam < 1 || A.exam > 10) {
+            cout << "Klaida: egzamino pazymys turi buti nuo 1 iki 10. Iveskite dar karta: ";
+            cin.clear();
+            cin.ignore(10000, '\n');
+            cin >> A.exam;
+        }
+
+        double vid = sum * 1.0 / (A.paz.size() * 1.0);
+        double med = mediana(A.paz);
+
+        if (pasirinkimas == 'M' || pasirinkimas == 'm')
+            A.rez = med * 0.4 + A.exam * 0.6;
+        else
+            A.rez = vid * 0.4 + A.exam * 0.6;
+
+        grupe.push_back(A);
+    }
+
+    outputas(grupe, pasirinkimas);
+    return 0;
+}
+
+void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
+    if (pasirinkimas == 'M' || pasirinkimas == 'm') {
+        cout << left << setw(10) << "Vardas"
+             << left << setw(20) << "Pavarde"
+             << setw(20) << "Galutinis (Med.)" << endl;
+    } else {
+        cout << left << setw(10) << "Vardas"
+             << left << setw(20) << "Pavarde"
+             << setw(20) << "Galutinis (Vid.)" << endl;
+    }
+
+    cout << "---------------------------------------------" << endl;
+
+    for (auto A : grupe) {
+        cout << left << setw(10) << A.Vardas
+             << left << setw(20) << A.Pavarde
+             << fixed << setprecision(2)
+             << setw(20) << A.rez << endl;
+    }
+}
