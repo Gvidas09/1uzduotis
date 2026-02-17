@@ -15,8 +15,8 @@ using std::setprecision;
 using std::endl;
 using std::sort;
 
-const int MAX_PAZ = 100;
-const int MAX_STUD = 1000;
+const int MAX_PAZ = 100;    
+const int MAX_STUD = 1000;   
 
 struct Studentas {
     string Vardas = "A";
@@ -31,8 +31,10 @@ struct Studentas {
 
 double mediana(int paz[], int kiek) {
     if (kiek == 0) return 0;
+
     int kopija[MAX_PAZ];
     for (int i = 0; i < kiek; i++) kopija[i] = paz[i];
+
     sort(kopija, kopija + kiek);
 
     if (kiek % 2 == 1) return kopija[kiek / 2];
@@ -42,7 +44,7 @@ double mediana(int paz[], int kiek) {
 void outputas(const Studentas grupe[], int grupe_kiek, char pasirinkimas);
 
 int atsitiktinisPazymys() {
-    return rand() % 10 + 1;
+    return rand() % 10 + 1; // 1..10
 }
 
 int meniu() {
@@ -113,6 +115,7 @@ int main() {
     srand(time(NULL));
 
     Studentas A;
+
     Studentas grupe[MAX_STUD];
     int grupe_kiek = 0;
 
@@ -174,7 +177,9 @@ int main() {
             }
 
             A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
+
             skaiciuoti(A, pasirinkimas);
+
             grupe[grupe_kiek++] = A;
         }
         else if (p == 2) {
@@ -182,7 +187,9 @@ int main() {
             cin >> A.Vardas >> A.Pavarde;
 
             int kiek = ivestiKieki("Kiek ND generuoti? ");
-            for (int i = 0; i < kiek; i++) A.paz[A.paz_kiek++] = atsitiktinisPazymys();
+            for (int i = 0; i < kiek; i++) {
+                A.paz[A.paz_kiek++] = atsitiktinisPazymys();
+            }
 
             A.exam = atsitiktinisPazymys();
 
@@ -194,11 +201,14 @@ int main() {
             string pavardes[] = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
                                  "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
 
+    
             A.Vardas = vardai[rand() % 10];
             A.Pavarde = pavardes[rand() % 10];
 
             int kiek = ivestiKieki("Kiek ND generuoti? ");
-            for (int i = 0; i < kiek; i++) A.paz[A.paz_kiek++] = atsitiktinisPazymys();
+            for (int i = 0; i < kiek; i++) {
+                A.paz[A.paz_kiek++] = atsitiktinisPazymys();
+            }
 
             A.exam = atsitiktinisPazymys();
 
