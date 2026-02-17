@@ -10,6 +10,11 @@ using std::cin;
 using std::cout;
 using std::left;
 using std::setw;
+using std::fixed;
+using std::setprecision;
+using std::endl;
+using std::sort;
+
 
 struct Studentas {
     string Vardas = "A";
@@ -22,14 +27,14 @@ struct Studentas {
 double mediana(vector<int> paz) {
     if (paz.size() == 0) return 0;
 
-    std::sort(paz.begin(), paz.end());
+    sort(paz.begin(), paz.end());
     int n = paz.size();
 
     if (n % 2 == 1) return paz[n / 2];
     return (paz[n / 2 - 1] + paz[n / 2]) / 2.0;
 }
 
-void outputas(const vector<Studentas> &grupe, char pasirinkimas);
+void outputas(const vector<Studentas> &grupe, char pasirinkimas); 
 
 int main() {
     Studentas A;
@@ -38,7 +43,6 @@ int main() {
     char pasirinkimas;
     cout << "Skaiciuoti pagal (V)idurkį ar (M)ediana? ";
     cin >> pasirinkimas;
-
     while (!cin || (pasirinkimas != 'V' && pasirinkimas != 'v' && pasirinkimas != 'M' && pasirinkimas != 'm')) {
         cout << "Klaida: iveskite tik V arba M: ";
         cin.clear();
@@ -78,7 +82,7 @@ int main() {
 
         cout << "Iveskite egzamino paz: ";
         cin >> A.exam;
-
+        
         while (!cin || A.exam < 1 || A.exam > 10) {
             cout << "Klaida: egzamino pazymys turi buti nuo 1 iki 10. Iveskite dar karta: ";
             cin.clear();
@@ -91,7 +95,7 @@ int main() {
 
         if (pasirinkimas == 'M' || pasirinkimas == 'm') {
             A.rez = med * 0.4 + A.exam * 0.6;
-        } else {
+        } else { 
             A.rez = vid * 0.4 + A.exam * 0.6;
         }
 
@@ -108,21 +112,21 @@ void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
         cout << left << setw(10) << "Vardas"
              << left << setw(20) << "Pavarde"
              << setw(20) << "Galutinis (Med.)"
-             << std::endl;
+             << endl;
     } else {
         
         cout << left << setw(10) << "Vardas"
              << left << setw(20) << "Pavarde"
              << setw(20) << "Galutinis (Vid.)"
-             << std::endl;
+             << endl;
     }
 
-    cout << "---------------------------------------------" << std::endl;
+    cout << "---------------------------------------------" << endl;
 
     for (auto A : grupe) {
         cout << left << setw(10) << A.Vardas
              << left << setw(20) << A.Pavarde
-             << std::fixed << std::setprecision(2)
-             << setw(20) << A.rez << std::endl;
+             << fixed << setprecision(2)
+             << setw(20) << A.rez << endl;
     }
 }
