@@ -15,8 +15,8 @@ using std::setprecision;
 using std::endl;
 using std::sort;
 
-const int MAX_PAZ = 100;     
-const int MAX_STUD = 1000;   
+const int MAX_PAZ = 100;
+const int MAX_STUD = 1000;
 
 struct Studentas {
     string Vardas = "A";
@@ -31,14 +31,18 @@ struct Studentas {
 
 double mediana(int paz[], int kiek) {
     if (kiek == 0) return 0;
-    return 0;
+    int kopija[MAX_PAZ];
+    for (int i = 0; i < kiek; i++) kopija[i] = paz[i];
+    sort(kopija, kopija + kiek);
+
+    if (kiek % 2 == 1) return kopija[kiek / 2];
+    return (kopija[kiek / 2 - 1] + kopija[kiek / 2]) / 2.0;
 }
+
 void outputas(const Studentas grupe[], int grupe_kiek, char pasirinkimas);
 
-
-
 int atsitiktinisPazymys() {
-    return rand() % 10 + 1; 
+    return rand() % 10 + 1;
 }
 
 int meniu() {
@@ -133,7 +137,74 @@ int main() {
 
         A.paz_kiek = 0;
 
-        cout << "Masyvu logika bus ideta sekanciame commite.\n";
+        if (p == 1) {
+            cout << "Iveskite varda ir pavarde: ";
+            cin >> A.Vardas >> A.Pavarde;
+
+            cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
+            int temp;
+
+            while (true) {
+                cout << "Pazymys: ";
+                cin >> temp;
+
+                while (!cin) {
+                    cout << "Klaida: iveskite skaiciu: ";
+                    cin.clear();
+                    cin.ignore(10000, '\n');
+                    cin >> temp;
+                }
+
+                if (temp == 0) break;
+
+                while (!cin || temp < 1 || temp > 10) {
+                    cout << "Klaida: pazymys turi buti 1-10. Iveskite dar karta: ";
+                    cin.clear();
+                    cin.ignore(10000, '\n');
+                    cin >> temp;
+                    if (temp == 0) break;
+                }
+                if (temp == 0) break;
+
+                if (A.paz_kiek >= MAX_PAZ) {
+                    cout << "Pasiektas maksimalus ND kiekis (" << MAX_PAZ << ").\n";
+                    break;
+                }
+                A.paz[A.paz_kiek++] = temp;
+            }
+
+            A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
+            skaiciuoti(A, pasirinkimas);
+            grupe[grupe_kiek++] = A;
+        }
+        else if (p == 2) {
+            cout << "Iveskite varda ir pavarde: ";
+            cin >> A.Vardas >> A.Pavarde;
+
+            int kiek = ivestiKieki("Kiek ND generuoti? ");
+            for (int i = 0; i < kiek; i++) A.paz[A.paz_kiek++] = atsitiktinisPazymys();
+
+            A.exam = atsitiktinisPazymys();
+
+            skaiciuoti(A, pasirinkimas);
+            grupe[grupe_kiek++] = A;
+        }
+        else if (p == 3) {
+            string vardai[] = {"Jonas","Ona","Ieva","Mantas","Egle","Tomas","Ruta","Paulius","Greta","Lukas"};
+            string pavardes[] = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
+                                 "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
+
+            A.Vardas = vardai[rand() % 10];
+            A.Pavarde = pavardes[rand() % 10];
+
+            int kiek = ivestiKieki("Kiek ND generuoti? ");
+            for (int i = 0; i < kiek; i++) A.paz[A.paz_kiek++] = atsitiktinisPazymys();
+
+            A.exam = atsitiktinisPazymys();
+
+            skaiciuoti(A, pasirinkimas);
+            grupe[grupe_kiek++] = A;
+        }
     }
 
     outputas(grupe, grupe_kiek, pasirinkimas);
@@ -141,7 +212,24 @@ int main() {
 }
 
 void outputas(const Studentas grupe[], int grupe_kiek, char pasirinkimas) {
-    (void)grupe;
-    (void)grupe_kiek;
-    (void)pasirinkimas;
+    if (pasirinkimas == 'M' || pasirinkimas == 'm') {
+        cout << left << setw(10) << "Vardas"
+             << left << setw(20) << "Pavarde"
+             << setw(20) << "Galutinis (Med.)"
+             << endl;
+    } else {
+        cout << left << setw(10) << "Vardas"
+             << left << setw(20) << "Pavarde"
+             << setw(20) << "Galutinis (Vid.)"
+             << endl;
+    }
+
+    cout << "---------------------------------------------" << endl;
+
+    for (int i = 0; i < grupe_kiek; i++) {
+        cout << left << setw(10) << grupe[i].Vardas
+             << left << setw(20) << grupe[i].Pavarde
+             << fixed << setprecision(2)
+             << setw(20) << grupe[i].rez << endl;
+    }
 }
