@@ -4,10 +4,8 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <vector>
 
 using std::string;
-using std::vector;
 using std::cin;
 using std::cout;
 using std::left;
@@ -17,29 +15,30 @@ using std::setprecision;
 using std::endl;
 using std::sort;
 
+const int MAX_PAZ = 100;     
+const int MAX_STUD = 1000;   
+
 struct Studentas {
     string Vardas = "A";
     string Pavarde = "BB";
-    vector<int> paz;
+
+    int paz[MAX_PAZ];
+    int paz_kiek = 0;
+
     int exam;
     double rez;
 };
 
-double mediana(vector<int> paz) {
-    if (paz.size() == 0) return 0;
-
-    sort(paz.begin(), paz.end());
-    int n = paz.size();
-
-    if (n % 2 == 1) return paz[n / 2];
-    return (paz[n / 2 - 1] + paz[n / 2]) / 2.0;
+double mediana(int paz[], int kiek) {
+    if (kiek == 0) return 0;
+    return 0;
 }
+void outputas(const Studentas grupe[], int grupe_kiek, char pasirinkimas);
 
-void outputas(const vector<Studentas> &grupe, char pasirinkimas);
 
 
 int atsitiktinisPazymys() {
-    return rand() % 10 + 1; // 1..10
+    return rand() % 10 + 1; 
 }
 
 int meniu() {
@@ -80,8 +79,8 @@ int ivestiKieki(string tekstas) {
     cout << tekstas;
     cin >> x;
 
-    while (!cin || x <= 0) {
-        cout << "Klaida: skaicius turi buti bent 1. Iveskite dar karta: ";
+    while (!cin || x <= 0 || x > MAX_PAZ) {
+        cout << "Klaida: skaicius turi buti bent 1 ir ne daugiau kaip " << MAX_PAZ << ". Iveskite dar karta: ";
         cin.clear();
         cin.ignore(10000, '\n');
         cin >> x;
@@ -92,13 +91,13 @@ int ivestiKieki(string tekstas) {
 void skaiciuoti(Studentas &A, char pasirinkimas) {
     double vid = 0.0;
 
-    if (A.paz.size() != 0) {
+    if (A.paz_kiek != 0) {
         int sum = 0;
-        for (int x : A.paz) sum += x;
-        vid = sum * 1.0 / (A.paz.size() * 1.0);
+        for (int i = 0; i < A.paz_kiek; i++) sum += A.paz[i];
+        vid = sum * 1.0 / (A.paz_kiek * 1.0);
     }
 
-    double med = mediana(A.paz);
+    double med = mediana(A.paz, A.paz_kiek);
 
     if (pasirinkimas == 'M' || pasirinkimas == 'm')
         A.rez = med * 0.4 + A.exam * 0.6;
@@ -106,12 +105,12 @@ void skaiciuoti(Studentas &A, char pasirinkimas) {
         A.rez = vid * 0.4 + A.exam * 0.6;
 }
 
-
 int main() {
     srand(time(NULL));
 
     Studentas A;
-    vector<Studentas> grupe;
+    Studentas grupe[MAX_STUD];
+    int grupe_kiek = 0;
 
     char pasirinkimas;
     cout << "Skaiciuoti pagal (V)idurki ar (M)ediana? ";
@@ -127,99 +126,22 @@ int main() {
         int p = meniu();
         if (p == 4) break;
 
-        A.paz.clear();
-
-        if (p == 1) {
-            cout << "Iveskite varda ir pavarde: ";
-            cin >> A.Vardas >> A.Pavarde;
-
-            cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
-            int temp;
-
-            while (true) {
-                cout << "Pazymys: ";
-                cin >> temp;
-
-                while (!cin) {
-                    cout << "Klaida: iveskite skaiciu: ";
-                    cin.clear();
-                    cin.ignore(10000, '\n');
-                    cin >> temp;
-                }
-
-                if (temp == 0) break;
-
-                while (!cin || temp < 1 || temp > 10) {
-                    cout << "Klaida: pazymys turi buti 1-10. Iveskite dar karta: ";
-                    cin.clear();
-                    cin.ignore(10000, '\n');
-                    cin >> temp;
-                    if (temp == 0) break;
-                }
-                if (temp == 0) break;
-
-                A.paz.push_back(temp);
-            }
-
-            A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
-
-            skaiciuoti(A, pasirinkimas);
-            grupe.push_back(A);
+        if (grupe_kiek >= MAX_STUD) {
+            cout << "Pasiektas maksimalus studentu kiekis (" << MAX_STUD << ").\n";
+            break;
         }
-        else if (p == 2) {
-            cout << "Iveskite varda ir pavarde: ";
-            cin >> A.Vardas >> A.Pavarde;
 
-            int kiek = ivestiKieki("Kiek ND generuoti? ");
-            for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
+        A.paz_kiek = 0;
 
-            A.exam = atsitiktinisPazymys();
-
-            skaiciuoti(A, pasirinkimas);
-            grupe.push_back(A);
-        }
-        else if (p == 3) {
-            vector<string> vardai = {"Jonas","Ona","Ieva","Mantas","Egle","Tomas","Ruta","Paulius","Greta","Lukas"};
-            vector<string> pavardes = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
-                                       "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
-
-            A.Vardas = vardai[rand() % vardai.size()];
-            A.Pavarde = pavardes[rand() % pavardes.size()];
-
-            int kiek = ivestiKieki("Kiek ND generuoti? ");
-            for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
-
-            A.exam = atsitiktinisPazymys();
-
-            skaiciuoti(A, pasirinkimas);
-            grupe.push_back(A);
-        }
+        cout << "Masyvu logika bus ideta sekanciame commite.\n";
     }
 
-    outputas(grupe, pasirinkimas);
+    outputas(grupe, grupe_kiek, pasirinkimas);
     return 0;
 }
 
-void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
-    if (pasirinkimas == 'M' || pasirinkimas == 'm') {
-        cout << left << setw(10) << "Vardas"
-             << left << setw(20) << "Pavarde"
-             << setw(20) << "Galutinis (Med.)"
-             << endl;
-    } else {
-
-        cout << left << setw(10) << "Vardas"
-             << left << setw(20) << "Pavarde"
-             << setw(20) << "Galutinis (Vid.)"
-             << endl;
-    }
-
-    cout << "---------------------------------------------" << endl;
-
-    for (auto A : grupe) {
-        cout << left << setw(10) << A.Vardas
-             << left << setw(20) << A.Pavarde
-             << fixed << setprecision(2)
-             << setw(20) << A.rez << endl;
-    }
+void outputas(const Studentas grupe[], int grupe_kiek, char pasirinkimas) {
+    (void)grupe;
+    (void)grupe_kiek;
+    (void)pasirinkimas;
 }
