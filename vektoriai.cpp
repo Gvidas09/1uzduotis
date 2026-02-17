@@ -49,7 +49,7 @@ int main() {
         cin >> pasirinkimas;
     }
 
-    for (int ii = 0; ii < 2; ii++) {
+    while (true) {
         cout << "Iveskite varda ir pavarde: ";
         cin >> A.Vardas >> A.Pavarde;
 
@@ -99,6 +99,11 @@ int main() {
             A.rez = vid * 0.4 + A.exam * 0.6;
 
         grupe.push_back(A);
+
+        char cont;
+        cout << "Ar norite ivesti dar viena studenta? (t/n): ";
+        cin >> cont;
+        if (cont == 'n' || cont == 'N') break;
     }
 
     outputas(grupe, pasirinkimas);
