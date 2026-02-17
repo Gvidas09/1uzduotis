@@ -53,28 +53,33 @@ int main() {
         cout << "Iveskite varda ir pavarde: ";
         cin >> A.Vardas >> A.Pavarde;
 
-        cout << "Iveskite semestro pazymius:\nKiek pazymiu bus? ";
-        int n, temp, sum = 0;
-        cin >> n;
-
-        while (!cin || n <= 0) {
-            cout << "Klaida: pazymiu skaicius turi buti bent 1. Iveskite dar karta: ";
-            cin.clear();
-            cin.ignore(10000, '\n');
-            cin >> n;
-        }
-
         A.paz.clear();
-        for (int i = 0; i < n; i++) {
-            cout << "Iveskite " << i + 1 << " pazymi is " << n << ": ";
+        cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
+
+        int temp;
+        int sum = 0;
+
+        while (true) {
+            cout << "Pazymys: ";
             cin >> temp;
 
-            while (!cin || temp < 1 || temp > 10) {
-                cout << "Klaida: pazymys turi buti nuo 1 iki 10. Iveskite dar karta: ";
+            while (!cin) {
+                cout << "Klaida: iveskite skaiciu: ";
                 cin.clear();
                 cin.ignore(10000, '\n');
                 cin >> temp;
             }
+
+            if (temp == 0) break;
+
+            while (!cin || temp < 1 || temp > 10) {
+                cout << "Klaida: pazymys turi buti 1-10 (arba 0 pabaigai). Iveskite dar karta: ";
+                cin.clear();
+                cin.ignore(10000, '\n');
+                cin >> temp;
+                if (temp == 0) break;
+            }
+            if (temp == 0) break;
 
             A.paz.push_back(temp);
             sum += temp;
@@ -90,7 +95,8 @@ int main() {
             cin >> A.exam;
         }
 
-        double vid = sum * 1.0 / (A.paz.size() * 1.0);
+        double vid = 0.0;
+        if (!A.paz.empty()) vid = sum * 1.0 / (A.paz.size() * 1.0);
         double med = mediana(A.paz);
 
         if (pasirinkimas == 'M' || pasirinkimas == 'm')
