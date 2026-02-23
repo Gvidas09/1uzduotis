@@ -5,8 +5,10 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
-#include <limits>
 #include <fstream>
+#include <sstream>
+#include <limits>
+#include <chrono>
 
 using std::string;
 using std::vector;
@@ -18,9 +20,16 @@ using std::fixed;
 using std::setprecision;
 using std::endl;
 using std::sort;
+using std::ifstream;
+using std::ofstream;
+using std::istringstream;
+using std::getline;
 using std::numeric_limits;
 using std::streamsize;
-using std::ofstream;
+using std::ws;
+
+using std::chrono::high_resolution_clock;
+using std::chrono::duration;
 
 struct Studentas {
     string Vardas;
@@ -80,12 +89,13 @@ int meniu() {
     cout << "2 - Generuoti tik pazymius (vardas/pavarde ranka)\n";
     cout << "3 - Generuoti varda, pavarde ir pazymius\n";
     cout << "4 - Baigti\n";
-    cout << "5 - Rikiuoti ir isvesti rezultatus\n";
+    cout << "5 - Nuskaityti studentus is failo (v0.2)\n";
+    cout << "6 - Rikiuoti ir isvesti rezultatus\n";
     cout << "Pasirinkimas: ";
     cin >> x;
 
-    while (!cin || x < 1 || x > 5) {
-        cout << "Klaida: iveskite skaiciu nuo 1 iki 5: ";
+    while (!cin || x < 1 || x > 6) {
+        cout << "Klaida: iveskite skaiciu nuo 1 iki 6: ";
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> x;
@@ -95,15 +105,84 @@ int meniu() {
 
 void skaiciuoti(Studentas &A) {
     double vid = 0.0;
+
     if (!A.paz.empty()) {
         long long sum = 0;
         for (int x : A.paz) sum += x;
         vid = (double)sum / (double)A.paz.size();
     }
+
     double med = mediana(A.paz);
 
     A.rezVid = vid * 0.4 + A.exam * 0.6;
     A.rezMed = med * 0.4 + A.exam * 0.6;
+}
+
+bool nuskaitytiIsFailo(const string &failas, vector<Studentas> &grupe, int &praleistaEiluciu) {
+    ifstream in(failas);
+    if (!in) {
+        cout << "Nepavyko atidaryti failo: " << failas << endl;
+        return false;
+    }
+
+    grupe.clear();
+    praleistaEiluciu = 0;
+
+    string line;
+    while (getline(in, line)) {
+        if (line.empty()) continue;
+
+        istringstream iss(line);
+
+        Studentas A;
+        if (!(iss >> A.Vardas >> A.Pavarde)) {
+            praleistaEiluciu++;
+            continue;
+        }
+
+        if (A.Vardas == "Vardas" && A.Pavarde == "Pavarde") {
+            continue;
+        }
+
+        vector<int> skaiciai;
+        int x;
+        while (iss >> x) {
+            skaiciai.push_back(x);
+        }
+
+        iss.clear();
+        iss >> ws;
+        if (!iss.eof()) {
+            praleistaEiluciu++;
+            continue;
+        }
+
+        if (skaiciai.size() < 2) {
+            praleistaEiluciu++;
+            continue;
+        }
+
+        bool bloga = false;
+        for (int v : skaiciai) {
+            if (v < 1 || v > 10) {
+                bloga = true;
+                break;
+            }
+        }
+        if (bloga) {
+            praleistaEiluciu++;
+            continue;
+        }
+
+        A.exam = skaiciai.back();
+        skaiciai.pop_back();
+        A.paz = skaiciai;
+
+        skaiciuoti(A);
+        grupe.push_back(A);
+    }
+
+    return true;
 }
 
 void rikiuoti(vector<Studentas> &grupe) {
@@ -256,8 +335,10 @@ int main() {
             }
 
             A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
+
             skaiciuoti(A);
             grupe.push_back(A);
+
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
         else if (p == 2) {
@@ -270,8 +351,10 @@ int main() {
             for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
 
             A.exam = atsitiktinisPazymys();
+
             skaiciuoti(A);
             grupe.push_back(A);
+
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
         else if (p == 3) {
@@ -288,11 +371,43 @@ int main() {
             for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
 
             A.exam = atsitiktinisPazymys();
+
             skaiciuoti(A);
             grupe.push_back(A);
+
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
         else if (p == 5) {
+            cout << "Iveskite failo pavadinima: ";
+            string fname;
+            cin >> fname;
+
+            int praleista = 0;
+
+            auto start = high_resolution_clock::now();
+            bool ok = nuskaitytiIsFailo(fname, grupe, praleista);
+            auto end = high_resolution_clock::now();
+
+            if (!ok) {
+                cout << "Skaitymas nepavyko.\n";
+            } else {
+                duration<double> diff = end - start;
+                cout << "Studentu: " << grupe.size() << endl;
+                cout << "Laikas: " << diff.count() << " s\n";
+                if (praleista > 0) cout << "Praleista eiluciu: " << praleista << endl;
+
+                cout << "\nAr norite dabar rikiuoti ir isvesti?\n";
+                cout << "1 - Taip\n";
+                cout << "2 - Ne (grizti i meniu)\n";
+                int a = ivestiSkaiciu("Pasirinkimas: ", 1, 2);
+
+                if (a == 1) {
+                    rikiuoti(grupe);
+                    isvedimoPasirinkimas(grupe);
+                }
+            }
+        }
+        else if (p == 6) {
             if (grupe.empty()) {
                 cout << "Grupe tuscia.\n";
             } else {
