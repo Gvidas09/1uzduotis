@@ -18,24 +18,25 @@ using std::endl;
 using std::sort;
 
 struct Studentas {
-    string Vardas = "A";
-    string Pavarde = "BB";
+    string Vardas;
+    string Pavarde;
     vector<int> paz;
-    int exam;
-    double rez;
+    int exam = 0;
+
+    double rezVid = 0.0;
+    double rezMed = 0.0;
 };
 
-double mediana(vector<int> paz) {
-    if (paz.size() == 0) return 0;
+double mediana(const vector<int> &paz) {
+    if (paz.empty()) return 0.0;
 
-    sort(paz.begin(), paz.end());
-    int n = (int)paz.size();
+    vector<int> tmp = paz;
+    sort(tmp.begin(), tmp.end());
 
-    if (n % 2 == 1) return paz[n / 2];
-    return (paz[n / 2 - 1] + paz[n / 2]) / 2.0;
+    int n = (int)tmp.size();
+    if (n % 2 == 1) return (double)tmp[n / 2];
+    return (tmp[n / 2 - 1] + tmp[n / 2]) / 2.0;
 }
-
-void outputas(const vector<Studentas> &grupe, char pasirinkimas);
 
 int atsitiktinisPazymys() {
     return rand() % 10 + 1;
@@ -60,7 +61,7 @@ int meniu() {
     return x;
 }
 
-int ivestiSkaiciu(string tekstas, int nuo, int iki) {
+int ivestiSkaiciu(const string &tekstas, int nuo, int iki) {
     int x;
     cout << tekstas;
     cin >> x;
@@ -74,7 +75,7 @@ int ivestiSkaiciu(string tekstas, int nuo, int iki) {
     return x;
 }
 
-int ivestiKieki(string tekstas) {
+int ivestiKieki(const string &tekstas) {
     int x;
     cout << tekstas;
     cin >> x;
@@ -88,21 +89,37 @@ int ivestiKieki(string tekstas) {
     return x;
 }
 
-void skaiciuoti(Studentas &A, char pasirinkimas) {
+void skaiciuoti(Studentas &A) {
     double vid = 0.0;
-
-    if (A.paz.size() != 0) {
-        int sum = 0;
+    if (!A.paz.empty()) {
+        long long sum = 0;
         for (int x : A.paz) sum += x;
-        vid = sum * 1.0 / (A.paz.size() * 1.0);
+        vid = (double)sum / (double)A.paz.size();
     }
 
     double med = mediana(A.paz);
 
-    if (pasirinkimas == 'M' || pasirinkimas == 'm')
-        A.rez = med * 0.4 + A.exam * 0.6;
-    else
-        A.rez = vid * 0.4 + A.exam * 0.6;
+    A.rezVid = vid * 0.4 + A.exam * 0.6;
+    A.rezMed = med * 0.4 + A.exam * 0.6;
+}
+
+void outputas(const vector<Studentas> &grupe) {
+    cout << left << setw(15) << "Vardas"
+         << setw(20) << "Pavarde"
+         << setw(18) << "Galutinis (Vid.)"
+         << setw(18) << "Galutinis (Med.)"
+         << "\n";
+
+    cout << string(15 + 20 + 18 + 18, '-') << "\n";
+
+    cout << fixed << setprecision(2);
+    for (const auto &A : grupe) {
+        cout << left << setw(15) << A.Vardas
+             << setw(20) << A.Pavarde
+             << setw(18) << A.rezVid
+             << setw(18) << A.rezMed
+             << "\n";
+    }
 }
 
 int main() {
@@ -110,16 +127,6 @@ int main() {
 
     Studentas A;
     vector<Studentas> grupe;
-
-    char pasirinkimas;
-    cout << "Skaiciuoti pagal (V)idurki ar (M)ediana? ";
-    cin >> pasirinkimas;
-    while (!cin || (pasirinkimas != 'V' && pasirinkimas != 'v' && pasirinkimas != 'M' && pasirinkimas != 'm')) {
-        cout << "Klaida: iveskite tik V arba M: ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cin >> pasirinkimas;
-    }
 
     while (true) {
         int p = meniu();
@@ -146,22 +153,16 @@ int main() {
                 }
 
                 if (temp == 0) break;
-
-                while (!cin || temp < 1 || temp > 10) {
-                    cout << "Klaida: pazymys turi buti 1-10. Iveskite dar karta: ";
-                    cin.clear();
-                    cin.ignore(10000, '\n');
-                    cin >> temp;
-                    if (temp == 0) break;
+                if (temp < 1 || temp > 10) {
+                    cout << "Klaida: pazymys turi buti 1-10.\n";
+                    continue;
                 }
-                if (temp == 0) break;
-
                 A.paz.push_back(temp);
             }
 
             A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
 
-            skaiciuoti(A, pasirinkimas);
+            skaiciuoti(A);
             grupe.push_back(A);
         }
         else if (p == 2) {
@@ -173,7 +174,7 @@ int main() {
 
             A.exam = atsitiktinisPazymys();
 
-            skaiciuoti(A, pasirinkimas);
+            skaiciuoti(A);
             grupe.push_back(A);
         }
         else if (p == 3) {
@@ -181,42 +182,19 @@ int main() {
             vector<string> pavardes = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
                                        "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
 
-            A.Vardas = vardai[rand() % vardai.size()];
-            A.Pavarde = pavardes[rand() % pavardes.size()];
+            A.Vardas = vardai[rand() % (int)vardai.size()];
+            A.Pavarde = pavardes[rand() % (int)pavardes.size()];
 
             int kiek = ivestiKieki("Kiek ND generuoti? ");
             for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
 
             A.exam = atsitiktinisPazymys();
 
-            skaiciuoti(A, pasirinkimas);
+            skaiciuoti(A);
             grupe.push_back(A);
         }
     }
 
-    outputas(grupe, pasirinkimas);
+    outputas(grupe);
     return 0;
-}
-
-void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
-    if (pasirinkimas == 'M' || pasirinkimas == 'm') {
-        cout << left << setw(10) << "Vardas"
-             << left << setw(20) << "Pavarde"
-             << setw(20) << "Galutinis (Med.)"
-             << endl;
-    } else {
-        cout << left << setw(10) << "Vardas"
-             << left << setw(20) << "Pavarde"
-             << setw(20) << "Galutinis (Vid.)"
-             << endl;
-    }
-
-    cout << "---------------------------------------------" << endl;
-
-    for (auto A : grupe) {
-        cout << left << setw(10) << A.Vardas
-             << left << setw(20) << A.Pavarde
-             << fixed << setprecision(2)
-             << setw(20) << A.rez << endl;
-    }
 }
