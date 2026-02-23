@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <cstdlib>
 #include <ctime>
+#include <limits>
 
 using std::string;
 using std::vector;
@@ -16,6 +17,8 @@ using std::fixed;
 using std::setprecision;
 using std::endl;
 using std::sort;
+using std::numeric_limits;
+using std::streamsize;
 
 struct Studentas {
     string Vardas;
@@ -42,25 +45,6 @@ int atsitiktinisPazymys() {
     return rand() % 10 + 1;
 }
 
-int meniu() {
-    int x;
-    cout << "\nMeniu:\n";
-    cout << "1 - Ivesti ranka\n";
-    cout << "2 - Generuoti tik pazymius (vardas/pavarde ranka)\n";
-    cout << "3 - Generuoti varda, pavarde ir pazymius\n";
-    cout << "4 - Baigti\n";
-    cout << "Pasirinkimas: ";
-    cin >> x;
-
-    while (!cin || x < 1 || x > 4) {
-        cout << "Klaida: iveskite skaiciu nuo 1 iki 4: ";
-        cin.clear();
-        cin.ignore(10000, '\n');
-        cin >> x;
-    }
-    return x;
-}
-
 int ivestiSkaiciu(const string &tekstas, int nuo, int iki) {
     int x;
     cout << tekstas;
@@ -69,7 +53,7 @@ int ivestiSkaiciu(const string &tekstas, int nuo, int iki) {
     while (!cin || x < nuo || x > iki) {
         cout << "Klaida: iveskite skaiciu nuo " << nuo << " iki " << iki << ": ";
         cin.clear();
-        cin.ignore(10000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> x;
     }
     return x;
@@ -83,7 +67,26 @@ int ivestiKieki(const string &tekstas) {
     while (!cin || x <= 0) {
         cout << "Klaida: skaicius turi buti bent 1. Iveskite dar karta: ";
         cin.clear();
-        cin.ignore(10000, '\n');
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cin >> x;
+    }
+    return x;
+}
+
+int meniu() {
+    int x;
+    cout << "\nMeniu:\n";
+    cout << "1 - Ivesti ranka\n";
+    cout << "2 - Generuoti tik pazymius (vardas/pavarde ranka)\n";
+    cout << "3 - Generuoti varda, pavarde ir pazymius\n";
+    cout << "4 - Baigti\n";
+    cout << "Pasirinkimas: ";
+    cin >> x;
+
+    while (!cin || x < 1 || x > 4) {
+        cout << "Klaida: iveskite skaiciu nuo 1 iki 4: ";
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> x;
     }
     return x;
@@ -132,9 +135,9 @@ int main() {
         int p = meniu();
         if (p == 4) break;
 
-        A.paz.clear();
-
         if (p == 1) {
+            A.paz.clear();
+
             cout << "Iveskite varda ir pavarde: ";
             cin >> A.Vardas >> A.Pavarde;
 
@@ -148,15 +151,17 @@ int main() {
                 while (!cin) {
                     cout << "Klaida: iveskite skaiciu: ";
                     cin.clear();
-                    cin.ignore(10000, '\n');
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
                     cin >> temp;
                 }
 
                 if (temp == 0) break;
+
                 if (temp < 1 || temp > 10) {
                     cout << "Klaida: pazymys turi buti 1-10.\n";
                     continue;
                 }
+
                 A.paz.push_back(temp);
             }
 
@@ -164,8 +169,11 @@ int main() {
 
             skaiciuoti(A);
             grupe.push_back(A);
+            cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
         else if (p == 2) {
+            A.paz.clear();
+
             cout << "Iveskite varda ir pavarde: ";
             cin >> A.Vardas >> A.Pavarde;
 
@@ -176,8 +184,11 @@ int main() {
 
             skaiciuoti(A);
             grupe.push_back(A);
+            cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
         else if (p == 3) {
+            A.paz.clear();
+
             vector<string> vardai = {"Jonas","Ona","Ieva","Mantas","Egle","Tomas","Ruta","Paulius","Greta","Lukas"};
             vector<string> pavardes = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
                                        "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
@@ -192,6 +203,7 @@ int main() {
 
             skaiciuoti(A);
             grupe.push_back(A);
+            cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
     }
 
