@@ -37,10 +37,8 @@ double mediana(vector<int> paz) {
 
 void outputas(const vector<Studentas> &grupe, char pasirinkimas);
 
-
-
 int atsitiktinisPazymys() {
-    return rand() % 10 + 1; // 1..10
+    return rand() % 10 + 1;
 }
 
 int meniu() {
@@ -107,8 +105,6 @@ void skaiciuoti(Studentas &A, char pasirinkimas) {
         A.rez = vid * 0.4 + A.exam * 0.6;
 }
 
-
-
 int main() {
     srand((unsigned)time(NULL));
 
@@ -132,7 +128,6 @@ int main() {
         A.paz.clear();
 
         if (p == 1) {
-            
             cout << "Iveskite varda ir pavarde: ";
             cin >> A.Vardas >> A.Pavarde;
 
@@ -170,7 +165,6 @@ int main() {
             grupe.push_back(A);
         }
         else if (p == 2) {
-            
             cout << "Iveskite varda ir pavarde: ";
             cin >> A.Vardas >> A.Pavarde;
 
@@ -183,7 +177,6 @@ int main() {
             grupe.push_back(A);
         }
         else if (p == 3) {
-            
             vector<string> vardai = {"Jonas","Ona","Ieva","Mantas","Egle","Tomas","Ruta","Paulius","Greta","Lukas"};
             vector<string> pavardes = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
                                        "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
@@ -204,7 +197,6 @@ int main() {
     outputas(grupe, pasirinkimas);
     return 0;
 }
-
 
 void outputas(const vector<Studentas> &grupe, char pasirinkimas) {
     if (pasirinkimas == 'M' || pasirinkimas == 'm') {
