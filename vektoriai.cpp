@@ -6,6 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <limits>
+#include <fstream>
 
 using std::string;
 using std::vector;
@@ -19,6 +20,7 @@ using std::endl;
 using std::sort;
 using std::numeric_limits;
 using std::streamsize;
+using std::ofstream;
 
 struct Studentas {
     string Vardas;
@@ -41,9 +43,7 @@ double mediana(const vector<int> &paz) {
     return (tmp[n / 2 - 1] + tmp[n / 2]) / 2.0;
 }
 
-int atsitiktinisPazymys() {
-    return rand() % 10 + 1;
-}
+int atsitiktinisPazymys() { return rand() % 10 + 1; }
 
 int ivestiSkaiciu(const string &tekstas, int nuo, int iki) {
     int x;
@@ -100,7 +100,6 @@ void skaiciuoti(Studentas &A) {
         for (int x : A.paz) sum += x;
         vid = (double)sum / (double)A.paz.size();
     }
-
     double med = mediana(A.paz);
 
     A.rezVid = vid * 0.4 + A.exam * 0.6;
@@ -155,6 +154,67 @@ void outputas(const vector<Studentas> &grupe) {
     }
 }
 
+void outputasIFaila(const vector<Studentas> &grupe, const string &failas) {
+    ofstream out(failas);
+    if (!out) {
+        cout << "Nepavyko sukurti failo.\n";
+        return;
+    }
+
+    out << left << setw(15) << "Vardas"
+        << setw(20) << "Pavarde"
+        << setw(18) << "Galutinis (Vid.)"
+        << setw(18) << "Galutinis (Med.)"
+        << "\n";
+
+    out << string(15 + 20 + 18 + 18, '-') << "\n";
+
+    out << fixed << setprecision(2);
+    for (const auto &A : grupe) {
+        out << left << setw(15) << A.Vardas
+            << setw(20) << A.Pavarde
+            << setw(18) << A.rezVid
+            << setw(18) << A.rezMed
+            << "\n";
+    }
+}
+
+void isvedimoPasirinkimas(const vector<Studentas> &grupe) {
+    if (grupe.empty()) {
+        cout << "Grupe tuscia.\n";
+        return;
+    }
+
+    cout << "\nKur isvesti rezultatus?\n";
+    cout << "1 - I ekrana\n";
+    cout << "2 - I faila\n";
+    int kur = ivestiSkaiciu("Pasirinkimas: ", 1, 2);
+
+    if (kur == 1) {
+        if (grupe.size() > 10000) {
+            cout << "Perspejimas: studentu labai daug, isvedimas i ekrana gali buti labai letas.\n";
+            cout << "1 - Vis tiek testi\n";
+            cout << "2 - Geriau i faila\n";
+            int k = ivestiSkaiciu("Pasirinkimas: ", 1, 2);
+            if (k == 2) {
+                string outname;
+                cout << "Failo pavadinimas (pvz. rezultatai.txt): ";
+                cin >> outname;
+                outputasIFaila(grupe, outname);
+                cout << "Rezultatai irasyti i faila: " << outname << endl;
+                return;
+            }
+        }
+        outputas(grupe);
+    } else {
+        string outname;
+        cout << "Failo pavadinimas (pvz. rezultatai.txt): ";
+        cin >> outname;
+        outputasIFaila(grupe, outname);
+        cout << "Rezultatai irasyti i faila: " << outname << endl;
+    }
+}
+
 int main() {
     srand((unsigned)time(NULL));
 
@@ -196,7 +256,6 @@ int main() {
             }
 
             A.exam = ivestiSkaiciu("Egzamino pazymys (1-10): ", 1, 10);
-
             skaiciuoti(A);
             grupe.push_back(A);
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
@@ -211,7 +270,6 @@ int main() {
             for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
 
             A.exam = atsitiktinisPazymys();
-
             skaiciuoti(A);
             grupe.push_back(A);
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
@@ -230,7 +288,6 @@ int main() {
             for (int i = 0; i < kiek; i++) A.paz.push_back(atsitiktinisPazymys());
 
             A.exam = atsitiktinisPazymys();
-
             skaiciuoti(A);
             grupe.push_back(A);
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
@@ -240,7 +297,7 @@ int main() {
                 cout << "Grupe tuscia.\n";
             } else {
                 rikiuoti(grupe);
-                outputas(grupe);
+                isvedimoPasirinkimas(grupe);
             }
         }
     }
