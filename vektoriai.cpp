@@ -80,11 +80,12 @@ int meniu() {
     cout << "2 - Generuoti tik pazymius (vardas/pavarde ranka)\n";
     cout << "3 - Generuoti varda, pavarde ir pazymius\n";
     cout << "4 - Baigti\n";
+    cout << "5 - Rikiuoti ir isvesti rezultatus\n";
     cout << "Pasirinkimas: ";
     cin >> x;
 
-    while (!cin || x < 1 || x > 4) {
-        cout << "Klaida: iveskite skaiciu nuo 1 iki 4: ";
+    while (!cin || x < 1 || x > 5) {
+        cout << "Klaida: iveskite skaiciu nuo 1 iki 5: ";
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
         cin >> x;
@@ -104,6 +105,35 @@ void skaiciuoti(Studentas &A) {
 
     A.rezVid = vid * 0.4 + A.exam * 0.6;
     A.rezMed = med * 0.4 + A.exam * 0.6;
+}
+
+void rikiuoti(vector<Studentas> &grupe) {
+    if (grupe.empty()) {
+        cout << "Grupe tuscia - nera ka rikiuoti.\n";
+        return;
+    }
+
+    cout << "\nRikiuoti studentus pagal:\n";
+    cout << "1 - Varda\n";
+    cout << "2 - Pavarde\n";
+    cout << "3 - Galutini (Vid.)\n";
+    cout << "4 - Galutini (Med.)\n";
+
+    int r = ivestiSkaiciu("Pasirinkimas: ", 1, 4);
+
+    if (r == 1) {
+        sort(grupe.begin(), grupe.end(),
+             [](const Studentas &a, const Studentas &b) { return a.Vardas < b.Vardas; });
+    } else if (r == 2) {
+        sort(grupe.begin(), grupe.end(),
+             [](const Studentas &a, const Studentas &b) { return a.Pavarde < b.Pavarde; });
+    } else if (r == 3) {
+        sort(grupe.begin(), grupe.end(),
+             [](const Studentas &a, const Studentas &b) { return a.rezVid < b.rezVid; });
+    } else {
+        sort(grupe.begin(), grupe.end(),
+             [](const Studentas &a, const Studentas &b) { return a.rezMed < b.rezMed; });
+    }
 }
 
 void outputas(const vector<Studentas> &grupe) {
@@ -205,8 +235,15 @@ int main() {
             grupe.push_back(A);
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
+        else if (p == 5) {
+            if (grupe.empty()) {
+                cout << "Grupe tuscia.\n";
+            } else {
+                rikiuoti(grupe);
+                outputas(grupe);
+            }
+        }
     }
 
-    outputas(grupe);
     return 0;
 }
