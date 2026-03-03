@@ -154,6 +154,28 @@ bool palyginti_nat(const string &a, const string &b) {
     return a < b;
 }
 
+bool palyginti_pagal_varda(const Studentas &a, const Studentas &b) {
+    if (a.vardas != b.vardas) return palyginti_nat(a.vardas, b.vardas);
+    return palyginti_nat(a.pavarde, b.pavarde);
+}
+
+bool palyginti_pagal_pavarde(const Studentas &a, const Studentas &b) {
+    if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
+    return palyginti_nat(a.vardas, b.vardas);
+}
+
+bool palyginti_pagal_vidurki(const Studentas &a, const Studentas &b) {
+    if (a.gal_vid != b.gal_vid) return a.gal_vid < b.gal_vid;
+    if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
+    return palyginti_nat(a.vardas, b.vardas);
+}
+
+bool palyginti_pagal_mediana(const Studentas &a, const Studentas &b) {
+    if (a.gal_med != b.gal_med) return a.gal_med < b.gal_med;
+    if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
+    return palyginti_nat(a.vardas, b.vardas);
+}
+
 bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &praleista) {
     ifstream in(failas);
     if (!in) {
@@ -229,33 +251,10 @@ void rikiuoti(vector<Studentas> &grupe) {
 
     int r = ivesti_skaiciu("Pasirinkimas: ", 1, 4);
 
-    if (r == 1) {
-        sort(grupe.begin(), grupe.end(),
-             [](const Studentas &a, const Studentas &b) {
-                 if (a.vardas != b.vardas) return palyginti_nat(a.vardas, b.vardas);
-                 return palyginti_nat(a.pavarde, b.pavarde);
-             });
-    } else if (r == 2) {
-        sort(grupe.begin(), grupe.end(),
-             [](const Studentas &a, const Studentas &b) {
-                 if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
-                 return palyginti_nat(a.vardas, b.vardas);
-             });
-    } else if (r == 3) {
-        sort(grupe.begin(), grupe.end(),
-             [](const Studentas &a, const Studentas &b) {
-                 if (a.gal_vid != b.gal_vid) return a.gal_vid < b.gal_vid;
-                 if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
-                 return palyginti_nat(a.vardas, b.vardas);
-             });
-    } else {
-        sort(grupe.begin(), grupe.end(),
-             [](const Studentas &a, const Studentas &b) {
-                 if (a.gal_med != b.gal_med) return a.gal_med < b.gal_med;
-                 if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
-                 return palyginti_nat(a.vardas, b.vardas);
-             });
-    }
+    if (r == 1) sort(grupe.begin(), grupe.end(), palyginti_pagal_varda);
+    else if (r == 2) sort(grupe.begin(), grupe.end(), palyginti_pagal_pavarde);
+    else if (r == 3) sort(grupe.begin(), grupe.end(), palyginti_pagal_vidurki);
+    else sort(grupe.begin(), grupe.end(), palyginti_pagal_mediana);
 }
 
 void isvesti_i_ekrana(const vector<Studentas> &grupe) {
