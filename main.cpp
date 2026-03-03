@@ -6,6 +6,7 @@
 #include <ctime>
 #include <limits>
 #include <chrono>
+#include <exception>
 
 #include "Studentas.h"
 #include "Ivedimas.h"
@@ -99,21 +100,37 @@ int main() {
         if (p == 1) {
             a.paz.clear();
 
-            cout << "Iveskite varda ir pavarde: ";
-            cin >> a.vardas >> a.pavarde;
+            // --- Vardo/pavardes ivedimas su try/catch ---
+            while (true) {
+                try {
+                    cin.exceptions(std::ios::failbit | std::ios::badbit);
+                    cout << "Iveskite varda ir pavarde: ";
+                    cin >> a.vardas >> a.pavarde;
+                    cin.exceptions(std::ios::goodbit);
+                    break;
+                } catch (const std::ios_base::failure &) {
+                    cout << "Klaida: blogas ivedimas. Iveskite du zodzius (vardas pavarde).\n";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cin.exceptions(std::ios::goodbit);
+                }
+            }
 
             cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
             int temp;
 
             while (true) {
-                cout << "Pazymys: ";
-                cin >> temp;
-
-                while (!cin) {
-                    cout << "Klaida: iveskite skaiciu: ";
+                try {
+                    cin.exceptions(std::ios::failbit | std::ios::badbit);
+                    cout << "Pazymys: ";
+                    cin >> temp;
+                    cin.exceptions(std::ios::goodbit);
+                } catch (const std::ios_base::failure &) {
+                    cout << "Klaida: iveskite sveika skaiciu.\n";
                     cin.clear();
                     cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cin >> temp;
+                    cin.exceptions(std::ios::goodbit);
+                    continue;
                 }
 
                 if (temp == 0) break;
@@ -136,8 +153,20 @@ int main() {
         else if (p == 2) {
             a.paz.clear();
 
-            cout << "Iveskite varda ir pavarde: ";
-            cin >> a.vardas >> a.pavarde;
+            while (true) {
+                try {
+                    cin.exceptions(std::ios::failbit | std::ios::badbit);
+                    cout << "Iveskite varda ir pavarde: ";
+                    cin >> a.vardas >> a.pavarde;
+                    cin.exceptions(std::ios::goodbit);
+                    break;
+                } catch (const std::ios_base::failure &) {
+                    cout << "Klaida: blogas ivedimas. Iveskite du zodzius (vardas pavarde).\n";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cin.exceptions(std::ios::goodbit);
+                }
+            }
 
             int kiek = ivesti_kieki("Kiek ND generuoti? ");
             for (int i = 0; i < kiek; i++) a.paz.push_back(atsitiktinis_pazymys());
@@ -170,14 +199,37 @@ int main() {
             cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
         }
         else if (p == 5) {
-            cout << "Iveskite failo pavadinima: ";
             string fname;
-            cin >> fname;
+
+            // --- Failo pavadinimo ivedimas su try/catch ---
+            while (true) {
+                try {
+                    cin.exceptions(std::ios::failbit | std::ios::badbit);
+                    cout << "Iveskite failo pavadinima: ";
+                    cin >> fname;
+                    cin.exceptions(std::ios::goodbit);
+                    break;
+                } catch (const std::ios_base::failure &) {
+                    cout << "Klaida: blogas ivedimas. Bandykite dar karta.\n";
+                    cin.clear();
+                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                    cin.exceptions(std::ios::goodbit);
+                }
+            }
 
             int praleista = 0;
 
             auto start = high_resolution_clock::now();
-            bool ok = nuskaityti_is_failo(fname, grupe, praleista);
+            bool ok = false;
+
+            // --- minimalus exception handling aplink failo nuskaityma ---
+            try {
+                ok = nuskaityti_is_failo(fname, grupe, praleista);
+            } catch (const std::exception &e) {
+                cout << "Klaida: nepavyko nuskaityti failo. (" << e.what() << ")\n";
+                ok = false;
+            }
+
             auto end = high_resolution_clock::now();
 
             if (!ok) {
