@@ -23,8 +23,17 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
 
     try {
         ifstream in;
-        in.exceptions(std::ios::failbit | std::ios::badbit);
+
+        // SVARBIAUSIA: nemetam isimtis ant failbit, nes getline() EOF metu uzdeda failbit.
+        // Paliekam tik badbit (rimtos I/O klaidos: disko/stream'o klaidos).
+        in.exceptions(std::ios::badbit);
+
         in.open(failas);
+
+        if (!in.is_open()) {
+            std::cout << "Klaida: failas neegzistuoja arba nepavyko jo atidaryti: " << failas << endl;
+            return false;
+        }
 
         string line;
         while (getline(in, line)) {
@@ -38,6 +47,7 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
                 continue;
             }
 
+            // praleidziam antrastine eilute
             if (a.vardas == "Vardas" && a.pavarde == "Pavarde") continue;
 
             vector<int> skaiciai;
@@ -50,6 +60,7 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
                 continue;
             }
 
+            // turi buti bent 1 ND + egzaminas (t.y. bent 2 skaiciai)
             if (skaiciai.size() < 2) {
                 praleista++;
                 continue;
@@ -62,7 +73,6 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
                     break;
                 }
             }
-
             if (bloga) {
                 praleista++;
                 continue;
@@ -76,13 +86,23 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
             grupe.push_back(a);
         }
 
+        // jei norisi, galima patikrinti ar ne ivyko rimta skaitymo klaida
+        if (in.bad()) {
+            std::cout << "Klaida: ivyko skaitymo klaida (badbit) skaitant faila: " << failas << endl;
+            grupe.clear();
+            praleista = 0;
+            return false;
+        }
+
         return true;
-    } catch (const std::ios_base::failure &) {
-        std::cout << "Klaida: failas neegzistuoja arba nepavyko jo atidaryti: " << failas << endl;
+    }
+    catch (const std::ios_base::failure &) {
+        std::cout << "Klaida: ivyko I/O klaida skaitant faila: " << failas << endl;
         grupe.clear();
         praleista = 0;
         return false;
-    } catch (const std::exception &) {
+    }
+    catch (const std::exception &) {
         std::cout << "Klaida: ivyko nenumatyta klaida skaitant faila.\n";
         grupe.clear();
         praleista = 0;
@@ -93,7 +113,10 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
 void isvesti_i_faila(const vector<Studentas> &grupe, const string &failas) {
     try {
         ofstream out;
+
+        // Rasymui failbit tinka (pvz. nepavyko irasyti), todel paliekam kaip buvo.
         out.exceptions(std::ios::failbit | std::ios::badbit);
+
         out.open(failas);
 
         out << left << setw(15) << "Vardas"
@@ -112,9 +135,11 @@ void isvesti_i_faila(const vector<Studentas> &grupe, const string &failas) {
                 << setw(18) << a.gal_med
                 << "\n";
         }
-    } catch (const std::ios_base::failure &) {
+    }
+    catch (const std::ios_base::failure &) {
         std::cout << "Klaida: nepavyko sukurti arba irasyti i faila: " << failas << endl;
-    } catch (const std::exception &) {
+    }
+    catch (const std::exception &) {
         std::cout << "Klaida: ivyko nenumatyta klaida rasant i faila.\n";
     }
 }
