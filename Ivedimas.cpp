@@ -14,7 +14,7 @@ static int skaityti_int() {
     if (!(cin >> x)) {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        throw std::runtime_error("Ivesties klaida: tiketasi sveiko skaiciaus.");
+        throw std::runtime_error("Klaida: tiketasi sveiko skaiciaus.");
     }
     return x;
 }
@@ -24,9 +24,15 @@ int ivesti_skaiciu(const string& tekstas, int nuo, int iki) {
         try {
             cout << tekstas;
             int x = skaityti_int();
-            if (x < nuo || x > iki) throw std::out_of_range("Reiksme uz ribu.");
+
+            if (x < nuo || x > iki) {
+                throw std::out_of_range("Klaida: reiksme uz ribu.");
+            }
+
             return x;
-        } catch (const std::exception&) {
+        } catch (const std::runtime_error&) {
+            cout << "Klaida: iveskite sveika skaiciu.\n";
+        } catch (const std::out_of_range&) {
             cout << "Klaida: iveskite skaiciu nuo " << nuo << " iki " << iki << ".\n";
         }
     }
@@ -37,9 +43,15 @@ int ivesti_kieki(const string& tekstas) {
         try {
             cout << tekstas;
             int x = skaityti_int();
-            if (x <= 0) throw std::out_of_range("Kiekis turi buti > 0.");
+
+            if (x <= 0) {
+                throw std::out_of_range("Klaida: kiekis netinkamas.");
+            }
+
             return x;
-        } catch (const std::exception&) {
+        } catch (const std::runtime_error&) {
+            cout << "Klaida: iveskite sveika skaiciu.\n";
+        } catch (const std::out_of_range&) {
             cout << "Klaida: skaicius turi buti bent 1.\n";
         }
     }
