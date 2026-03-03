@@ -9,6 +9,7 @@
 #include <sstream>
 #include <limits>
 #include <chrono>
+#include "Studentas.h"
 
 using std::string;
 using std::vector;
@@ -31,14 +32,7 @@ using std::ws;
 using std::chrono::high_resolution_clock;
 using std::chrono::duration;
 
-struct Studentas {
-    string vardas;
-    string pavarde;
-    vector<int> paz;
-    int egz = 0;
-    double gal_vid = 0.0;
-    double gal_med = 0.0;
-};
+
 
 double mediana(const vector<int> &paz) {
     if (paz.empty()) return 0.0;
