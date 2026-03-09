@@ -1,12 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <iomanip>
 #include <cstdlib>
 #include <ctime>
-#include <limits>
 #include <chrono>
-#include <exception>
 
 #include "Studentas.h"
 #include "Ivedimas.h"
@@ -17,247 +14,185 @@ using std::string;
 using std::vector;
 using std::cin;
 using std::cout;
-using std::left;
-using std::setw;
-using std::fixed;
-using std::setprecision;
 using std::endl;
-using std::numeric_limits;
-using std::streamsize;
 
 using std::chrono::high_resolution_clock;
 using std::chrono::duration;
 
-int atsitiktinis_pazymys() {
-    return rand() % 10 + 1;
-}
+struct TyrimoRezultatai {
+    double failo_kurimo_laikas = 0.0;
 
-void isvesti_i_ekrana(const vector<Studentas> &grupe) {
-    cout << left << setw(15) << "Vardas"
-         << setw(20) << "Pavarde"
-         << setw(18) << "Galutinis (Vid.)"
-         << setw(18) << "Galutinis (Med.)"
-         << "\n";
+    double nuskaitymo_laikas = 0.0;
+    double dalijimo_laikas = 0.0;
+    double grupiu_rikiavimo_laikas = 0.0;
+    double rasymo_laikas = 0.0;
+    double bendras_laikas = 0.0;
 
-    cout << string(15 + 20 + 18 + 18, '-') << "\n";
+    int studentu_kiekis = 0;
+    int praleista = 0;
 
-    cout << fixed << setprecision(2);
-    for (const auto &a : grupe) {
-        cout << left << setw(15) << a.vardas
-             << setw(20) << a.pavarde
-             << setw(18) << a.gal_vid
-             << setw(18) << a.gal_med
-             << "\n";
+    string vargsiuku_failas;
+    string kietiaku_failas;
+};
+
+void generuoti_visus_testinius_failus() {
+    const int kiek_nd = 15;
+
+    vector<string> failai = {
+        "studentai1000.txt",
+        "studentai10000.txt",
+        "studentai100000.txt",
+        "studentai1000000.txt",
+        "studentai10000000.txt"
+    };
+
+    vector<int> dydziai = {1000, 10000, 100000, 1000000, 10000000};
+
+    cout << "\n1 TYRIMAS - failu kurimas ir uzdarymas\n";
+
+    for (size_t i = 0; i < failai.size(); i++) {
+        auto start = high_resolution_clock::now();
+        bool ok = generuoti_studentu_faila(failai[i], dydziai[i], kiek_nd);
+        auto end = high_resolution_clock::now();
+
+        if (!ok) {
+            cout << "Nepavyko sugeneruoti failo: " << failai[i] << endl;
+            continue;
+        }
+
+        double laikas = duration<double>(end - start).count();
+        cout << "Failo " << failai[i] << " sukurimo laikas: " << laikas << " s\n";
     }
+
+    cout << "1 tyrimas baigtas.\n";
 }
 
-void isvedimo_pasirinkimas(const vector<Studentas> &grupe) {
-    if (grupe.empty()) {
-        cout << "Grupe tuscia.\n";
+bool apdoroti_faila(const string& failas, int kriterijus, TyrimoRezultatai& rez) {
+    vector<Studentas> visi;
+    vector<Studentas> vargsiukai;
+    vector<Studentas> kietiakiai;
+
+    string vargsiuku_failas;
+    string kietiaku_failas;
+    sudaryti_rezultatu_failu_vardus(failas, vargsiuku_failas, kietiaku_failas);
+
+    int praleista = 0;
+
+    auto bendras_start = high_resolution_clock::now();
+
+    auto start_nuskaityti = high_resolution_clock::now();
+    bool ok = nuskaityti_is_failo(failas, visi, praleista);
+    auto end_nuskaityti = high_resolution_clock::now();
+
+    if (!ok) {
+        return false;
+    }
+
+    auto start_dalinti = high_resolution_clock::now();
+    padalinti_studentus(visi, vargsiukai, kietiakiai);
+    auto end_dalinti = high_resolution_clock::now();
+
+    auto start_rikiuoti = high_resolution_clock::now();
+    rikiuoti(vargsiukai, kriterijus);
+    rikiuoti(kietiakiai, kriterijus);
+    auto end_rikiuoti = high_resolution_clock::now();
+
+    auto start_rasyti = high_resolution_clock::now();
+    isvesti_i_faila(vargsiukai, vargsiuku_failas);
+    isvesti_i_faila(kietiakiai, kietiaku_failas);
+    auto end_rasyti = high_resolution_clock::now();
+
+    auto bendras_end = high_resolution_clock::now();
+
+    rez.nuskaitymo_laikas = duration<double>(end_nuskaityti - start_nuskaityti).count();
+    rez.dalijimo_laikas = duration<double>(end_dalinti - start_dalinti).count();
+    rez.grupiu_rikiavimo_laikas = duration<double>(end_rikiuoti - start_rikiuoti).count();
+    rez.rasymo_laikas = duration<double>(end_rasyti - start_rasyti).count();
+    rez.bendras_laikas = duration<double>(bendras_end - bendras_start).count();
+
+    rez.studentu_kiekis = (int)visi.size();
+    rez.praleista = praleista;
+    rez.vargsiuku_failas = vargsiuku_failas;
+    rez.kietiaku_failas = kietiaku_failas;
+
+    return true;
+}
+
+void spausdinti_rezultatus(const string& failas, const TyrimoRezultatai& rez) {
+    cout << "\nFailas: " << failas << endl;
+    cout << "Nuskaityta studentu: " << rez.studentu_kiekis << endl;
+    cout << "Praleista eiluciu: " << rez.praleista << endl;
+    cout << "Duomenu nuskaitymo is failo laikas: " << rez.nuskaitymo_laikas << " s\n";
+    cout << "Studentu padalinimo i dvi grupes laikas: " << rez.dalijimo_laikas << " s\n";
+    cout << "Grupiu rikiavimo laikas: " << rez.grupiu_rikiavimo_laikas << " s\n";
+    cout << "Surikiuotu studentu isvedimo i du naujus failus laikas: " << rez.rasymo_laikas << " s\n";
+    cout << "Visos programos veikimo laikas: " << rez.bendras_laikas << " s\n";
+    cout << "Sukurti failai: " << rez.vargsiuku_failas << " ir " << rez.kietiaku_failas << endl;
+}
+
+void apdoroti_viena_faila() {
+    string failas;
+    cout << "Iveskite failo pavadinima: ";
+    cin >> failas;
+
+    int kriterijus = pasirinkti_rikiavimo_kriteriju();
+
+    TyrimoRezultatai rez;
+    bool ok = apdoroti_faila(failas, kriterijus, rez);
+
+    if (!ok) {
+        cout << "Failo apdoroti nepavyko.\n";
         return;
     }
 
-    cout << "\nKur isvesti rezultatus?\n";
-    cout << "1 - I ekrana\n";
-    cout << "2 - I faila\n";
-    int kur = ivesti_skaiciu("Pasirinkimas: ", 1, 2);
+    spausdinti_rezultatus(failas, rez);
+}
 
-    if (kur == 1) {
-        if (grupe.size() > 10000) {
-            cout << "Perspejimas: studentu labai daug, isvedimas i ekrana gali buti labai letas.\n";
-            cout << "1 - Vis tiek testi\n";
-            cout << "2 - Geriau i faila\n";
-            int k = ivesti_skaiciu("Pasirinkimas: ", 1, 2);
-            if (k == 2) {
-                string outname;
-                cout << "Failo pavadinimas (pvz. rezultatai.txt): ";
-                cin >> outname;
-                isvesti_i_faila(grupe, outname);
-                cout << "Rezultatai irasyti i faila: " << outname << endl;
-                return;
-            }
+void vykdyti_visu_failu_tyrima() {
+    vector<string> failai = {
+        "studentai1000.txt",
+        "studentai10000.txt",
+        "studentai100000.txt",
+        "studentai1000000.txt",
+        "studentai10000000.txt"
+    };
+
+    int kriterijus = pasirinkti_rikiavimo_kriteriju();
+
+    cout << "\n2 TYRIMAS - duomenu apdorojimas naudojant jau sugeneruotus failus\n";
+
+    for (const auto& failas : failai) {
+        TyrimoRezultatai rez;
+        bool ok = apdoroti_faila(failas, kriterijus, rez);
+
+        if (!ok) {
+            cout << "\nNepavyko apdoroti failo: " << failas << endl;
+            continue;
         }
-        isvesti_i_ekrana(grupe);
-    } else {
-        string outname;
-        cout << "Failo pavadinimas (pvz. rezultatai.txt): ";
-        cin >> outname;
-        isvesti_i_faila(grupe, outname);
-        cout << "Rezultatai irasyti i faila: " << outname << endl;
+
+        spausdinti_rezultatus(failas, rez);
     }
+
+    cout << "\n2 tyrimas baigtas.\n";
 }
 
 int main() {
     srand((unsigned)time(NULL));
 
-    Studentas a;
-    vector<Studentas> grupe;
-
     while (true) {
         int p = meniu();
-        if (p == 4) break;
 
         if (p == 1) {
-            a.paz.clear();
-
-            // --- Vardo/pavardes ivedimas su try/catch ---
-            while (true) {
-                try {
-                    cin.exceptions(std::ios::failbit | std::ios::badbit);
-                    cout << "Iveskite varda ir pavarde: ";
-                    cin >> a.vardas >> a.pavarde;
-                    cin.exceptions(std::ios::goodbit);
-                    break;
-                } catch (const std::ios_base::failure &) {
-                    cout << "Klaida: blogas ivedimas. Iveskite du zodzius (vardas pavarde).\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cin.exceptions(std::ios::goodbit);
-                }
-            }
-
-            cout << "Iveskite namu darbu pazymius (1-10), 0 - baigti:\n";
-            int temp;
-
-            while (true) {
-                try {
-                    cin.exceptions(std::ios::failbit | std::ios::badbit);
-                    cout << "Pazymys: ";
-                    cin >> temp;
-                    cin.exceptions(std::ios::goodbit);
-                } catch (const std::ios_base::failure &) {
-                    cout << "Klaida: iveskite sveika skaiciu.\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cin.exceptions(std::ios::goodbit);
-                    continue;
-                }
-
-                if (temp == 0) break;
-
-                if (temp < 1 || temp > 10) {
-                    cout << "Klaida: pazymys turi buti 1-10.\n";
-                    continue;
-                }
-
-                a.paz.push_back(temp);
-            }
-
-            a.egz = ivesti_skaiciu("Egzamino pazymys (1-10): ", 1, 10);
-
-            skaiciuoti(a);
-            grupe.push_back(a);
-
-            cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
+            generuoti_visus_testinius_failus();
         }
         else if (p == 2) {
-            a.paz.clear();
-
-            while (true) {
-                try {
-                    cin.exceptions(std::ios::failbit | std::ios::badbit);
-                    cout << "Iveskite varda ir pavarde: ";
-                    cin >> a.vardas >> a.pavarde;
-                    cin.exceptions(std::ios::goodbit);
-                    break;
-                } catch (const std::ios_base::failure &) {
-                    cout << "Klaida: blogas ivedimas. Iveskite du zodzius (vardas pavarde).\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cin.exceptions(std::ios::goodbit);
-                }
-            }
-
-            int kiek = ivesti_kieki("Kiek ND generuoti? ");
-            for (int i = 0; i < kiek; i++) a.paz.push_back(atsitiktinis_pazymys());
-
-            a.egz = atsitiktinis_pazymys();
-
-            skaiciuoti(a);
-            grupe.push_back(a);
-
-            cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
+            apdoroti_viena_faila();
         }
         else if (p == 3) {
-            a.paz.clear();
-
-            vector<string> vardai = {"Jonas","Ona","Ieva","Mantas","Egle","Tomas","Ruta","Paulius","Greta","Lukas"};
-            vector<string> pavardes = {"Kazlauskas","Petrauskas","Jankauskas","Vaitkus","Zukauskas",
-                                       "Stankevicius","Pocius","Noreika","Mikulenas","Sabonis"};
-
-            a.vardas = vardai[rand() % (int)vardai.size()];
-            a.pavarde = pavardes[rand() % (int)pavardes.size()];
-
-            int kiek = ivesti_kieki("Kiek ND generuoti? ");
-            for (int i = 0; i < kiek; i++) a.paz.push_back(atsitiktinis_pazymys());
-
-            a.egz = atsitiktinis_pazymys();
-
-            skaiciuoti(a);
-            grupe.push_back(a);
-
-            cout << "Prideta. Is viso studentu: " << grupe.size() << endl;
+            vykdyti_visu_failu_tyrima();
         }
-        else if (p == 5) {
-            string fname;
-
-            // --- Failo pavadinimo ivedimas su try/catch ---
-            while (true) {
-                try {
-                    cin.exceptions(std::ios::failbit | std::ios::badbit);
-                    cout << "Iveskite failo pavadinima: ";
-                    cin >> fname;
-                    cin.exceptions(std::ios::goodbit);
-                    break;
-                } catch (const std::ios_base::failure &) {
-                    cout << "Klaida: blogas ivedimas. Bandykite dar karta.\n";
-                    cin.clear();
-                    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                    cin.exceptions(std::ios::goodbit);
-                }
-            }
-
-            int praleista = 0;
-
-            auto start = high_resolution_clock::now();
-            bool ok = false;
-
-            // --- minimalus exception handling aplink failo nuskaityma ---
-            try {
-                ok = nuskaityti_is_failo(fname, grupe, praleista);
-            } catch (const std::exception &e) {
-                cout << "Klaida: nepavyko nuskaityti failo. (" << e.what() << ")\n";
-                ok = false;
-            }
-
-            auto end = high_resolution_clock::now();
-
-            if (!ok) {
-                cout << "Skaitymas nepavyko.\n";
-            } else {
-                duration<double> diff = end - start;
-                cout << "Studentu: " << grupe.size() << endl;
-                cout << "Laikas: " << diff.count() << " s\n";
-                if (praleista > 0) cout << "Praleista eiluciu: " << praleista << endl;
-
-                cout << "\nAr norite dabar rikiuoti ir isvesti?\n";
-                cout << "1 - Taip\n";
-                cout << "2 - Ne (grizti i meniu)\n";
-                int ats = ivesti_skaiciu("Pasirinkimas: ", 1, 2);
-
-                if (ats == 1) {
-                    rikiuoti(grupe);
-                    isvedimo_pasirinkimas(grupe);
-                }
-            }
-        }
-        else if (p == 6) {
-            if (grupe.empty()) {
-                cout << "Grupe tuscia.\n";
-            } else {
-                rikiuoti(grupe);
-                isvedimo_pasirinkimas(grupe);
-            }
+        else if (p == 4) {
+            break;
         }
     }
 
