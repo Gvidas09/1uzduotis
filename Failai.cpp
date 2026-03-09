@@ -17,17 +17,13 @@ using std::fixed;
 using std::setprecision;
 using std::endl;
 
-bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &praleista) {
+bool nuskaityti_is_failo(const string& failas, vector<Studentas>& grupe, int& praleista) {
     grupe.clear();
     praleista = 0;
 
     try {
         ifstream in;
-
-        // SVARBIAUSIA: nemetam isimtis ant failbit, nes getline() EOF metu uzdeda failbit.
-        // Paliekam tik badbit (rimtos I/O klaidos: disko/stream'o klaidos).
         in.exceptions(std::ios::badbit);
-
         in.open(failas);
 
         if (!in.is_open()) {
@@ -47,20 +43,17 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
                 continue;
             }
 
-            // praleidziam antrastine eilute
             if (a.vardas == "Vardas" && a.pavarde == "Pavarde") continue;
 
             vector<int> skaiciai;
             int x;
             while (iss >> x) skaiciai.push_back(x);
 
-            // jei liko ne skaiciai (pvz. raide), laikom eilute bloga
             if (!iss.eof()) {
                 praleista++;
                 continue;
             }
 
-            // turi buti bent 1 ND + egzaminas (t.y. bent 2 skaiciai)
             if (skaiciai.size() < 2) {
                 praleista++;
                 continue;
@@ -73,6 +66,7 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
                     break;
                 }
             }
+
             if (bloga) {
                 praleista++;
                 continue;
@@ -86,7 +80,6 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
             grupe.push_back(a);
         }
 
-        // jei norisi, galima patikrinti ar ne ivyko rimta skaitymo klaida
         if (in.bad()) {
             std::cout << "Klaida: ivyko skaitymo klaida (badbit) skaitant faila: " << failas << endl;
             grupe.clear();
@@ -96,13 +89,13 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
 
         return true;
     }
-    catch (const std::ios_base::failure &) {
+    catch (const std::ios_base::failure&) {
         std::cout << "Klaida: ivyko I/O klaida skaitant faila: " << failas << endl;
         grupe.clear();
         praleista = 0;
         return false;
     }
-    catch (const std::exception &) {
+    catch (const std::exception&) {
         std::cout << "Klaida: ivyko nenumatyta klaida skaitant faila.\n";
         grupe.clear();
         praleista = 0;
@@ -110,13 +103,10 @@ bool nuskaityti_is_failo(const string &failas, vector<Studentas> &grupe, int &pr
     }
 }
 
-void isvesti_i_faila(const vector<Studentas> &grupe, const string &failas) {
+void isvesti_i_faila(const vector<Studentas>& grupe, const string& failas) {
     try {
         ofstream out;
-
-        // Rasymui failbit tinka (pvz. nepavyko irasyti), todel paliekam kaip buvo.
         out.exceptions(std::ios::failbit | std::ios::badbit);
-
         out.open(failas);
 
         out << left << setw(15) << "Vardas"
@@ -128,7 +118,7 @@ void isvesti_i_faila(const vector<Studentas> &grupe, const string &failas) {
         out << string(15 + 20 + 18 + 18, '-') << "\n";
 
         out << fixed << setprecision(2);
-        for (const auto &a : grupe) {
+        for (const auto& a : grupe) {
             out << left << setw(15) << a.vardas
                 << setw(20) << a.pavarde
                 << setw(18) << a.gal_vid
@@ -136,10 +126,80 @@ void isvesti_i_faila(const vector<Studentas> &grupe, const string &failas) {
                 << "\n";
         }
     }
-    catch (const std::ios_base::failure &) {
+    catch (const std::ios_base::failure&) {
         std::cout << "Klaida: nepavyko sukurti arba irasyti i faila: " << failas << endl;
     }
-    catch (const std::exception &) {
+    catch (const std::exception&) {
         std::cout << "Klaida: ivyko nenumatyta klaida rasant i faila.\n";
+    }
+}
+
+bool generuoti_studentu_faila(const string& failas, int kiek_studentu, int kiek_nd) {
+    try {
+        ofstream out;
+        out.exceptions(std::ios::failbit | std::ios::badbit);
+        out.open(failas);
+
+        out << "Vardas Pavarde ";
+        for (int i = 1; i <= kiek_nd; i++) {
+            out << "ND" << i << ' ';
+        }
+        out << "Egz.\n";
+
+        for (int i = 1; i <= kiek_studentu; i++) {
+            out << "Vardas" << i << ' '
+                << "Pavarde" << i << ' ';
+
+            for (int j = 0; j < kiek_nd; j++) {
+                out << (rand() % 10 + 1) << ' ';
+            }
+
+            out << (rand() % 10 + 1) << '\n';
+        }
+
+        return true;
+    }
+    catch (const std::ios_base::failure&) {
+        std::cout << "Klaida: nepavyko sugeneruoti failo: " << failas << endl;
+        return false;
+    }
+    catch (const std::exception&) {
+        std::cout << "Klaida: ivyko nenumatyta klaida generuojant faila.\n";
+        return false;
+    }
+}
+
+void padalinti_studentus(const vector<Studentas>& visi,
+                         vector<Studentas>& vargsiukai,
+                         vector<Studentas>& kietiakiai) {
+    vargsiukai.clear();
+    kietiakiai.clear();
+
+    vargsiukai.reserve(visi.size());
+    kietiakiai.reserve(visi.size());
+
+    for (const auto& s : visi) {
+        if (s.gal_vid < 5.0) {
+            vargsiukai.push_back(s);
+        } else {
+            kietiakiai.push_back(s);
+        }
+    }
+}
+
+void sudaryti_rezultatu_failu_vardus(const string& pradinis_failas,
+                                     string& vargsiuku_failas,
+                                     string& kietiaku_failas) {
+    size_t taskas = pradinis_failas.rfind('.');
+
+    if (taskas == string::npos) {
+        vargsiuku_failas = pradinis_failas + "_vargsiukai.txt";
+        kietiaku_failas = pradinis_failas + "_kietiakiai.txt";
+    } else {
+        string pagrindas = pradinis_failas.substr(0, taskas);
+        string galune = pradinis_failas.substr(taskas);
+
+        vargsiuku_failas = pagrindas + "_vargsiukai" + galune;
+        kietiaku_failas = pagrindas + "_kietiakiai" + galune;
     }
 }
