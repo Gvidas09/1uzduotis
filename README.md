@@ -1,110 +1,131 @@
-# Studentų pažymių skaičiavimo programa (v0.3)
-
-Tai konsolinė **C++** programa, skirta studentų namų darbų ir egzamino pažymių apdorojimui. Programa leidžia įvesti studentų duomenis įvairiais būdais, automatiškai apskaičiuoja galutinius rezultatus pagal **vidurkį** ir **medianą**, suteikia galimybę rikiuoti studentus pagal pasirinktus kriterijus bei išvesti rezultatus į ekraną arba į failą.
-
-Ši versija (**v0.3**) papildyta kodo reorganizavimu (*refactoring*) ir išimčių valdymu (*Exception Handling*).
+# **Studentų pažymių apdorojimo ir analizės programa (v0.4)**
 
 ---
 
-## Galutinio pažymio skaičiavimas
+## *Aprašymas*
 
-Programoje kiekvienam studentui saugomas:
-- vardas
-- pavardė
-- namų darbų pažymiai
-- egzamino pažymys
+Tai **konsolinė C++ programa**, skirta **studentų pažymių duomenų apdorojimui** ir **programos veikimo spartos analizei** dirbant su **dideliais duomenų kiekiais**.
 
-Galutinis pažymys skaičiuojamas dviem būdais:
-Galutinis (Vid.) = 0.4 × namų darbų vidurkis + 0.6 × egzamino pažymys;
-Galutinis (Med.) = 0.4 × namų darbų mediana + 0.6 × egzamino pažymys.
+Programa gali:
 
-Rezultatai pateikiami su **dviem skaitmenimis po kablelio**, o lentelės stulpeliai yra išlygiuoti.
+- **generuoti didelius studentų duomenų failus**
+- **nuskaityti studentų duomenis iš failo**
+- **suskirstyti studentus į dvi kategorijas pagal galutinį pažymį**
+- **rūšiuoti studentus pagal pasirinktą kriterijų**
+- **išvesti rezultatus į naujus failus**
+- **išmatuoti programos veikimo laiką skirtingais etapais**
 
----
-
-## Programos galimybės
-
-Programa turi interaktyvų meniu, kuriame galima pasirinkti vieną iš šių veiksmų:
-
-### 1 – Įvesti studento duomenis ranka
-Vartotojas įveda vardą, pavardę ir namų darbų pažymius (1–10).  
-Įvedus `0` pažymių vedimas baigiamas, po to įvedamas egzamino pažymys.
-
-### 2 – Generuoti tik pažymius
-Vartotojas įveda vardą ir pavardę, o namų darbų ir egzamino pažymiai sugeneruojami atsitiktinai.
-
-### 3 – Generuoti vardą, pavardę ir pažymius
-Vardas ir pavardė parenkami iš iš anksto paruošto sąrašo, o pažymiai sugeneruojami atsitiktinai.
-
-### 4 – Baigti programą
-
-### 5 – Nuskaityti studentus iš failo
-Programa nuskaito studentų duomenis iš tekstinio failo, apskaičiuoja rezultatus ir parodo nuskaitymo laiką.
-
-Jeigu:
-- failas neegzistuoja,
-- nepavyksta jo atidaryti,
-- įvyksta skaitymo klaida,
-
-klaidos apdorojamos naudojant `try/catch`.
-
-Jeigu failo eilutė yra neteisinga (trūksta duomenų, yra netinkamų simbolių ar pažymiai už ribų 1–10), ji praleidžiama ir suskaičiuojama kaip klaidinga.
-
-### 6 – Rikiuoti ir išvesti rezultatus
-
-Studentai gali būti rikiuojami pagal:
-- vardą
-- pavardę
-- galutinį pažymį pagal vidurkį
-- galutinį pažymį pagal medianą
-
-Rezultatai gali būti išvedami:
-- į ekraną
-- į failą (pvz. `rezultatai.txt`)
-
-Jei studentų kiekis labai didelis (daugiau nei 10 000), programa perspėja, kad išvedimas į ekraną gali būti lėtas.
+> *Ši versija (v0.4) orientuota į programos efektyvumo analizę dirbant su labai dideliais duomenų rinkiniais.*
 
 ---
 
-## Išimčių valdymas (v0.3)
+# **Galutinio pažymio skaičiavimas**
 
-Šioje versijoje naudojamas **C++ išimčių mechanizmas**:
+Kiekvienam studentui saugoma:
 
-- Netinkama skaitinė įvestis (pvz. raidės vietoje skaičiaus) gaudoma naudojant `try/catch`
-- Netinkamos reikšmės (už leistinų ribų) apdorojamos su `std::out_of_range`
-- Failų atidarymo ir rašymo klaidos gaudomos naudojant `std::ios_base::failure`
+- **vardas**
+- **pavardė**
+- **namų darbų pažymiai**
+- **egzamino pažymys**
 
-Visi klaidų pranešimai pateikiami lietuvių kalba.
+Programa apskaičiuoja galutinį pažymį dviem būdais.
 
----
+### **Galutinis (Vid.)**
+Galutinis = 0.4 × namų darbų vidurkis + 0.6 × egzamino pažymys
 
-## Kodo struktūra
+### **Galutinis (Med.)**
+Galutinis = 0.4 × namų darbų mediana + 0.6 × egzamino pažymys
 
-Projektas suskaidytas į atskirus modulius:
-Studentas.h / Studentas.cpp;
-Ivedimas.h / Ivedimas.cpp;
-Failai.h / Failai.cpp;
-Rikiavimas.h / Rikiavimas.cpp;
-main.cpp.
-
-Naudojama `struct Studentas` duomenų saugojimui.
+Rezultatai pateikiami **su dviem skaitmenimis po kablelio**.
 
 ---
 
-## Failo formatas
-
-Duomenų failas turi būti tekstinis. Kiekviena eilutė turi tokią struktūrą:
-Vardas Pavarde ND1 ND2 ND3 ... Egzaminas
-
-- Pirmi du laukai yra vardas ir pavardė
-- Visi tolesni skaičiai yra pažymiai nuo 1 iki 10
-- Paskutinis skaičius laikomas egzamino pažymiu
-- Turi būti bent vienas namų darbas ir egzaminas
-- Jei failas turi antraštę („Vardas Pavarde ...“), ji automatiškai ignoruojama
+# **Programos meniu**
+1 - Generuoti penkis testinius failus
+2 - Apdoroti vieną failą
+3 - Vykdyti spartos tyrimą visiems sugeneruotiems failams
+4 - Baigti
 
 ---
 
-## Našumas
+# **Testinių failų generavimas**
 
-Skaitant duomenis iš failo naudojama `std::chrono` biblioteka, kuri leidžia išmatuoti nuskaitymo laiką sekundėmis.
+Sugeneruojami failai:
+studentai1000.txt
+studentai10000.txt
+studentai100000.txt
+studentai1000000.txt
+studentai10000000.txt
+
+Kiekviena eilutė turi formatą:
+Vardas Pavarde ND1 ND2 ND3 ... ND15 Egz.
+
+### **Pavyzdys**
+Vardas1 Pavarde1 8 5 9 7 6 10 4 8 9 7 6 8 5 9 10 7
+
+---
+
+# **Studentų skirstymas**
+
+Studentai suskirstomi į dvi grupes.
+
+### **Vargšiukai**
+galutinis pažymys < 5.0
+
+### **Kietiakiai**
+galutinis pažymys ≥ 5.0
+
+---
+
+# **Rūšiavimas**
+
+Studentai gali būti rūšiuojami pagal:
+
+1. **vardą**
+2. **pavardę**
+3. **galutinį pažymį pagal vidurkį**
+4. **galutinį pažymį pagal medianą**
+
+Rūšiavimas atliekamas naudojant **std::sort** funkciją.
+
+---
+
+# **Rezultatų išvedimas**
+
+Po apdorojimo sukuriami failai:
+studentaiXXXX_vargsiukai.txt
+studentaiXXXX_kietiakiai.txt
+
+Pavyzdys:
+studentai100000_vargsiukai.txt
+studentai100000_kietiakiai.txt
+
+---
+
+# **Programos veikimo spartos analizė**
+
+Atliekami **du tyrimai**.
+
+## **1 tyrimas – failų kūrimas**
+
+Matuojama:
+
+- failo generavimas
+- duomenų įrašymas
+- failo uždarymas
+
+## **2 tyrimas – duomenų apdorojimas**
+
+Matuojama:
+
+- duomenų nuskaitymas
+- studentų skirstymas
+- rūšiavimas
+- rezultatų išvedimas
+- bendras veikimo laikas
+Laiko matavimui naudojama **std::chrono** biblioteka.
+# **Programos testavimo rezultatai**<img width="1100" height="628" alt="v0,4 1" src="https://github.com/user-attachments/assets/748b4884-def9-445d-a080-fedb87025d07" />
+<img width="1106" height="645" alt="v0,4 2" src="https://github.com/user-attachments/assets/cacc09d1-8c80-4890-8002-7e5dc1324f58" />
+<img width="1110" height="641" alt="v0,4 3" src="https://github.com/user-attachments/assets/2cc0c49d-6162-460b-b3e5-8f0045d4ece3" />
+
 
