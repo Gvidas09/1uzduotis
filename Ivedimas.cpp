@@ -59,11 +59,18 @@ int ivesti_kieki(const string& tekstas) {
 
 int meniu() {
     cout << "\nMeniu:\n";
-    cout << "1 - Ivesti ranka\n";
-    cout << "2 - Generuoti tik pazymius (vardas/pavarde ranka)\n";
-    cout << "3 - Generuoti varda, pavarde ir pazymius\n";
+    cout << "1 - Generuoti penkis testinius failus\n";
+    cout << "2 - Apdoroti viena faila\n";
+    cout << "3 - Vykdyti spartos tyrima visiems sugeneruotiems failams\n";
     cout << "4 - Baigti\n";
-    cout << "5 - Nuskaityti studentus is failo (v0.2)\n";
-    cout << "6 - Rikiuoti ir isvesti rezultatus\n";
-    return ivesti_skaiciu("Pasirinkimas: ", 1, 6);
+    return ivesti_skaiciu("Pasirinkimas: ", 1, 4);
+}
+
+int pasirinkti_rikiavimo_kriteriju() {
+    cout << "\nRikiuoti studentus pagal:\n";
+    cout << "1 - Varda\n";
+    cout << "2 - Pavarde\n";
+    cout << "3 - Galutini (Vid.)\n";
+    cout << "4 - Galutini (Med.)\n";
+    return ivesti_skaiciu("Pasirinkimas: ", 1, 4);
 }
