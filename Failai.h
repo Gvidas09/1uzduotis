@@ -7,12 +7,16 @@
 #include <iostream>
 #include <iomanip>
 #include <exception>
+#include <algorithm>
+#include <iterator>
 
 #include "Studentas.h"
 
 bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, bool& praleisti);
 bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int kiek_nd);
-void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, std::string& vargsiuku_failas, std::string& kietiaku_failas);
+void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas,
+                                     std::string& vargsiuku_failas,
+                                     std::string& kietiaku_failas);
 
 template <typename Container>
 bool nuskaityti_is_failo(const std::string& failas, Container& grupe, int& praleista) {
@@ -102,15 +106,86 @@ bool isvesti_i_faila(const Container& grupe, const std::string& failas) {
     }
 }
 
-inline void padalinti_studentus(const std::vector<Studentas>& visi, std::vector<Studentas>& vargsiukai, std::vector<Studentas>& kietiakiai) {
+template <typename Container>
+void rezervuoti_vieta(Container&, std::size_t) {}
+
+inline void rezervuoti_vieta(std::vector<Studentas>& c, std::size_t n) { c.reserve(n); }
+inline void rezervuoti_vieta(std::deque<Studentas>&, std::size_t) {}
+inline void rezervuoti_vieta(std::list<Studentas>&, std::size_t) {}
+
+template <typename Container>
+void padalinti_studentus_1(const Container& visi, Container& vargsiukai, Container& kietiakiai) {
     vargsiukai.clear();
     kietiakiai.clear();
+    rezervuoti_vieta(vargsiukai, visi.size());
+    rezervuoti_vieta(kietiakiai, visi.size());
 
     for (const auto& s : visi) {
-        if (s.gal_vid < 5.0) {
+        if (ar_vargsiukas(s)) {
             vargsiukai.push_back(s);
         } else {
             kietiakiai.push_back(s);
         }
+    }
+}
+
+template <typename Container>
+void padalinti_studentus_2(Container& visi, Container& vargsiukai, Container& kietiakiai) {
+    vargsiukai.clear();
+    kietiakiai.clear();
+    rezervuoti_vieta(vargsiukai, visi.size());
+
+    std::copy_if(visi.begin(), visi.end(), std::back_inserter(vargsiukai), ar_vargsiukas);
+    visi.erase(std::remove_if(visi.begin(), visi.end(), ar_vargsiukas), visi.end());
+    kietiakiai = visi;
+}
+
+inline void padalinti_studentus_2(std::list<Studentas>& visi,
+                                  std::list<Studentas>& vargsiukai,
+                                  std::list<Studentas>& kietiakiai) {
+    vargsiukai.clear();
+    kietiakiai.clear();
+
+    for (auto it = visi.begin(); it != visi.end();) {
+        if (ar_vargsiukas(*it)) {
+            auto perkelti = it++;
+            vargsiukai.splice(vargsiukai.end(), visi, perkelti);
+        } else {
+            ++it;
+        }
+    }
+
+    kietiakiai = visi;
+}
+
+template <typename Container>
+void padalinti_studentus_3(Container& visi, Container& vargsiukai, Container& kietiakiai) {
+    vargsiukai.clear();
+    kietiakiai.clear();
+
+    auto riba = std::stable_partition(visi.begin(), visi.end(), ar_vargsiukas);
+    rezervuoti_vieta(vargsiukai, (std::size_t)std::distance(visi.begin(), riba));
+    rezervuoti_vieta(kietiakiai, (std::size_t)std::distance(riba, visi.end()));
+
+    std::copy(visi.begin(), riba, std::back_inserter(vargsiukai));
+    std::copy(riba, visi.end(), std::back_inserter(kietiakiai));
+}
+
+template <typename Container>
+void padalinti_studentus(Container& visi, Container& vargsiukai, Container& kietiakiai) {
+    padalinti_studentus_1(visi, vargsiukai, kietiakiai);
+}
+
+template <typename Container>
+void padalinti_studentus(Container& visi,
+                         Container& vargsiukai,
+                         Container& kietiakiai,
+                         int strategija) {
+    if (strategija == 1) {
+        padalinti_studentus_1(visi, vargsiukai, kietiakiai);
+    } else if (strategija == 2) {
+        padalinti_studentus_2(visi, vargsiukai, kietiakiai);
+    } else {
+        padalinti_studentus_3(visi, vargsiukai, kietiakiai);
     }
 }
