@@ -1,25 +1,21 @@
-#include <iostream>
 #include "Rikiavimas.h"
 #include "Ivedimas.h"
 #include <algorithm>
-#include <string>
+#include <iostream>
 
-using std::string;
-using std::vector;
-using std::sort;
+namespace {
 
 bool ar_skaitmuo(char c) {
     return c >= '0' && c <= '9';
 }
 
-int skaicius_gale(const string& s) {
+int skaicius_gale(const std::string& s) {
     int i = (int)s.size() - 1;
     if (i < 0) return -1;
     if (!ar_skaitmuo(s[i])) return -1;
 
     int daugiklis = 1;
     int sk = 0;
-
     while (i >= 0 && ar_skaitmuo(s[i])) {
         sk += (s[i] - '0') * daugiklis;
         daugiklis *= 10;
@@ -28,7 +24,7 @@ int skaicius_gale(const string& s) {
     return sk;
 }
 
-string tekstas_be_galo_skaiciaus(const string& s) {
+std::string tekstas_be_galo_skaiciaus(const std::string& s) {
     int i = (int)s.size() - 1;
     if (i < 0) return s;
     if (!ar_skaitmuo(s[i])) return s;
@@ -37,15 +33,16 @@ string tekstas_be_galo_skaiciaus(const string& s) {
     return s.substr(0, i + 1);
 }
 
-bool palyginti_nat(const string& a, const string& b) {
-    string ta = tekstas_be_galo_skaiciaus(a);
-    string tb = tekstas_be_galo_skaiciaus(b);
+} // namespace
+
+bool palyginti_nat(const std::string& a, const std::string& b) {
+    std::string ta = tekstas_be_galo_skaiciaus(a);
+    std::string tb = tekstas_be_galo_skaiciaus(b);
 
     if (ta != tb) return ta < tb;
 
     int na = skaicius_gale(a);
     int nb = skaicius_gale(b);
-
     if (na != -1 && nb != -1) return na < nb;
 
     return a < b;
@@ -73,21 +70,29 @@ bool palyginti_pagal_mediana(const Studentas& a, const Studentas& b) {
     return palyginti_nat(a.vardas, b.vardas);
 }
 
-void rikiuoti(vector<Studentas>& grupe, int kriterijus) {
-    if (grupe.empty()) return;
-
-    if (kriterijus == 1) {
-        sort(grupe.begin(), grupe.end(), palyginti_pagal_varda);
-    } else if (kriterijus == 2) {
-        sort(grupe.begin(), grupe.end(), palyginti_pagal_pavarde);
-    } else if (kriterijus == 3) {
-        sort(grupe.begin(), grupe.end(), palyginti_pagal_vidurki);
-    } else if (kriterijus == 4) {
-        sort(grupe.begin(), grupe.end(), palyginti_pagal_mediana);
-    }
+static auto gauti_komparatoriu(int kriterijus) {
+    if (kriterijus == 1) return &palyginti_pagal_varda;
+    if (kriterijus == 2) return &palyginti_pagal_pavarde;
+    if (kriterijus == 3) return &palyginti_pagal_vidurki;
+    return &palyginti_pagal_mediana;
 }
 
-void rikiuoti(vector<Studentas>& grupe) {
+void rikiuoti(std::vector<Studentas>& grupe, int kriterijus) {
+    if (grupe.empty()) return;
+    std::sort(grupe.begin(), grupe.end(), gauti_komparatoriu(kriterijus));
+}
+
+void rikiuoti(std::deque<Studentas>& grupe, int kriterijus) {
+    if (grupe.empty()) return;
+    std::sort(grupe.begin(), grupe.end(), gauti_komparatoriu(kriterijus));
+}
+
+void rikiuoti(std::list<Studentas>& grupe, int kriterijus) {
+    if (grupe.empty()) return;
+    grupe.sort(gauti_komparatoriu(kriterijus));
+}
+
+void rikiuoti(std::vector<Studentas>& grupe) {
     if (grupe.empty()) {
         std::cout << "Grupe tuscia - nera ka rikiuoti.\n";
         return;
