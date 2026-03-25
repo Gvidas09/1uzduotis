@@ -14,9 +14,10 @@
 
 bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, bool& praleisti);
 bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int kiek_nd);
-void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas,
-                                     std::string& vargsiuku_failas,
-                                     std::string& kietiaku_failas);
+
+void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, std::string& vargsiuku_failas, std::string& kietiaku_failas);
+
+void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, const std::string& konteinerio_vardas, int strategija, std::string& vargsiuku_failas, std::string& kietiaku_failas);
 
 template <typename Container>
 bool nuskaityti_is_failo(const std::string& failas, Container& grupe, int& praleista) {
@@ -137,12 +138,10 @@ void padalinti_studentus_2(Container& visi, Container& vargsiukai, Container& ki
 
     std::copy_if(visi.begin(), visi.end(), std::back_inserter(vargsiukai), ar_vargsiukas);
     visi.erase(std::remove_if(visi.begin(), visi.end(), ar_vargsiukas), visi.end());
-    kietiakiai = visi;
+    kietiakiai = std::move(visi);
 }
 
-inline void padalinti_studentus_2(std::list<Studentas>& visi,
-                                  std::list<Studentas>& vargsiukai,
-                                  std::list<Studentas>& kietiakiai) {
+inline void padalinti_studentus_2(std::list<Studentas>& visi, std::list<Studentas>& vargsiukai, std::list<Studentas>& kietiakiai) {
     vargsiukai.clear();
     kietiakiai.clear();
 
@@ -155,7 +154,7 @@ inline void padalinti_studentus_2(std::list<Studentas>& visi,
         }
     }
 
-    kietiakiai = visi;
+    kietiakiai = std::move(visi);
 }
 
 template <typename Container>
@@ -177,10 +176,7 @@ void padalinti_studentus(Container& visi, Container& vargsiukai, Container& kiet
 }
 
 template <typename Container>
-void padalinti_studentus(Container& visi,
-                         Container& vargsiukai,
-                         Container& kietiakiai,
-                         int strategija) {
+void padalinti_studentus(Container& visi, Container& vargsiukai, Container& kietiakiai, int strategija) {
     if (strategija == 1) {
         padalinti_studentus_1(visi, vargsiukai, kietiakiai);
     } else if (strategija == 2) {

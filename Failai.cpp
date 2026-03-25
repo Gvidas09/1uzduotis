@@ -39,7 +39,6 @@ bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, boo
     skaiciai.pop_back();
     a.paz = std::move(skaiciai);
     skaiciuoti(a);
-
     return true;
 }
 
@@ -80,6 +79,7 @@ bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int 
 
 void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, std::string& vargsiuku_failas, std::string& kietiaku_failas) {
     std::size_t taskas = pradinis_failas.rfind('.');
+
     if (taskas == std::string::npos) {
         vargsiuku_failas = pradinis_failas + "_vargsiukai.txt";
         kietiaku_failas = pradinis_failas + "_kietiakiai.txt";
@@ -89,5 +89,21 @@ void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, std::st
 
         vargsiuku_failas = pagrindas + "_vargsiukai" + galune;
         kietiaku_failas = pagrindas + "_kietiakiai" + galune;
+    }
+}
+
+void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, const std::string& konteinerio_vardas, int strategija, std::string& vargsiuku_failas, std::string& kietiaku_failas) {
+    std::size_t taskas = pradinis_failas.rfind('.');
+    std::string priedas = "_" + konteinerio_vardas + "_s" + std::to_string(strategija);
+
+    if (taskas == std::string::npos) {
+        vargsiuku_failas = pradinis_failas + priedas + "_vargsiukai.txt";
+        kietiaku_failas = pradinis_failas + priedas + "_kietiakiai.txt";
+    } else {
+        std::string pagrindas = pradinis_failas.substr(0, taskas);
+        std::string galune = pradinis_failas.substr(taskas);
+
+        vargsiuku_failas = pagrindas + priedas + "_vargsiukai" + galune;
+        kietiaku_failas = pagrindas + priedas + "_kietiakiai" + galune;
     }
 }
