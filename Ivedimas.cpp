@@ -30,9 +30,11 @@ int ivesti_skaiciu(const string& tekstas, int nuo, int iki) {
             }
 
             return x;
-        } catch (const std::runtime_error&) {
+        }
+        catch (const std::runtime_error&) {
             cout << "Klaida: iveskite sveika skaiciu.\n";
-        } catch (const std::out_of_range&) {
+        }
+        catch (const std::out_of_range&) {
             cout << "Klaida: iveskite skaiciu nuo " << nuo << " iki " << iki << ".\n";
         }
     }
@@ -49,9 +51,11 @@ int ivesti_kieki(const string& tekstas) {
             }
 
             return x;
-        } catch (const std::runtime_error&) {
+        }
+        catch (const std::runtime_error&) {
             cout << "Klaida: iveskite sveika skaiciu.\n";
-        } catch (const std::out_of_range&) {
+        }
+        catch (const std::out_of_range&) {
             cout << "Klaida: skaicius turi buti bent 1.\n";
         }
     }
@@ -73,4 +77,28 @@ int pasirinkti_rikiavimo_kriteriju() {
     cout << "3 - Galutini (Vid.)\n";
     cout << "4 - Galutini (Med.)\n";
     return ivesti_skaiciu("Pasirinkimas: ", 1, 4);
+}
+
+int pasirinkti_konteineri(bool leisti_visus) {
+    cout << "\nNaudoti konteineri:\n";
+    cout << "1 - std::vector\n";
+    cout << "2 - std::list\n";
+    cout << "3 - std::deque\n";
+    if (leisti_visus) {
+        cout << "4 - Visus tris konteinerius\n";
+        return ivesti_skaiciu("Pasirinkimas: ", 1, 4);
+    }
+    return ivesti_skaiciu("Pasirinkimas: ", 1, 3);
+}
+
+int pasirinkti_strategija(bool leisti_visas) {
+    cout << "\nNaudoti studentu dalijimo strategija:\n";
+    cout << "1 - Du nauji konteineriai (vargsiukai ir kietiakiai)\n";
+    cout << "2 - Vienas naujas konteineris vargsiukams, kiti lieka pradiniame\n";
+    cout << "3 - Skaidymas naudojant stable_partition principa\n";
+    if (leisti_visas) {
+        cout << "4 - Visas tris strategijas\n";
+        return ivesti_skaiciu("Pasirinkimas: ", 1, 4);
+    }
+    return ivesti_skaiciu("Pasirinkimas: ", 1, 3);
 }
