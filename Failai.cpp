@@ -1,5 +1,19 @@
 #include "Failai.h"
 #include <sstream>
+#include <random>
+
+namespace {
+std::mt19937& generatorius() {
+    static std::random_device rd;
+    static std::mt19937 gen(rd());
+    return gen;
+}
+
+int atsitiktinis_pazymys() {
+    static std::uniform_int_distribution<int> dist(1, 10);
+    return dist(generatorius());
+}
+}
 
 bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, bool& praleisti) {
     praleisti = false;
@@ -60,10 +74,10 @@ bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int 
                 << "Pavarde" << i << ' ';
 
             for (int j = 0; j < kiek_nd; j++) {
-                out << (rand() % 10 + 1) << ' ';
+                out << atsitiktinis_pazymys() << ' ';
             }
 
-            out << (rand() % 10 + 1) << '\n';
+            out << atsitiktinis_pazymys() << '\n';
         }
 
         return true;

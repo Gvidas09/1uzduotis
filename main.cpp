@@ -1,12 +1,7 @@
-#include <cstdlib>
-#include <ctime>
-
 #include "Ivedimas.h"
 #include "Tyrimai.h"
 
 int main() {
-    srand((unsigned)time(NULL));
-
     while (true) {
         int p = meniu();
 
