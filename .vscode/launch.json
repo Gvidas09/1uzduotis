@@ -5,7 +5,7 @@
       "name": "Run (Ctrl+F5)",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}\\main.exe",
+     "program": "${workspaceFolder}/main.exe",
       "cwd": "${workspaceFolder}",
       "externalConsole": true,
       "MIMode": "gdb",
