@@ -2,6 +2,7 @@
 #include <iostream>
 #include <limits>
 #include <stdexcept>
+#include <functional>
 
 using std::cin;
 using std::cout;
@@ -19,14 +20,14 @@ static int skaityti_int() {
     return x;
 }
 
-int ivesti_skaiciu(const string& tekstas, int nuo, int iki) {
+static int ivesti_su_tikrinimu(const string& tekstas, const std::function<bool(int)>& tinka, const string& klaidos_pranesimas) {
     while (true) {
         try {
             cout << tekstas;
             int x = skaityti_int();
 
-            if (x < nuo || x > iki) {
-                throw std::out_of_range("Klaida: reiksme uz ribu.");
+            if (!tinka(x)) {
+                throw std::out_of_range("Klaida: netinkama reiksme.");
             }
 
             return x;
@@ -35,30 +36,25 @@ int ivesti_skaiciu(const string& tekstas, int nuo, int iki) {
             cout << "Klaida: iveskite sveika skaiciu.\n";
         }
         catch (const std::out_of_range&) {
-            cout << "Klaida: iveskite skaiciu nuo " << nuo << " iki " << iki << ".\n";
+            cout << klaidos_pranesimas << "\n";
         }
     }
 }
 
+int ivesti_skaiciu(const string& tekstas, int nuo, int iki) {
+    return ivesti_su_tikrinimu(
+        tekstas,
+        [nuo, iki](int x) { return x >= nuo && x <= iki; },
+        "Klaida: iveskite skaiciu nuo " + std::to_string(nuo) + " iki " + std::to_string(iki) + "."
+    );
+}
+
 int ivesti_kieki(const string& tekstas) {
-    while (true) {
-        try {
-            cout << tekstas;
-            int x = skaityti_int();
-
-            if (x <= 0) {
-                throw std::out_of_range("Klaida: kiekis netinkamas.");
-            }
-
-            return x;
-        }
-        catch (const std::runtime_error&) {
-            cout << "Klaida: iveskite sveika skaiciu.\n";
-        }
-        catch (const std::out_of_range&) {
-            cout << "Klaida: skaicius turi buti bent 1.\n";
-        }
-    }
+    return ivesti_su_tikrinimu(
+        tekstas,
+        [](int x) { return x > 0; },
+        "Klaida: skaicius turi buti bent 1."
+    );
 }
 
 int meniu() {
