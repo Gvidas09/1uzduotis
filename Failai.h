@@ -16,8 +16,6 @@
 bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, bool& praleisti);
 bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int kiek_nd);
 
-void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, std::string& vargsiuku_failas, std::string& kietiaku_failas);
-
 void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, const std::string& konteinerio_vardas, int strategija, std::string& vargsiuku_failas, std::string& kietiaku_failas);
 
 inline bool eilute_tik_is_tarpu(const std::string& eilute) {
