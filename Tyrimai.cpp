@@ -46,6 +46,7 @@ bool apdoroti_faila_su_konteineriu(const string& failas, int kriterijus, int str
     Container kietiakiai;
 
     int praleista = 0;
+    bool naudoti_mediana = (kriterijus == 4);
     sudaryti_rezultatu_failu_vardus(failas, konteinerio_vardas, strategija, rez.vargsiuku_failas, rez.kietiaku_failas);
 
     auto bendras_start = high_resolution_clock::now();
@@ -60,7 +61,7 @@ bool apdoroti_faila_su_konteineriu(const string& failas, int kriterijus, int str
     auto end_rikiuoti = high_resolution_clock::now();
 
     auto start_dalinti = high_resolution_clock::now();
-    padalinti_studentus(visi, vargsiukai, kietiakiai, strategija);
+    padalinti_studentus(visi, vargsiukai, kietiakiai, strategija, naudoti_mediana);
     auto end_dalinti = high_resolution_clock::now();
 
     auto start_rasyti = high_resolution_clock::now();
