@@ -162,19 +162,18 @@ inline void padalinti_studentus_2(std::list<Studentas>& visi, std::list<Studenta
     kietiakiai = std::move(visi);
 }
 
-template <typename Container>
-void padalinti_studentus_3(Container& visi, Container& vargsiukai, Container& kietiakiai, bool naudoti_mediana = false) {
+inline void padalinti_studentus_3(std::list<Studentas>& visi, std::list<Studentas>& vargsiukai, std::list<Studentas>& kietiakiai, bool naudoti_mediana = false) {
     vargsiukai.clear();
     kietiakiai.clear();
-
-    auto riba = std::stable_partition(visi.begin(), visi.end(),
-        [naudoti_mediana](const Studentas& s) { return ar_vargsiukas(s, naudoti_mediana); });
-
-    rezervuoti_vieta(vargsiukai, (std::size_t)std::distance(visi.begin(), riba));
-    rezervuoti_vieta(kietiakiai, (std::size_t)std::distance(riba, visi.end()));
-
-    std::copy(visi.begin(), riba, std::back_inserter(vargsiukai));
-    std::copy(riba, visi.end(), std::back_inserter(kietiakiai));
+    for (auto it = visi.begin(); it != visi.end();) {
+        if (ar_vargsiukas(*it, naudoti_mediana)) {
+            auto perkelti = it++;
+            vargsiukai.splice(vargsiukai.end(), visi, perkelti);
+        } else {
+            ++it;
+        }
+    }
+    kietiakiai = std::move(visi);
 }
 
 template <typename Container>
