@@ -7,6 +7,7 @@
 #include <list>
 #include <deque>
 #include <chrono>
+#include <iomanip>
 
 using std::cout;
 using std::endl;
@@ -148,6 +149,10 @@ void generuoti_visus_testinius_failus() {
 }
 
 void spausdinti_rezultatus(const string& failas, const TyrimoRezultatai& rez, bool trumpai) {
+    std::ios::fmtflags seni_flagai = cout.flags();
+    std::streamsize senas_tikslumas = cout.precision();
+
+    cout << std::fixed << std::setprecision(6);
     cout << "\nFailas: " << failas << '\n';
     cout << "Konteineris: std::" << rez.konteineris << '\n';
     cout << "Strategija: " << gauti_strategijos_varda(rez.strategija) << '\n';
@@ -161,6 +166,9 @@ void spausdinti_rezultatus(const string& failas, const TyrimoRezultatai& rez, bo
     if (!trumpai) {
         cout << "Sukurti failai: " << rez.vargsiuku_failas << " ir " << rez.kietiaku_failas << '\n';
     }
+
+    cout.flags(seni_flagai);
+    cout.precision(senas_tikslumas);
 }
 
 void apdoroti_viena_faila() {
