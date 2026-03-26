@@ -2,7 +2,6 @@
 #include <string>
 
 struct TyrimoRezultatai {
-    double failo_kurimo_laikas = 0.0;
     double nuskaitymo_laikas = 0.0;
     double rikiavimo_laikas = 0.0;
     double dalijimo_laikas = 0.0;
