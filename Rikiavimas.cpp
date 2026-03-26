@@ -1,7 +1,5 @@
 #include "Rikiavimas.h"
-#include "Ivedimas.h"
 #include <algorithm>
-#include <iostream>
 
 namespace {
 
@@ -90,14 +88,4 @@ void rikiuoti(std::deque<Studentas>& grupe, int kriterijus) {
 void rikiuoti(std::list<Studentas>& grupe, int kriterijus) {
     if (grupe.empty()) return;
     grupe.sort(gauti_komparatoriu(kriterijus));
-}
-
-void rikiuoti(std::vector<Studentas>& grupe) {
-    if (grupe.empty()) {
-        std::cout << "Grupe tuscia - nera ka rikiuoti.\n";
-        return;
-    }
-
-    int r = pasirinkti_rikiavimo_kriteriju();
-    rikiuoti(grupe, r);
 }
