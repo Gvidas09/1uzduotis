@@ -15,6 +15,7 @@ bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, boo
     }
 
     std::vector<int> skaiciai;
+    skaiciai.reserve(16);
     int x = 0;
     while (iss >> x) skaiciai.push_back(x);
 

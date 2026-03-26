@@ -9,6 +9,7 @@
 #include <exception>
 #include <algorithm>
 #include <iterator>
+#include <cctype>
 
 #include "Studentas.h"
 
@@ -18,6 +19,10 @@ bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int 
 void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, std::string& vargsiuku_failas, std::string& kietiaku_failas);
 
 void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, const std::string& konteinerio_vardas, int strategija, std::string& vargsiuku_failas, std::string& kietiaku_failas);
+
+inline bool eilute_tik_is_tarpu(const std::string& eilute) {
+    return std::all_of(eilute.begin(), eilute.end(), [](unsigned char c) { return std::isspace(c); });
+}
 
 template <typename Container>
 bool nuskaityti_is_failo(const std::string& failas, Container& grupe, int& praleista) {
@@ -36,7 +41,7 @@ bool nuskaityti_is_failo(const std::string& failas, Container& grupe, int& prale
 
         std::string line;
         while (std::getline(in, line)) {
-            if (line.empty()) continue;
+            if (line.empty() || eilute_tik_is_tarpu(line)) continue;
 
             Studentas a;
             bool atmesti = false;
@@ -162,18 +167,19 @@ inline void padalinti_studentus_2(std::list<Studentas>& visi, std::list<Studenta
     kietiakiai = std::move(visi);
 }
 
-inline void padalinti_studentus_3(std::list<Studentas>& visi, std::list<Studentas>& vargsiukai, std::list<Studentas>& kietiakiai, bool naudoti_mediana = false) {
+template <typename Container>
+void padalinti_studentus_3(Container& visi, Container& vargsiukai, Container& kietiakiai, bool naudoti_mediana = false) {
     vargsiukai.clear();
     kietiakiai.clear();
-    for (auto it = visi.begin(); it != visi.end();) {
-        if (ar_vargsiukas(*it, naudoti_mediana)) {
-            auto perkelti = it++;
-            vargsiukai.splice(vargsiukai.end(), visi, perkelti);
-        } else {
-            ++it;
-        }
-    }
-    kietiakiai = std::move(visi);
+
+    auto riba = std::stable_partition(visi.begin(), visi.end(),
+        [naudoti_mediana](const Studentas& s) { return ar_vargsiukas(s, naudoti_mediana); });
+
+    rezervuoti_vieta(vargsiukai, (std::size_t)std::distance(visi.begin(), riba));
+    rezervuoti_vieta(kietiakiai, (std::size_t)std::distance(riba, visi.end()));
+
+    std::copy(visi.begin(), riba, std::back_inserter(vargsiukai));
+    std::copy(riba, visi.end(), std::back_inserter(kietiakiai));
 }
 
 template <typename Container>
