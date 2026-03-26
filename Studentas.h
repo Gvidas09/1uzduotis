@@ -13,4 +13,4 @@ struct Studentas {
 
 double mediana(const std::vector<int>& paz);
 void skaiciuoti(Studentas& a);
-bool ar_vargsiukas(const Studentas& a);
+bool ar_vargsiukas(const Studentas& a, bool naudoti_mediana = false);

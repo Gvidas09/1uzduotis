@@ -25,6 +25,9 @@ void skaiciuoti(Studentas& a) {
     a.gal_med = med * 0.4 + a.egz * 0.6;
 }
 
-bool ar_vargsiukas(const Studentas& a) {
+bool ar_vargsiukas(const Studentas& a, bool naudoti_mediana) {
+    if (naudoti_mediana) {
+        return a.gal_med < 5.0;
+    }
     return a.gal_vid < 5.0;
 }
