@@ -115,14 +115,14 @@ inline void rezervuoti_vieta(std::deque<Studentas>&, std::size_t) {}
 inline void rezervuoti_vieta(std::list<Studentas>&, std::size_t) {}
 
 template <typename Container>
-void padalinti_studentus_1(const Container& visi, Container& vargsiukai, Container& kietiakiai) {
+void padalinti_studentus_1(const Container& visi, Container& vargsiukai, Container& kietiakiai, bool naudoti_mediana = false) {
     vargsiukai.clear();
     kietiakiai.clear();
     rezervuoti_vieta(vargsiukai, visi.size());
     rezervuoti_vieta(kietiakiai, visi.size());
 
     for (const auto& s : visi) {
-        if (ar_vargsiukas(s)) {
+        if (ar_vargsiukas(s, naudoti_mediana)) {
             vargsiukai.push_back(s);
         } else {
             kietiakiai.push_back(s);
@@ -131,22 +131,27 @@ void padalinti_studentus_1(const Container& visi, Container& vargsiukai, Contain
 }
 
 template <typename Container>
-void padalinti_studentus_2(Container& visi, Container& vargsiukai, Container& kietiakiai) {
+void padalinti_studentus_2(Container& visi, Container& vargsiukai, Container& kietiakiai, bool naudoti_mediana = false) {
     vargsiukai.clear();
     kietiakiai.clear();
     rezervuoti_vieta(vargsiukai, visi.size());
 
-    std::copy_if(visi.begin(), visi.end(), std::back_inserter(vargsiukai), ar_vargsiukas);
-    visi.erase(std::remove_if(visi.begin(), visi.end(), ar_vargsiukas), visi.end());
+    std::copy_if(visi.begin(), visi.end(), std::back_inserter(vargsiukai),
+        [naudoti_mediana](const Studentas& s) { return ar_vargsiukas(s, naudoti_mediana); });
+
+    visi.erase(std::remove_if(visi.begin(), visi.end(),
+        [naudoti_mediana](const Studentas& s) { return ar_vargsiukas(s, naudoti_mediana); }),
+        visi.end());
+
     kietiakiai = std::move(visi);
 }
 
-inline void padalinti_studentus_2(std::list<Studentas>& visi, std::list<Studentas>& vargsiukai, std::list<Studentas>& kietiakiai) {
+inline void padalinti_studentus_2(std::list<Studentas>& visi, std::list<Studentas>& vargsiukai, std::list<Studentas>& kietiakiai, bool naudoti_mediana = false) {
     vargsiukai.clear();
     kietiakiai.clear();
 
     for (auto it = visi.begin(); it != visi.end();) {
-        if (ar_vargsiukas(*it)) {
+        if (ar_vargsiukas(*it, naudoti_mediana)) {
             auto perkelti = it++;
             vargsiukai.splice(vargsiukai.end(), visi, perkelti);
         } else {
@@ -158,11 +163,13 @@ inline void padalinti_studentus_2(std::list<Studentas>& visi, std::list<Studenta
 }
 
 template <typename Container>
-void padalinti_studentus_3(Container& visi, Container& vargsiukai, Container& kietiakiai) {
+void padalinti_studentus_3(Container& visi, Container& vargsiukai, Container& kietiakiai, bool naudoti_mediana = false) {
     vargsiukai.clear();
     kietiakiai.clear();
 
-    auto riba = std::stable_partition(visi.begin(), visi.end(), ar_vargsiukas);
+    auto riba = std::stable_partition(visi.begin(), visi.end(),
+        [naudoti_mediana](const Studentas& s) { return ar_vargsiukas(s, naudoti_mediana); });
+
     rezervuoti_vieta(vargsiukai, (std::size_t)std::distance(visi.begin(), riba));
     rezervuoti_vieta(kietiakiai, (std::size_t)std::distance(riba, visi.end()));
 
@@ -171,17 +178,17 @@ void padalinti_studentus_3(Container& visi, Container& vargsiukai, Container& ki
 }
 
 template <typename Container>
-void padalinti_studentus(Container& visi, Container& vargsiukai, Container& kietiakiai) {
-    padalinti_studentus_1(visi, vargsiukai, kietiakiai);
+void padalinti_studentus(Container& visi, Container& vargsiukai, Container& kietiakiai, bool naudoti_mediana = false) {
+    padalinti_studentus_1(visi, vargsiukai, kietiakiai, naudoti_mediana);
 }
 
 template <typename Container>
-void padalinti_studentus(Container& visi, Container& vargsiukai, Container& kietiakiai, int strategija) {
+void padalinti_studentus(Container& visi, Container& vargsiukai, Container& kietiakiai, int strategija, bool naudoti_mediana = false) {
     if (strategija == 1) {
-        padalinti_studentus_1(visi, vargsiukai, kietiakiai);
+        padalinti_studentus_1(visi, vargsiukai, kietiakiai, naudoti_mediana);
     } else if (strategija == 2) {
-        padalinti_studentus_2(visi, vargsiukai, kietiakiai);
+        padalinti_studentus_2(visi, vargsiukai, kietiakiai, naudoti_mediana);
     } else {
-        padalinti_studentus_3(visi, vargsiukai, kietiakiai);
+        padalinti_studentus_3(visi, vargsiukai, kietiakiai, naudoti_mediana);
     }
 }
