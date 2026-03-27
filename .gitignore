@@ -7,4 +7,4 @@ cmake-build-*/
 
 studentai*.txt
 *_vargsiukai.txt
-*_kietiakiai.txt
+*_kietiakiai.txt".vscode/" 
