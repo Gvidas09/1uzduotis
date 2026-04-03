@@ -62,8 +62,9 @@ int meniu() {
     cout << "1 - Generuoti penkis testinius failus\n";
     cout << "2 - Apdoroti viena faila\n";
     cout << "3 - Vykdyti spartos tyrima visiems sugeneruotiems failams\n";
-    cout << "4 - Baigti\n";
-    return ivesti_skaiciu("Pasirinkimas: ", 1, 4);
+    cout << "4 - Vykdyti v1.1 fiksuota tyrima README lentelems\n";
+    cout << "5 - Baigti\n";
+    return ivesti_skaiciu("Pasirinkimas: ", 1, 5);
 }
 
 int pasirinkti_rikiavimo_kriteriju() {
@@ -96,5 +97,7 @@ int pasirinkti_strategija(bool leisti_visas) {
         cout << "4 - Visas tris strategijas\n";
         return ivesti_skaiciu("Pasirinkimas: ", 1, 4);
     }
-    return ivesti_skaiciu("Pasirinkimas: ", 1, 3);
+    return ivesti_su_tikrinimu("Pasirinkimas: ",
+                               [](int x) { return x >= 1 && x <= 3; },
+                               "Klaida: iveskite skaiciu nuo 1 iki 3.");
 }

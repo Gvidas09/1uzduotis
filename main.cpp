@@ -15,6 +15,9 @@ int main() {
             vykdyti_visu_failu_tyrima();
         }
         else if (p == 4) {
+            vykdyti_v11_tyrima();
+        }
+        else if (p == 5) {
             break;
         }
     }
