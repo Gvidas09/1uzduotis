@@ -258,6 +258,57 @@ void vykdyti_visu_failu_tyrima() {
     cout << "\n2 tyrimas baigtas.\n";
 }
 
+void vykdyti_v11_tyrima() {
+    int strategija = pasirinkti_strategija(false);
+    int kartojimai = ivesti_kieki("Kiek kartu kartoti v1.1 tyrimo scenariju? ");
+
+    std::vector<V11TyrimoScenarijus> scenarijai = {
+        {"studentai10000.txt", 3, 1, strategija, kartojimai},
+        {"studentai100000.txt", 3, 1, strategija, kartojimai}
+    };
+
+    std::cout << "\nV1.1 TYRIMAS - fiksuotas scenarijus struct/class ir O1/O2/O3 palyginimui\n";
+    std::cout << "Konteineris: std::vector\n";
+    std::cout << "Strategija: " << gauti_strategijos_varda(strategija) << "\n";
+    std::cout << "Rikiavimo kriterijus: Galutinis (Vid.)\n";
+    std::cout << "Kartojimai: " << kartojimai << "\n\n";
+
+    std::cout << std::left
+              << std::setw(20) << "Failas"
+              << std::setw(15) << "Konteineris"
+              << std::setw(12) << "Strategija"
+              << std::setw(15) << "Skaitymas"
+              << std::setw(15) << "Rikiavimas"
+              << std::setw(15) << "Dalijimas"
+              << std::setw(15) << "Rasymas"
+              << std::setw(15) << "Bendras"
+              << "\n";
+
+    std::cout << std::string(122, '-') << "\n";
+    std::cout << std::fixed << std::setprecision(6);
+
+    for (const auto& scenarijus : scenarijai) {
+        V11TyrimoEilute eilute;
+        if (!vykdyti_v11_scenariju(scenarijus, eilute)) {
+            std::cout << "Nepavyko ivykdyti v1.1 tyrimo failui: " << scenarijus.failas << "\n";
+            continue;
+        }
+
+        std::cout << std::left
+                  << std::setw(20) << eilute.failas
+                  << std::setw(15) << eilute.konteineris
+                  << std::setw(12) << eilute.strategija
+                  << std::setw(15) << eilute.vidutiniai_laikai.nuskaitymo
+                  << std::setw(15) << eilute.vidutiniai_laikai.rikiavimo
+                  << std::setw(15) << eilute.vidutiniai_laikai.dalijimo
+                  << std::setw(15) << eilute.vidutiniai_laikai.rasymo
+                  << std::setw(15) << eilute.vidutiniai_laikai.bendras
+                  << "\n";
+    }
+
+    std::cout << "\nSiuos rezultatus naudok README lentelems, kai lyginsi v1.0 ir v1.1 bei O1/O2/O3.\n";
+}
+
 bool vykdyti_v11_scenariju(const V11TyrimoScenarijus& scenarijus, V11TyrimoEilute& eilute) {
     EtapuLaikai suma;
     TyrimoRezultatai paskutinis;

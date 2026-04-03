@@ -43,5 +43,6 @@ std::string gauti_strategijos_varda(int strategija);
 void generuoti_visus_testinius_failus();
 void apdoroti_viena_faila();
 void vykdyti_visu_failu_tyrima();
+void vykdyti_v11_tyrima();
 void spausdinti_rezultatus(const std::string& failas, const TyrimoRezultatai& rez, bool trumpai = false);
 bool vykdyti_v11_scenariju(const V11TyrimoScenarijus& scenarijus, V11TyrimoEilute& eilute);
