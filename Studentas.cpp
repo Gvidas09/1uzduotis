@@ -1,33 +1,95 @@
 #include "Studentas.h"
 #include <algorithm>
+#include <utility>
 
-double mediana(const std::vector<int>& paz) {
-    if (paz.empty()) return 0.0;
+Studentas::Studentas()
+    : vardas_(""), pavarde_(""), paz_(), egz_(0), gal_vid_(0.0), gal_med_(0.0) {}
 
-    std::vector<int> tmp = paz;
+Studentas::Studentas(const std::string& vardas, const std::string& pavarde,
+                     const std::vector<int>& paz, int egz)
+    : vardas_(vardas), pavarde_(pavarde), paz_(paz), egz_(egz), gal_vid_(0.0), gal_med_(0.0) {
+    skaiciuotiGalutinius();
+}
+
+Studentas::Studentas(const Studentas& kitas)
+    : vardas_(kitas.vardas_), pavarde_(kitas.pavarde_), paz_(kitas.paz_),
+      egz_(kitas.egz_), gal_vid_(kitas.gal_vid_), gal_med_(kitas.gal_med_) {}
+
+Studentas::Studentas(Studentas&& kitas) noexcept
+    : vardas_(std::move(kitas.vardas_)), pavarde_(std::move(kitas.pavarde_)),
+      paz_(std::move(kitas.paz_)), egz_(kitas.egz_),
+      gal_vid_(kitas.gal_vid_), gal_med_(kitas.gal_med_) {}
+
+Studentas& Studentas::operator=(const Studentas& kitas) {
+    if (this != &kitas) {
+        vardas_ = kitas.vardas_;
+        pavarde_ = kitas.pavarde_;
+        paz_ = kitas.paz_;
+        egz_ = kitas.egz_;
+        gal_vid_ = kitas.gal_vid_;
+        gal_med_ = kitas.gal_med_;
+    }
+    return *this;
+}
+
+Studentas& Studentas::operator=(Studentas&& kitas) noexcept {
+    if (this != &kitas) {
+        vardas_ = std::move(kitas.vardas_);
+        pavarde_ = std::move(kitas.pavarde_);
+        paz_ = std::move(kitas.paz_);
+        egz_ = kitas.egz_;
+        gal_vid_ = kitas.gal_vid_;
+        gal_med_ = kitas.gal_med_;
+    }
+    return *this;
+}
+
+Studentas::~Studentas() = default;
+
+const std::string& Studentas::vardas() const { return vardas_; }
+const std::string& Studentas::pavarde() const { return pavarde_; }
+const std::vector<int>& Studentas::pazymiai() const { return paz_; }
+int Studentas::egzaminas() const { return egz_; }
+double Studentas::galutinisVid() const { return gal_vid_; }
+double Studentas::galutinisMed() const { return gal_med_; }
+
+void Studentas::nustatytiVarda(const std::string& vardas) { vardas_ = vardas; }
+void Studentas::nustatytiPavarde(const std::string& pavarde) { pavarde_ = pavarde; }
+
+void Studentas::nustatytiPazymius(const std::vector<int>& paz) {
+    paz_ = paz;
+    skaiciuotiGalutinius();
+}
+
+void Studentas::nustatytiEgzamina(int egz) {
+    egz_ = egz;
+    skaiciuotiGalutinius();
+}
+
+double Studentas::mediana() const {
+    if (paz_.empty()) return 0.0;
+
+    std::vector<int> tmp = paz_;
     std::sort(tmp.begin(), tmp.end());
 
-    int n = (int)tmp.size();
-    if (n % 2 == 1) return (double)tmp[n / 2];
+    int n = static_cast<int>(tmp.size());
+    if (n % 2 == 1) return static_cast<double>(tmp[n / 2]);
     return (tmp[n / 2 - 1] + tmp[n / 2]) / 2.0;
 }
 
-void skaiciuoti(Studentas& a) {
+void Studentas::skaiciuotiGalutinius() {
     double vid = 0.0;
-    if (!a.paz.empty()) {
+    if (!paz_.empty()) {
         long long suma = 0;
-        for (int x : a.paz) suma += x;
-        vid = (double)suma / (double)a.paz.size();
+        for (int x : paz_) suma += x;
+        vid = static_cast<double>(suma) / static_cast<double>(paz_.size());
     }
 
-    double med = mediana(a.paz);
-    a.gal_vid = vid * 0.4 + a.egz * 0.6;
-    a.gal_med = med * 0.4 + a.egz * 0.6;
+    const double med = mediana();
+    gal_vid_ = 0.4 * vid + 0.6 * static_cast<double>(egz_);
+    gal_med_ = 0.4 * med + 0.6 * static_cast<double>(egz_);
 }
 
-bool ar_vargsiukas(const Studentas& a, bool naudoti_mediana) {
-    if (naudoti_mediana) {
-        return a.gal_med < 5.0;
-    }
-    return a.gal_vid < 5.0;
+bool Studentas::arVargsiukas(bool naudoti_mediana) const {
+    return naudoti_mediana ? gal_med_ < 5.0 : gal_vid_ < 5.0;
 }
