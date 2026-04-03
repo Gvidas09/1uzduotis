@@ -1,6 +1,7 @@
 #include "Failai.h"
 #include <sstream>
 #include <random>
+#include <utility>
 
 namespace {
 std::mt19937& generatorius() {
@@ -19,19 +20,25 @@ bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, boo
     praleisti = false;
 
     std::istringstream iss(eilute);
-    if (!(iss >> a.vardas >> a.pavarde)) {
+
+    std::string vardas;
+    std::string pavarde;
+    if (!(iss >> vardas >> pavarde)) {
         praleisti = true;
         return false;
     }
 
-    if (a.vardas == "Vardas" && a.pavarde == "Pavarde") {
+    if (vardas == "Vardas" && pavarde == "Pavarde") {
         return false;
     }
 
     std::vector<int> skaiciai;
     skaiciai.reserve(16);
+
     int x = 0;
-    while (iss >> x) skaiciai.push_back(x);
+    while (iss >> x) {
+        skaiciai.push_back(x);
+    }
 
     if (!iss.eof()) {
         praleisti = true;
@@ -50,10 +57,10 @@ bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, boo
         }
     }
 
-    a.egz = skaiciai.back();
+    int egz = skaiciai.back();
     skaiciai.pop_back();
-    a.paz = std::move(skaiciai);
-    skaiciuoti(a);
+
+    a = Studentas(vardas, pavarde, skaiciai, egz);
     return true;
 }
 
