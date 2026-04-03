@@ -1,10 +1,39 @@
+# Build katalogai
+build/
+cmake-build-*/
+out/
+
+# CMake failai
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# Kompiliuoti failai / vykdomieji
 *.exe
 *.out
 *.o
 *.obj
-/build/
-cmake-build-*/
+*.ilk
+*.pdb
+*.a
+*.lib
 
-studentai*.txt
+# Sugeneruoti testiniai duomenų failai
+studentai1000.txt
+studentai10000.txt
+studentai100000.txt
+studentai1000000.txt
+studentai10000000.txt
+
+# Sugeneruoti rezultatų failai
 *_vargsiukai.txt
-*_kietiakiai.txt".vscode/" 
+*_kietiakiai.txt
+
+# IDE / editor katalogai
+.vscode/
+.idea/
+
+# OS failai
+.DS_Store
+Thumbs.db
