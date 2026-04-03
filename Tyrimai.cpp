@@ -108,6 +108,22 @@ void padalinti_is_kiek(Vidurkiai& v, int kiek) {
     v.laikai.bendras /= kiek;
 }
 
+void prideti_laikus(EtapuLaikai& kam, const EtapuLaikai& ka) {
+    kam.nuskaitymo += ka.nuskaitymo;
+    kam.rikiavimo += ka.rikiavimo;
+    kam.dalijimo += ka.dalijimo;
+    kam.rasymo += ka.rasymo;
+    kam.bendras += ka.bendras;
+}
+
+void padalinti_laikus(EtapuLaikai& laikai, int kiek) {
+    laikai.nuskaitymo /= kiek;
+    laikai.rikiavimo /= kiek;
+    laikai.dalijimo /= kiek;
+    laikai.rasymo /= kiek;
+    laikai.bendras /= kiek;
+}
+
 } // namespace
 
 std::string gauti_konteinerio_varda(int pasirinkimas) {
@@ -240,4 +256,37 @@ void vykdyti_visu_failu_tyrima() {
     }
 
     cout << "\n2 tyrimas baigtas.\n";
+}
+
+bool vykdyti_v11_scenariju(const V11TyrimoScenarijus& scenarijus, V11TyrimoEilute& eilute) {
+    EtapuLaikai suma;
+    TyrimoRezultatai paskutinis;
+
+    for (int i = 0; i < scenarijus.kartojimai; i++) {
+        TyrimoRezultatai rez;
+        bool ok = apdoroti_faila_pagal_pasirinkima(
+            scenarijus.failas,
+            scenarijus.kriterijus,
+            scenarijus.strategija,
+            scenarijus.konteineris,
+            rez
+        );
+
+        if (!ok) {
+            return false;
+        }
+
+        prideti_laikus(suma, rez.laikai);
+        paskutinis = rez;
+    }
+
+    padalinti_laikus(suma, scenarijus.kartojimai);
+
+    eilute.failas = scenarijus.failas;
+    eilute.konteineris = gauti_konteinerio_varda(scenarijus.konteineris);
+    eilute.strategija = scenarijus.strategija;
+    eilute.kartojimai = scenarijus.kartojimai;
+    eilute.vidutiniai_laikai = suma;
+
+    return true;
 }
