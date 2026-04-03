@@ -1,12 +1,16 @@
 #pragma once
 #include <string>
 
+struct EtapuLaikai {
+    double nuskaitymo = 0.0;
+    double rikiavimo = 0.0;
+    double dalijimo = 0.0;
+    double rasymo = 0.0;
+    double bendras = 0.0;
+};
+
 struct TyrimoRezultatai {
-    double nuskaitymo_laikas = 0.0;
-    double rikiavimo_laikas = 0.0;
-    double dalijimo_laikas = 0.0;
-    double rasymo_laikas = 0.0;
-    double bendras_laikas = 0.0;
+    EtapuLaikai laikai;
 
     int studentu_kiekis = 0;
     int praleista = 0;

@@ -33,11 +33,7 @@ const vector<int> TESTINIAI_DYDZIAI = {1000, 10000, 100000, 1000000, 10000000};
 const int ND_KIEKIS = 15;
 
 struct Vidurkiai {
-    double nuskaitymo = 0.0;
-    double rikiavimo = 0.0;
-    double dalijimo = 0.0;
-    double rasymo = 0.0;
-    double bendras = 0.0;
+    EtapuLaikai laikai;
 };
 
 template <typename Container>
@@ -73,11 +69,11 @@ bool apdoroti_faila_su_konteineriu(const string& failas, int kriterijus, int str
 
     auto bendras_end = high_resolution_clock::now();
 
-    rez.nuskaitymo_laikas = duration<double>(end_nuskaityti - start_nuskaityti).count();
-    rez.rikiavimo_laikas = duration<double>(end_rikiuoti - start_rikiuoti).count();
-    rez.dalijimo_laikas = duration<double>(end_dalinti - start_dalinti).count();
-    rez.rasymo_laikas = duration<double>(end_rasyti - start_rasyti).count();
-    rez.bendras_laikas = duration<double>(bendras_end - bendras_start).count();
+    rez.laikai.nuskaitymo = duration<double>(end_nuskaityti - start_nuskaityti).count();
+    rez.laikai.rikiavimo = duration<double>(end_rikiuoti - start_rikiuoti).count();
+    rez.laikai.dalijimo = duration<double>(end_dalinti - start_dalinti).count();
+    rez.laikai.rasymo = duration<double>(end_rasyti - start_rasyti).count();
+    rez.laikai.bendras = duration<double>(bendras_end - bendras_start).count();
     rez.studentu_kiekis = (int)(vargsiukai.size() + kietiakiai.size());
     rez.praleista = praleista;
     rez.strategija = strategija;
@@ -97,19 +93,19 @@ bool apdoroti_faila_pagal_pasirinkima(const string& failas, int kriterijus, int 
 }
 
 void prideti_i_vidurkius(Vidurkiai& v, const TyrimoRezultatai& rez) {
-    v.nuskaitymo += rez.nuskaitymo_laikas;
-    v.rikiavimo += rez.rikiavimo_laikas;
-    v.dalijimo += rez.dalijimo_laikas;
-    v.rasymo += rez.rasymo_laikas;
-    v.bendras += rez.bendras_laikas;
+    v.laikai.nuskaitymo += rez.laikai.nuskaitymo;
+    v.laikai.rikiavimo += rez.laikai.rikiavimo;
+    v.laikai.dalijimo += rez.laikai.dalijimo;
+    v.laikai.rasymo += rez.laikai.rasymo;
+    v.laikai.bendras += rez.laikai.bendras;
 }
 
 void padalinti_is_kiek(Vidurkiai& v, int kiek) {
-    v.nuskaitymo /= kiek;
-    v.rikiavimo /= kiek;
-    v.dalijimo /= kiek;
-    v.rasymo /= kiek;
-    v.bendras /= kiek;
+    v.laikai.nuskaitymo /= kiek;
+    v.laikai.rikiavimo /= kiek;
+    v.laikai.dalijimo /= kiek;
+    v.laikai.rasymo /= kiek;
+    v.laikai.bendras /= kiek;
 }
 
 } // namespace
@@ -158,11 +154,11 @@ void spausdinti_rezultatus(const string& failas, const TyrimoRezultatai& rez, bo
     cout << "Strategija: " << gauti_strategijos_varda(rez.strategija) << '\n';
     cout << "Nuskaityta studentu: " << rez.studentu_kiekis << '\n';
     cout << "Praleista eiluciu: " << rez.praleista << '\n';
-    cout << "Duomenu nuskaitymo is failo laikas: " << rez.nuskaitymo_laikas << " s\n";
-    cout << "Studentu rikiavimo konteineryje laikas: " << rez.rikiavimo_laikas << " s\n";
-    cout << "Studentu padalinimo i dvi grupes laikas: " << rez.dalijimo_laikas << " s\n";
-    cout << "Surikiuotu studentu isvedimo i du naujus failus laikas: " << rez.rasymo_laikas << " s\n";
-    cout << "Visos programos veikimo laikas: " << rez.bendras_laikas << " s\n";
+    cout << "Duomenu nuskaitymo is failo laikas: " << rez.laikai.nuskaitymo << " s\n";
+    cout << "Studentu rikiavimo konteineryje laikas: " << rez.laikai.rikiavimo << " s\n";
+    cout << "Studentu padalinimo i dvi grupes laikas: " << rez.laikai.dalijimo << " s\n";
+    cout << "Surikiuotu studentu isvedimo i du naujus failus laikas: " << rez.laikai.rasymo << " s\n";
+    cout << "Visos programos veikimo laikas: " << rez.laikai.bendras << " s\n";
     if (!trumpai) {
         cout << "Sukurti failai: " << rez.vargsiuku_failas << " ir " << rez.kietiaku_failas << '\n';
     }
@@ -229,11 +225,11 @@ void vykdyti_visu_failu_tyrima() {
                 }
 
                 padalinti_is_kiek(vid, kartojimai);
-                paskutinis.nuskaitymo_laikas = vid.nuskaitymo;
-                paskutinis.rikiavimo_laikas = vid.rikiavimo;
-                paskutinis.dalijimo_laikas = vid.dalijimo;
-                paskutinis.rasymo_laikas = vid.rasymo;
-                paskutinis.bendras_laikas = vid.bendras;
+                paskutinis.laikai.nuskaitymo = vid.laikai.nuskaitymo;
+                paskutinis.laikai.rikiavimo = vid.laikai.rikiavimo;
+                paskutinis.laikai.dalijimo = vid.laikai.dalijimo;
+                paskutinis.laikai.rasymo = vid.laikai.rasymo;
+                paskutinis.laikai.bendras = vid.laikai.bendras;
 
                 spausdinti_rezultatus(failas, paskutinis, true);
                 cout << "Kartojimu skaicius: " << kartojimai << "\n";
