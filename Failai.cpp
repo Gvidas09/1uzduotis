@@ -51,7 +51,7 @@ bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, boo
     }
 
     for (int v : skaiciai) {
-        if (v < 1 || v > 10) {
+        if (!Studentas::arTinkamasPazymys(v)) {
             praleisti = true;
             return false;
         }
@@ -60,7 +60,14 @@ bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, boo
     int egz = skaiciai.back();
     skaiciai.pop_back();
 
-    a = Studentas(vardas, pavarde, skaiciai, egz);
+    try {
+        a = Studentas(vardas, pavarde, skaiciai, egz);
+    }
+    catch (const std::exception&) {
+        praleisti = true;
+        return false;
+    }
+
     return true;
 }
 
