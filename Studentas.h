@@ -11,6 +11,8 @@ private:
     double gal_vid_;
     double gal_med_;
 
+    double vidurkis() const;
+
 public:
     Studentas();
     Studentas(const std::string& vardas, const std::string& pavarde,

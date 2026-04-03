@@ -66,6 +66,17 @@ void Studentas::nustatytiEgzamina(int egz) {
     skaiciuotiGalutinius();
 }
 
+double Studentas::vidurkis() const {
+    if (paz_.empty()) return 0.0;
+
+    long long suma = 0;
+    for (int x : paz_) {
+        suma += x;
+    }
+
+    return static_cast<double>(suma) / static_cast<double>(paz_.size());
+}
+
 double Studentas::mediana() const {
     if (paz_.empty()) return 0.0;
 
@@ -78,14 +89,9 @@ double Studentas::mediana() const {
 }
 
 void Studentas::skaiciuotiGalutinius() {
-    double vid = 0.0;
-    if (!paz_.empty()) {
-        long long suma = 0;
-        for (int x : paz_) suma += x;
-        vid = static_cast<double>(suma) / static_cast<double>(paz_.size());
-    }
+    double vid = vidurkis();
+    double med = mediana();
 
-    const double med = mediana();
     gal_vid_ = 0.4 * vid + 0.6 * static_cast<double>(egz_);
     gal_med_ = 0.4 * med + 0.6 * static_cast<double>(egz_);
 }
