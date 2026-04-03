@@ -1,271 +1,167 @@
-# Versija (v1.0)
+# Studentų pažymių apdorojimo ir analizės programa (v1.1)
 
-## Projekto aprašymas
+## Aprašymas
 
-Tai C++ programa, skirta:
+Tai konsolinė C++ programa, skirta studentų duomenų apdorojimui ir programos veikimo spartos analizei dirbant su dideliais duomenų kiekiais.
 
-* studentų duomenų generavimui
-* nuskaitymui iš failų
-* galutinių pažymių skaičiavimui
-* studentų rikiavimui
-* skirstymui į dvi grupes
-* skirtingų konteinerių ir strategijų spartos analizei
+### Programa gali:
+- generuoti didelius studentų duomenų failus;
+- nuskaityti studentų duomenis iš failo;
+- suskirstyti studentus į dvi kategorijas pagal galutinį pažymį;
+- rūšiuoti studentus pagal pasirinktą kriterijų;
+- išvesti rezultatus į naujus failus;
+- išmatuoti programos veikimo laiką skirtingais etapais.
 
-Projektas sukurtas remiantis ankstesne v0.4 versija ir išplėstas iki v1.0 reikalavimų.
+## v1.1 pakeitimas
 
----
+Pagrindinis v1.1 pakeitimas – Studentas duomenų tipas pakeistas iš struct į class.
+
+### v1.1 versijoje:
+- Studentas duomenys laikomi privačiuose laukuose;
+- naudojami klasės metodai vietoje tiesioginio priėjimo prie laukų;
+- realizuoti konstruktoriai;
+- realizuotas destruktorius;
+- galutinio balo skaičiavimas atliekamas klasės viduje.
+
+Tokiu būdu realizacija tapo artimesnė objektinio programavimo principams ir geriau atitinka v1.1 užduoties reikalavimus.
+
+## Galutinio pažymio skaičiavimas
+
+Kiekvienam studentui saugoma:
+- vardas
+- pavardė
+- namų darbų pažymiai
+- egzamino pažymys
+
+### Galutinis (Vid.)
+```
+Galutinis = 0.4 * namų darbų vidurkis + 0.6 * egzamino pažymys
+```
+
+### Galutinis (Med.)
+```
+Galutinis = 0.4 * namų darbų mediana + 0.6 * egzamino pažymys
+```
+
+Rezultatai pateikiami su dviem skaitmenimis po kablelio.
+
+## Programos meniu
+
+```
+1 - Generuoti penkis testinius failus
+2 - Apdoroti vieną failą
+3 - Vykdyti spartos tyrimą visiems sugeneruotiems failams
+4 - Vykdyti v1.1 fiksuotą tyrimą README lentelėms
+5 - Baigti
+```
+
+## Testinių failų generavimas
+
+Sugeneruojami failai:
+```
+studentai1000.txt
+studentai10000.txt
+studentai100000.txt
+studentai1000000.txt
+studentai10000000.txt
+```
+
+Formatas:
+```
+Vardas Pavarde ND1 ND2 ... ND15 Egz.
+```
+
+## Studentų skirstymas
+
+### Vargšiukai
+Galutinis pažymys < 5.0
+
+### Kietiakiai
+Galutinis pažymys >= 5.0
+
+## Rūšiavimas
+
+- vardą
+- pavardę
+- galutinį (vid.)
+- galutinį (med.)
 
 ## Naudojami konteineriai
 
-* `std::vector`
-* `std::list`
-* `std::deque`
-
----
-
-## Programos funkcionalumas
-
-Programa leidžia:
-
-* Generuoti testinius failus
-* Nuskaityti duomenis iš failų
-* Skaičiuoti galutinį pažymį (vidurkis / mediana)
-* Rikiuoti studentus
-* Skirstyti į grupes:
-
-  * vargšiukai (< 5.0)
-  * kietiakiai (≥ 5.0)
-* Išsaugoti rezultatus į failus
-* Atlikti spartos tyrimus
-* Kartoti testus ir skaičiuoti vidurkius
-
----
-
-## Galutinio pažymio formulės
-
-```text
-Galutinis (Vid.) = 0.4 * vidurkis + 0.6 * egzaminas
-Galutinis (Med.) = 0.4 * mediana + 0.6 * egzaminas
-```
-
----
-
-## Studentų skirstymo strategijos
-
-### 1 strategija
-
-* Sukuriami du nauji konteineriai
-* Studentai paskirstomi per vieną perėjimą
-
-### 2 strategija
-
-* Sukuriamas tik vienas konteineris (vargšiukai)
-* Likę lieka pradiniame
-
-### 3 strategija
-
-* Naudojamas `stable_partition` principas
-* Efektyvesnis duomenų padalijimas
-
----
-
-## Rikiavimo kriterijai
-
-1. Vardas
-2. Pavardė
-3. Galutinis (vidurkis)
-4. Galutinis (mediana)
-
----
-
-## Testiniai failai
-
-* `studentai1000.txt`
-* `studentai10000.txt`
-* `studentai100000.txt`
-
----
-
-## Matuojami laikai
-
-* Nuskaitymas iš failo
-* Rikiavimas
-* Dalijimas į grupes
-* Rašymas į failus
-* Bendras veikimo laikas
-
----
+- std::vector
+- std::list
+- std::deque
 
 ## Tyrimo aplinka
 
-| Komponentas    | Reikšmė              |
-| -------------- | -------------------- |
-| CPU            | Intel Core i7-10510U |
-| RAM            | 16 GB DDR4           |
-| Diskas         | SSD 512 GB           |
-| OS             | Windows 10 Pro       |
-| Kompiliatorius | g++                  |
+| Komponentas | Reikšmė |
+|------------|--------|
+| CPU | Intel Core i7-10510U |
+| RAM | 16 GB DDR4 |
+| Diskas | SSD 512 GB |
+| OS | Windows 10 Pro |
+| Kompiliatorius | g++ |
 
----
-
-## Tyrimo metodika
-
-* Testuoti 3 konteineriai
-* Testuotos 3 strategijos
-* Kiekvienas testas kartotas 3 kartus
-* Pateikiami vidutiniai laikai
-
----
-
-# TYRIMO REZULTATAI
-
----
-
-## std::vector
-
-### 1000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 0.029       | 0.003      | 0.007     | 0.008   | 0.048   |
-| S2         | 0.032       | 0.003      | 0.008     | 0.008   | 0.052   |
-| S3         | 0.030       | 0.004      | 0.032     | 0.049   | 0.115   |
-
-### 10000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 3.456       | 0.081      | 0.789     | 0.101   | 4.427   |
-| S2         | 4.749       | 0.105      | 0.580     | 0.061   | 5.495   |
-| S3         | 4.050       | 0.086      | 0.262     | 0.072   | 4.470   |
-
-### 100000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 16.253      | 1.632      | 0.128     | 0.806   | 18.819  |
-| S2         | 22.276      | 1.442      | 0.087     | 0.489   | 24.294  |
-| S3         | 59.565      | 4.258      | 0.470     | 2.305   | 66.597  |
-
----
-
-## std::list
-
-### 1000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 0.414       | 0.001      | 0.076     | 0.015   | 0.507   |
-| S2         | 0.468       | 0.001      | 0.000     | 0.161   | 0.630   |
-| S3         | 0.446       | 0.001      | 0.075     | 0.010   | 0.532   |
-
-### 10000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 13.904      | 0.046      | 0.428     | 0.097   | 14.474  |
-| S2         | 5.181       | 0.041      | 0.001     | 4.526   | 9.749   |
-| S3         | 5.201       | 0.049      | 0.736     | 0.083   | 6.070   |
-
-### 100000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 98.198      | 1.904      | 0.765     | 3.272   | 104.138 |
-| S2         | 7.917       | 0.519      | 0.017     | 0.532   | 8.984   |
-| S3         | 9.363       | 0.543      | 0.276     | 0.771   | 10.952  |
-
----
-
-## std::deque
-
-### 1000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 0.297       | 0.004      | 0.057     | 0.058   | 0.416   |
-| S2         | 0.429       | 0.005      | 0.039     | 0.009   | 0.482   |
-| S3         | 0.303       | 0.005      | 0.059     | 0.056   | 0.424   |
-
-### 10000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 5.226       | 0.135      | 0.909     | 0.117   | 6.386   |
-| S2         | 4.614       | 0.101      | 0.700     | 0.067   | 5.482   |
-| S3         | 3.469       | 0.102      | 0.698     | 0.084   | 4.354   |
-
-### 100000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 57.176      | 1.877      | 0.200     | 0.938   | 60.191  |
-| S2         | 14.300      | 1.283      | 0.101     | 0.456   | 16.141  |
-| S3         | 15.175      | 1.819      | 0.233     | 0.758   | 17.985  |
-
----
-
-# Rezultatų analizė
-
-Greičiausias konteineris: `std::vector`
-Lėčiausias nuskaitymui: `std::list`
-Balansuotas variantas: `std::deque`
-
-Strategijos:
-
-* 2 strategija – dažniausiai greičiausia
-* 1 strategija – stabilus variantas
-* 3 strategija – kai kur lėtesnė
-
----
-
-## Projekto struktūra
-
-* `main.cpp` – programos valdymas
-* `Studentas.*` – studento logika
-* `Failai.*` – failų operacijos
-* `Rikiavimas.*` – rūšiavimas
-* `Ivedimas.*` – vartotojo įvestis
-* `Tyrimai.*` – spartos testai
-* `CMakeLists.txt` – build sistema
-
----
-
-## Kompiliavimas
-
-### Su CMake
+## Programos paleidimas
 
 ```bash
-mkdir build
-cd build
-cmake ..
-cmake --build . --config Release
+cmake -B build
+cmake --build build
 ```
 
-### Su g++
+## Tyrimas: v1.0 vs v1.1
 
-```bash
-g++ -std=c++17 -O2 main.cpp Studentas.cpp Failai.cpp Rikiavimas.cpp Ivedimas.cpp Tyrimai.cpp -o programa
-```
+### Rezultatų lentelė
 
----
-
-## Paleidimas
-
-```bash
-./programa
-```
-
----
+| Versija | Failas | Konteineris | Strategija | Skaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
+|--------|--------|------------|-----------|----------|-----------|----------|---------|--------|
+| v1.0 (struct) | studentai10000.txt | vector | 2 | 4.749000 | 0.105000 | 0.580000 | 0.061000 | 5.495000 |
+| v1.1 (class) | studentai10000.txt | vector | 2 | 4.002652 | 0.101987 | 0.577632 | 0.061136 | 4.743407 |
+| v1.0 (struct) | studentai100000.txt | vector | 2 | 22.276000 | 1.442000 | 0.087000 | 0.489000 | 24.294000 |
+| v1.1 (class) | studentai100000.txt | vector | 2 | 16.022324 | 1.702426 | 0.102323 | 0.590966 | 18.418040 |
 
 ## Išvada
 
-* Geriausias bendras pasirinkimas: std::vector
-* Efektyviausia strategija: 2 strategija
-* Didėjant duomenų kiekiui skirtumai tarp konteinerių ryškėja
+Pagal atliktą tyrimą, perėjimas nuo struct prie class nepablogino programos veikimo spartos.
 
----
+- Su studentai10000.txt v1.1 veikė apie 13.7 % greičiau
+- Su studentai100000.txt v1.1 veikė apie 24.2 % greičiau
 
-## Pastaba
+Tai rodo, kad klasės panaudojimas nesukėlė neigiamo našumo efekto, o kodas tapo tvarkingesnis ir labiau atitinka objektinio programavimo principus.
 
-Testai atlikti su realiais duomenimis, naudojant 3 kartojimus ir pateikiant vidurkius.
+## Tyrimas: kompiliatoriaus optimizacijos
+
+### Rezultatų lentelė
+
+| Optimizacija | Failas | Konteineris | Strategija | Skaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras | EXE dydis |
+|-------------|--------|------------|-----------|----------|-----------|----------|---------|--------|----------|
+| O1 | studentai10000.txt | vector | 2 | 0.036514 | 0.007693 | 0.001243 | 0.032567 | 0.078018 | 215 KB |
+| O2 | studentai10000.txt | vector | 2 | 0.034772 | 0.006855 | 0.001142 | 0.032651 | 0.075421 | 215 KB |
+| O3 | studentai10000.txt | vector | 2 | 0.039207 | 0.008651 | 0.001601 | 0.037133 | 0.086594 | 216 KB |
+| O1 | studentai100000.txt | vector | 2 | 0.511870 | 0.163151 | 0.020218 | 0.414156 | 1.109395 | 215 KB |
+| O2 | studentai100000.txt | vector | 2 | 0.507750 | 0.159211 | 0.022322 | 0.439688 | 1.128971 | 215 KB |
+| O3 | studentai100000.txt | vector | 2 | 0.643758 | 0.181787 | 0.023181 | 0.541895 | 1.396230 | 216 KB |
+
+## Išvada
+
+Gauti rezultatai parodė, kad didesnis optimizavimo lygis ne visada reiškia greitesnį veikimą.
+
+- Su studentai10000.txt greičiausias buvo O2
+- Su studentai100000.txt greičiausias buvo O1
+- O3 abiem atvejais buvo lėčiausias
+
+Vykdomojo failo dydis tarp O1 ir O2 nesiskyrė, o O3 buvo nežymiai didesnis.
+
+Pagal šiuos rezultatus galima teigti, kad šiame projekte geriausią balansą tarp greičio ir vykdomojo failo dydžio suteikia O1 ir O2, o O3 papildomos naudos nesuteikė.
+
+## Projekto struktūra
+
+```
+main.cpp – programos valdymas
+Studentas.h, Studentas.cpp – studento klasė
+Failai.h, Failai.cpp – failų operacijos
+Rikiavimas.h, Rikiavimas.cpp – rūšiavimas
+Ivedimas.h, Ivedimas.cpp – įvestis
+Tyrimai.h, Tyrimai.cpp – testai
+CMakeLists.txt – build sistema
+```
