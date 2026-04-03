@@ -47,25 +47,25 @@ bool palyginti_nat(const std::string& a, const std::string& b) {
 }
 
 bool palyginti_pagal_varda(const Studentas& a, const Studentas& b) {
-    if (a.vardas != b.vardas) return palyginti_nat(a.vardas, b.vardas);
-    return palyginti_nat(a.pavarde, b.pavarde);
+    if (a.vardas() != b.vardas()) return palyginti_nat(a.vardas(), b.vardas());
+    return palyginti_nat(a.pavarde(), b.pavarde());
 }
 
 bool palyginti_pagal_pavarde(const Studentas& a, const Studentas& b) {
-    if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
-    return palyginti_nat(a.vardas, b.vardas);
+    if (a.pavarde() != b.pavarde()) return palyginti_nat(a.pavarde(), b.pavarde());
+    return palyginti_nat(a.vardas(), b.vardas());
 }
 
 bool palyginti_pagal_vidurki(const Studentas& a, const Studentas& b) {
-    if (a.gal_vid != b.gal_vid) return a.gal_vid < b.gal_vid;
-    if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
-    return palyginti_nat(a.vardas, b.vardas);
+    if (a.galutinisVid() != b.galutinisVid()) return a.galutinisVid() < b.galutinisVid();
+    if (a.pavarde() != b.pavarde()) return palyginti_nat(a.pavarde(), b.pavarde());
+    return palyginti_nat(a.vardas(), b.vardas());
 }
 
 bool palyginti_pagal_mediana(const Studentas& a, const Studentas& b) {
-    if (a.gal_med != b.gal_med) return a.gal_med < b.gal_med;
-    if (a.pavarde != b.pavarde) return palyginti_nat(a.pavarde, b.pavarde);
-    return palyginti_nat(a.vardas, b.vardas);
+    if (a.galutinisMed() != b.galutinisMed()) return a.galutinisMed() < b.galutinisMed();
+    if (a.pavarde() != b.pavarde()) return palyginti_nat(a.pavarde(), b.pavarde());
+    return palyginti_nat(a.vardas(), b.vardas());
 }
 
 static auto gauti_komparatoriu(int kriterijus) {
