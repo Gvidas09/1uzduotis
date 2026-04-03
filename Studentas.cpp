@@ -1,5 +1,6 @@
 #include "Studentas.h"
 #include <algorithm>
+#include <stdexcept>
 #include <utility>
 
 Studentas::Studentas()
@@ -8,6 +9,8 @@ Studentas::Studentas()
 Studentas::Studentas(const std::string& vardas, const std::string& pavarde,
                      const std::vector<int>& paz, int egz)
     : vardas_(vardas), pavarde_(pavarde), paz_(paz), egz_(egz), gal_vid_(0.0), gal_med_(0.0) {
+    tikrintiPazymius(paz_);
+    tikrintiPazymi(egz_);
     skaiciuotiGalutinius();
 }
 
@@ -46,6 +49,10 @@ Studentas& Studentas::operator=(Studentas&& kitas) noexcept {
 
 Studentas::~Studentas() = default;
 
+bool Studentas::arTinkamasPazymys(int pazymys) {
+    return pazymys >= 1 && pazymys <= 10;
+}
+
 const std::string& Studentas::vardas() const { return vardas_; }
 const std::string& Studentas::pavarde() const { return pavarde_; }
 const std::vector<int>& Studentas::pazymiai() const { return paz_; }
@@ -57,13 +64,27 @@ void Studentas::nustatytiVarda(const std::string& vardas) { vardas_ = vardas; }
 void Studentas::nustatytiPavarde(const std::string& pavarde) { pavarde_ = pavarde; }
 
 void Studentas::nustatytiPazymius(const std::vector<int>& paz) {
+    tikrintiPazymius(paz);
     paz_ = paz;
     skaiciuotiGalutinius();
 }
 
 void Studentas::nustatytiEgzamina(int egz) {
+    tikrintiPazymi(egz);
     egz_ = egz;
     skaiciuotiGalutinius();
+}
+
+void Studentas::tikrintiPazymi(int pazymys) const {
+    if (!arTinkamasPazymys(pazymys)) {
+        throw std::invalid_argument("Netinkamas pazymys");
+    }
+}
+
+void Studentas::tikrintiPazymius(const std::vector<int>& paz) const {
+    for (int pazymys : paz) {
+        tikrintiPazymi(pazymys);
+    }
 }
 
 double Studentas::vidurkis() const {

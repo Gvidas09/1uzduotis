@@ -12,6 +12,8 @@ private:
     double gal_med_;
 
     double vidurkis() const;
+    void tikrintiPazymi(int pazymys) const;
+    void tikrintiPazymius(const std::vector<int>& paz) const;
 
 public:
     Studentas();
@@ -22,6 +24,8 @@ public:
     Studentas& operator=(const Studentas& kitas);
     Studentas& operator=(Studentas&& kitas) noexcept;
     ~Studentas();
+
+    static bool arTinkamasPazymys(int pazymys);
 
     const std::string& vardas() const;
     const std::string& pavarde() const;
