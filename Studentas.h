@@ -14,6 +14,7 @@ private:
     double vidurkis() const;
     void tikrintiPazymi(int pazymys) const;
     void tikrintiPazymius(const std::vector<int>& paz) const;
+    void isvalyti();
 
 public:
     Studentas();

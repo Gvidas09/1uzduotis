@@ -21,7 +21,9 @@ Studentas::Studentas(const Studentas& kitas)
 Studentas::Studentas(Studentas&& kitas) noexcept
     : vardas_(std::move(kitas.vardas_)), pavarde_(std::move(kitas.pavarde_)),
       paz_(std::move(kitas.paz_)), egz_(kitas.egz_),
-      gal_vid_(kitas.gal_vid_), gal_med_(kitas.gal_med_) {}
+      gal_vid_(kitas.gal_vid_), gal_med_(kitas.gal_med_) {
+    kitas.isvalyti();
+}
 
 Studentas& Studentas::operator=(const Studentas& kitas) {
     if (this != &kitas) {
@@ -43,11 +45,23 @@ Studentas& Studentas::operator=(Studentas&& kitas) noexcept {
         egz_ = kitas.egz_;
         gal_vid_ = kitas.gal_vid_;
         gal_med_ = kitas.gal_med_;
+        kitas.isvalyti();
     }
     return *this;
 }
 
-Studentas::~Studentas() = default;
+Studentas::~Studentas() {
+    isvalyti();
+}
+
+void Studentas::isvalyti() {
+    vardas_.clear();
+    pavarde_.clear();
+    paz_.clear();
+    egz_ = 0;
+    gal_vid_ = 0.0;
+    gal_med_ = 0.0;
+}
 
 bool Studentas::arTinkamasPazymys(int pazymys) {
     return pazymys >= 1 && pazymys <= 10;
