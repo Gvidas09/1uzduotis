@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <stdexcept>
 #include <utility>
+#include <iomanip>
+#include <ostream>
 
 Studentas::Studentas()
     : vardas_(""), pavarde_(""), paz_(), egz_(0), gal_vid_(0.0), gal_med_(0.0) {}
@@ -133,4 +135,13 @@ void Studentas::skaiciuotiGalutinius() {
 
 bool Studentas::arVargsiukas(bool naudoti_mediana) const {
     return naudoti_mediana ? gal_med_ < 5.0 : gal_vid_ < 5.0;
+}
+
+std::ostream& operator<<(std::ostream& out, const Studentas& studentas) {
+    out << std::left << std::setw(15) << studentas.vardas()
+        << std::setw(20) << studentas.pavarde()
+        << std::fixed << std::setprecision(2)
+        << std::setw(18) << studentas.galutinisVid()
+        << std::setw(18) << studentas.galutinisMed();
+    return out;
 }

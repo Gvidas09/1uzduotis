@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <iosfwd>
 
 class Studentas {
 private:
@@ -43,4 +44,6 @@ public:
     double mediana() const;
     void skaiciuotiGalutinius();
     bool arVargsiukas(bool naudoti_mediana = false) const;
+
+    friend std::ostream& operator<<(std::ostream& out, const Studentas& studentas);
 };
