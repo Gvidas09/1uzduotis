@@ -1,5 +1,6 @@
 #include "Ivedimas.h"
 #include "Tyrimai.h"
+#include "Testai.h"
 
 int main() {
     while (true) {
@@ -18,6 +19,9 @@ int main() {
             vykdyti_v11_tyrima();
         }
         else if (p == 5) {
+            vykdyti_v12_testus();
+        }
+        else if (p == 6) {
             break;
         }
     }

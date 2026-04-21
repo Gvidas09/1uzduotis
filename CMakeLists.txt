@@ -12,4 +12,5 @@ add_executable(studentu_programa
     Rikiavimas.cpp
     Ivedimas.cpp
     Tyrimai.cpp
+    Testai.cpp
 )

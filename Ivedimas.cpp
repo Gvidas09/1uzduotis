@@ -63,8 +63,9 @@ int meniu() {
     cout << "2 - Apdoroti viena faila\n";
     cout << "3 - Vykdyti spartos tyrima visiems sugeneruotiems failams\n";
     cout << "4 - Vykdyti v1.1 fiksuota tyrima README lentelems\n";
-    cout << "5 - Baigti\n";
-    return ivesti_skaiciu("Pasirinkimas: ", 1, 5);
+    cout << "5 - Vykdyti v1.2 testus\n";
+    cout << "6 - Baigti\n";
+    return ivesti_skaiciu("Pasirinkimas: ", 1, 6);
 }
 
 int pasirinkti_rikiavimo_kriteriju() {
