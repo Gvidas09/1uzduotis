@@ -2,8 +2,9 @@
 #include <algorithm>
 #include <stdexcept>
 #include <utility>
+#include <iostream>
+#include <sstream>
 #include <iomanip>
-#include <ostream>
 
 Studentas::Studentas()
     : vardas_(""), pavarde_(""), paz_(), egz_(0), gal_vid_(0.0), gal_med_(0.0) {}
@@ -135,6 +136,92 @@ void Studentas::skaiciuotiGalutinius() {
 
 bool Studentas::arVargsiukas(bool naudoti_mediana) const {
     return naudoti_mediana ? gal_med_ < 5.0 : gal_vid_ < 5.0;
+}
+
+std::istream& operator>>(std::istream& in, Studentas& studentas) {
+    if (&in == &std::cin) {
+        std::string vardas;
+        std::string pavarde;
+        int nd_kiekis = 0;
+
+        std::cout << "Iveskite varda: ";
+        in >> vardas;
+        std::cout << "Iveskite pavarde: ";
+        in >> pavarde;
+        std::cout << "Kiek namu darbu pazymiu ivesite? ";
+        in >> nd_kiekis;
+
+        if (!in || nd_kiekis <= 0) {
+            in.setstate(std::ios::failbit);
+            return in;
+        }
+
+        std::vector<int> paz;
+        paz.reserve(static_cast<std::size_t>(nd_kiekis));
+
+        for (int i = 0; i < nd_kiekis; i++) {
+            int pazymys = 0;
+            std::cout << "Iveskite " << i + 1 << "-aji namu darbu pazymi: ";
+            in >> pazymys;
+            if (!in || !Studentas::arTinkamasPazymys(pazymys)) {
+                in.setstate(std::ios::failbit);
+                return in;
+            }
+            paz.push_back(pazymys);
+        }
+
+        int egz = 0;
+        std::cout << "Iveskite egzamino pazymi: ";
+        in >> egz;
+        if (!in || !Studentas::arTinkamasPazymys(egz)) {
+            in.setstate(std::ios::failbit);
+            return in;
+        }
+
+        studentas = Studentas(vardas, pavarde, paz, egz);
+        return in;
+    }
+
+    std::string eilute;
+    if (!std::getline(in >> std::ws, eilute)) {
+        return in;
+    }
+
+    std::istringstream iss(eilute);
+    std::string vardas;
+    std::string pavarde;
+    if (!(iss >> vardas >> pavarde)) {
+        in.setstate(std::ios::failbit);
+        return in;
+    }
+
+    if (vardas == "Vardas" && pavarde == "Pavarde") {
+        in.setstate(std::ios::failbit);
+        return in;
+    }
+
+    std::vector<int> skaiciai;
+    int x = 0;
+    while (iss >> x) {
+        skaiciai.push_back(x);
+    }
+
+    if (!iss.eof() || skaiciai.size() < 2) {
+        in.setstate(std::ios::failbit);
+        return in;
+    }
+
+    int egz = skaiciai.back();
+    skaiciai.pop_back();
+
+    try {
+        studentas = Studentas(vardas, pavarde, skaiciai, egz);
+    }
+    catch (const std::exception&) {
+        in.setstate(std::ios::failbit);
+    }
+
+    return in;
 }
 
 std::ostream& operator<<(std::ostream& out, const Studentas& studentas) {

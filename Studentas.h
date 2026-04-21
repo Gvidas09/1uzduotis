@@ -45,5 +45,6 @@ public:
     void skaiciuotiGalutinius();
     bool arVargsiukas(bool naudoti_mediana = false) const;
 
+    friend std::istream& operator>>(std::istream& in, Studentas& studentas);
     friend std::ostream& operator<<(std::ostream& out, const Studentas& studentas);
 };

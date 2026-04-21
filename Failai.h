@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <iterator>
 #include <cctype>
+#include <sstream>
 
 #include "Studentas.h"
 
@@ -89,13 +90,8 @@ bool isvesti_i_faila(const Container& grupe, const std::string& failas) {
 
         out << std::string(15 + 20 + 18 + 18, '-') << "\n";
 
-        out << std::fixed << std::setprecision(2);
         for (const auto& a : grupe) {
-            out << std::left << std::setw(15) << a.vardas()
-                << std::setw(20) << a.pavarde()
-                << std::setw(18) << a.galutinisVid()
-                << std::setw(18) << a.galutinisMed()
-                << "\n";
+            out << a << "\n";
         }
 
         return true;

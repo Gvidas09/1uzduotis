@@ -20,51 +20,17 @@ bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, boo
     praleisti = false;
 
     std::istringstream iss(eilute);
-
-    std::string vardas;
-    std::string pavarde;
-    if (!(iss >> vardas >> pavarde)) {
-        praleisti = true;
-        return false;
-    }
-
-    if (vardas == "Vardas" && pavarde == "Pavarde") {
-        return false;
-    }
-
-    std::vector<int> skaiciai;
-    skaiciai.reserve(16);
-
-    int x = 0;
-    while (iss >> x) {
-        skaiciai.push_back(x);
-    }
-
-    if (!iss.eof()) {
-        praleisti = true;
-        return false;
-    }
-
-    if (skaiciai.size() < 2) {
-        praleisti = true;
-        return false;
-    }
-
-    for (int v : skaiciai) {
-        if (!Studentas::arTinkamasPazymys(v)) {
+    if (!(iss >> a)) {
+        std::istringstream tikrinimas(eilute);
+        std::string vardas;
+        std::string pavarde;
+        if (tikrinimas >> vardas >> pavarde) {
+            if (!(vardas == "Vardas" && pavarde == "Pavarde")) {
+                praleisti = true;
+            }
+        } else {
             praleisti = true;
-            return false;
         }
-    }
-
-    int egz = skaiciai.back();
-    skaiciai.pop_back();
-
-    try {
-        a = Studentas(vardas, pavarde, skaiciai, egz);
-    }
-    catch (const std::exception&) {
-        praleisti = true;
         return false;
     }
 
