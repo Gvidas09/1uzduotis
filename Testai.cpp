@@ -52,12 +52,24 @@ bool testuoti_perkelimo_priskyrima() {
            a.vardas().empty() && a.pavarde().empty() && a.pazymiai().empty();
 }
 
+bool testuoti_destruktoriu() {
+    try {
+        Studentas* s = new Studentas("Tomas", "Tomaitis", {8, 9, 10}, 9);
+        delete s;
+        return true;
+    }
+    catch (...) {
+        return false;
+    }
+}
+
 bool testuoti_isvesties_operatoriu() {
     Studentas s("Aiste", "Aistaite", {10, 9, 8}, 10);
     std::ostringstream out;
     out << s;
     std::string tekstas = out.str();
-    return tekstas.find("Aiste") != std::string::npos && tekstas.find("Aistaite") != std::string::npos;
+    return tekstas.find("Aiste") != std::string::npos &&
+           tekstas.find("Aistaite") != std::string::npos;
 }
 
 bool testuoti_ivedimo_operatoriu_is_failo_formato() {
@@ -86,6 +98,7 @@ void vykdyti_v12_testus() {
     spausdinti_rezultata("Perkelimo konstruktorius", testuoti_perkelimo_konstruktoriu());
     spausdinti_rezultata("Kopijavimo priskyrimo operatorius", testuoti_kopijavimo_priskyrima());
     spausdinti_rezultata("Perkelimo priskyrimo operatorius", testuoti_perkelimo_priskyrima());
+    spausdinti_rezultata("Destruktorius", testuoti_destruktoriu());
     spausdinti_rezultata("Isvesties operatorius <<", testuoti_isvesties_operatoriu());
     spausdinti_rezultata("Ivesties operatorius >> is failo formato", testuoti_ivedimo_operatoriu_is_failo_formato());
     spausdinti_rezultata("Ivesties operatorius >> su blogais duomenimis", testuoti_ivedimo_operatoriu_su_blogais_duomenimis());
