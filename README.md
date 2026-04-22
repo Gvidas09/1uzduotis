@@ -1,25 +1,23 @@
-# Versija (v1.0)
+# Studentų pažymių analizės programa (v1.2)
 
-## Projekto aprašymas
+## Aprašymas
 
-Tai C++ programa, skirta:
+Ši programa skirta studentų duomenų apdorojimui: pažymių nuskaitymui, galutinio balo skaičiavimui, rūšiavimui bei studentų skirstymui į grupes. Projektas realizuotas naudojant C++ kalbą, laikantis objektinio programavimo principų.
 
-* studentų duomenų generavimui
-* nuskaitymui iš failų
-* galutinių pažymių skaičiavimui
-* studentų rikiavimui
-* skirstymui į dvi grupes
-* skirtingų konteinerių ir strategijų spartos analizei
+v1.2 versijoje pagrindinis dėmesys skirtas:
 
-Projektas sukurtas remiantis ankstesne v0.4 versija ir išplėstas iki v1.0 reikalavimų.
+* `Studentas` klasės pilnam **Rule of Five** realizavimui
+* įvesties (`>>`) ir išvesties (`<<`) operatorių perkrovimui
+* šių funkcionalumų testavimui
 
 ---
 
-## Naudojami konteineriai
+## Naudojamos technologijos
 
-* `std::vector`
-* `std::list`
-* `std::deque`
+* C++17 standartas
+* STL konteineriai (`vector`, `list`, `deque`)
+* Failų skaitymas ir rašymas (`ifstream`, `ofstream`)
+* `stringstream` duomenų apdorojimui
 
 ---
 
@@ -27,245 +25,203 @@ Projektas sukurtas remiantis ankstesne v0.4 versija ir išplėstas iki v1.0 reik
 
 Programa leidžia:
 
-* Generuoti testinius failus
-* Nuskaityti duomenis iš failų
-* Skaičiuoti galutinį pažymį (vidurkis / mediana)
-* Rikiuoti studentus
-* Skirstyti į grupes:
+1. Generuoti testinius studentų failus
+2. Nuskaityti duomenis iš failo
+3. Apskaičiuoti galutinį pažymį:
 
-  * vargšiukai (< 5.0)
-  * kietiakiai (≥ 5.0)
-* Išsaugoti rezultatus į failus
-* Atlikti spartos tyrimus
-* Kartoti testus ir skaičiuoti vidurkius
+   * pagal vidurkį
+   * pagal medianą
+4. Rūšiuoti studentus pagal:
+
+   * vardą
+   * pavardę
+   * galutinį pažymį (vidurkį arba medianą)
+5. Padalinti studentus į dvi grupes:
+
+   * vargsiukai (galutinis < 5)
+   * kietiakiai (galutinis ≥ 5)
+6. Išvesti rezultatus į failus
+7. Vykdyti automatinius v1.2 testus
 
 ---
 
-## Galutinio pažymio formulės
+## v1.2 patobulinimai
 
-```text
-Galutinis (Vid.) = 0.4 * vidurkis + 0.6 * egzaminas
-Galutinis (Med.) = 0.4 * mediana + 0.6 * egzaminas
+### Rule of Five realizacija
+
+`Studentas` klasėje realizuoti visi būtini metodai:
+
+* Numatytasis konstruktorius
+* Konstruktorius su parametrais
+* Kopijavimo konstruktorius
+* Perkėlimo konstruktorius
+* Kopijavimo priskyrimo operatorius
+* Perkėlimo priskyrimo operatorius
+* Destruktorius
+
+Tai užtikrina teisingą objektų kūrimą, kopijavimą, perkėlimą ir išvalymą.
+
+---
+
+### Įvesties ir išvesties operatoriai
+
+Realizuoti operatoriai:
+
+#### `operator>>`
+
+* Leidžia nuskaityti studentą iš:
+
+  * failo eilutės
+  * įvesties srauto
+* Tikrina duomenų korektiškumą
+* Netinkami duomenys pažymimi kaip klaida
+
+#### `operator<<`
+
+* Leidžia patogiai išvesti studento informaciją:
+
+  * į ekraną
+  * į failą
+* Naudojamas rezultatų failų generavime
+
+---
+
+## Testavimas
+
+Programoje įdiegtas testavimo mechanizmas (meniu punktas 5), kuris patikrina visus v1.2 reikalavimus.
+
+### Testų rezultatai
+
+```
+[OK] Numatytasis konstruktorius
+[OK] Konstruktorius su parametrais
+[OK] Kopijavimo konstruktorius
+[OK] Perkelimo konstruktorius
+[OK] Kopijavimo priskyrimo operatorius
+[OK] Perkelimo priskyrimo operatorius
+[OK] Destruktorius
+[OK] Isvesties operatorius <<
+[OK] Ivesties operatorius >> is failo formato
+[OK] Ivesties operatorius >> su blogais duomenimis
+```
+
+Visi testai sėkmingai įvykdyti.
+
+---
+
+## Testavimo scenarijai
+
+### Failų generavimas
+
+Sugeneruoti failai:
+
+* studentai1000.txt
+* studentai10000.txt
+* studentai100000.txt
+* studentai1000000.txt
+* studentai10000000.txt
+
+Pavyzdinis rezultatas:
+
+```
+Failo studentai1000.txt sukūrimo laikas: 0.0609782 s
+Failo studentai10000.txt sukūrimo laikas: 0.0173738 s
+Failo studentai100000.txt sukūrimo laikas: 0.184254 s
+Failo studentai1000000.txt sukūrimo laikas: 1.65333 s
+Failo studentai10000000.txt sukūrimo laikas: 18.4679 s
 ```
 
 ---
 
-## Studentų skirstymo strategijos
+### Vieno failo apdorojimas
 
-### 1 strategija
+Naudotas failas:
 
-* Sukuriami du nauji konteineriai
-* Studentai paskirstomi per vieną perėjimą
+* studentai1000.txt
 
-### 2 strategija
+Pasirinkimai:
 
-* Sukuriamas tik vienas konteineris (vargšiukai)
-* Likę lieka pradiniame
+* Rikiavimas: pagal galutinį pažymį (vidurkį)
+* Konteineris: `std::vector`
+* Strategija: 1 (du nauji konteineriai)
 
-### 3 strategija
+Rezultatai:
 
-* Naudojamas `stable_partition` principas
-* Efektyvesnis duomenų padalijimas
-
----
-
-## Rikiavimo kriterijai
-
-1. Vardas
-2. Pavardė
-3. Galutinis (vidurkis)
-4. Galutinis (mediana)
-
----
-
-## Testiniai failai
-
-* `studentai1000.txt`
-* `studentai10000.txt`
-* `studentai100000.txt`
-
----
-
-## Matuojami laikai
-
-* Nuskaitymas iš failo
-* Rikiavimas
-* Dalijimas į grupes
-* Rašymas į failus
-* Bendras veikimo laikas
-
----
-
-## Tyrimo aplinka
-
-| Komponentas    | Reikšmė              |
-| -------------- | -------------------- |
-| CPU            | Intel Core i7-10510U |
-| RAM            | 16 GB DDR4           |
-| Diskas         | SSD 512 GB           |
-| OS             | Windows 10 Pro       |
-| Kompiliatorius | g++                  |
-
----
-
-## Tyrimo metodika
-
-* Testuoti 3 konteineriai
-* Testuotos 3 strategijos
-* Kiekvienas testas kartotas 3 kartus
-* Pateikiami vidutiniai laikai
-
----
-
-# TYRIMO REZULTATAI
-
----
-
-## std::vector
-
-### 1000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 0.029       | 0.003      | 0.007     | 0.008   | 0.048   |
-| S2         | 0.032       | 0.003      | 0.008     | 0.008   | 0.052   |
-| S3         | 0.030       | 0.004      | 0.032     | 0.049   | 0.115   |
-
-### 10000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 3.456       | 0.081      | 0.789     | 0.101   | 4.427   |
-| S2         | 4.749       | 0.105      | 0.580     | 0.061   | 5.495   |
-| S3         | 4.050       | 0.086      | 0.262     | 0.072   | 4.470   |
-
-### 100000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 16.253      | 1.632      | 0.128     | 0.806   | 18.819  |
-| S2         | 22.276      | 1.442      | 0.087     | 0.489   | 24.294  |
-| S3         | 59.565      | 4.258      | 0.470     | 2.305   | 66.597  |
-
----
-
-## std::list
-
-### 1000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 0.414       | 0.001      | 0.076     | 0.015   | 0.507   |
-| S2         | 0.468       | 0.001      | 0.000     | 0.161   | 0.630   |
-| S3         | 0.446       | 0.001      | 0.075     | 0.010   | 0.532   |
-
-### 10000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 13.904      | 0.046      | 0.428     | 0.097   | 14.474  |
-| S2         | 5.181       | 0.041      | 0.001     | 4.526   | 9.749   |
-| S3         | 5.201       | 0.049      | 0.736     | 0.083   | 6.070   |
-
-### 100000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 98.198      | 1.904      | 0.765     | 3.272   | 104.138 |
-| S2         | 7.917       | 0.519      | 0.017     | 0.532   | 8.984   |
-| S3         | 9.363       | 0.543      | 0.276     | 0.771   | 10.952  |
-
----
-
-## std::deque
-
-### 1000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 0.297       | 0.004      | 0.057     | 0.058   | 0.416   |
-| S2         | 0.429       | 0.005      | 0.039     | 0.009   | 0.482   |
-| S3         | 0.303       | 0.005      | 0.059     | 0.056   | 0.424   |
-
-### 10000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 5.226       | 0.135      | 0.909     | 0.117   | 6.386   |
-| S2         | 4.614       | 0.101      | 0.700     | 0.067   | 5.482   |
-| S3         | 3.469       | 0.102      | 0.698     | 0.084   | 4.354   |
-
-### 100000 įrašų
-
-| Strategija | Nuskaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
-| ---------- | ----------- | ---------- | --------- | ------- | ------- |
-| S1         | 57.176      | 1.877      | 0.200     | 0.938   | 60.191  |
-| S2         | 14.300      | 1.283      | 0.101     | 0.456   | 16.141  |
-| S3         | 15.175      | 1.819      | 0.233     | 0.758   | 17.985  |
-
----
-
-# Rezultatų analizė
-
-Greičiausias konteineris: `std::vector`
-Lėčiausias nuskaitymui: `std::list`
-Balansuotas variantas: `std::deque`
-
-Strategijos:
-
-* 2 strategija – dažniausiai greičiausia
-* 1 strategija – stabilus variantas
-* 3 strategija – kai kur lėtesnė
-
----
-
-## Projekto struktūra
-
-* `main.cpp` – programos valdymas
-* `Studentas.*` – studento logika
-* `Failai.*` – failų operacijos
-* `Rikiavimas.*` – rūšiavimas
-* `Ivedimas.*` – vartotojo įvestis
-* `Tyrimai.*` – spartos testai
-* `CMakeLists.txt` – build sistema
-
----
-
-## Kompiliavimas
-
-### Su CMake
-
-```bash
-mkdir build
-cd build
-cmake ..
-cmake --build . --config Release
+```
+Nuskaityta studentu: 1000
+Praleista eiluciu: 0
+Duomenu nuskaitymo laikas: 0.047584 s
+Studentu rikiavimo laikas: 0.002581 s
+Padalinimo laikas: 0.000993 s
+Isvedimo i failus laikas: 0.007709 s
+Bendras veikimo laikas: 0.058867 s
 ```
 
-### Su g++
+Sukurti failai:
 
-```bash
-g++ -std=c++17 -O2 main.cpp Studentas.cpp Failai.cpp Rikiavimas.cpp Ivedimas.cpp Tyrimai.cpp -o programa
+* studentai1000_vector_s1_vargsiukai.txt
+* studentai1000_vector_s1_kietiakiai.txt
+
+---
+
+### Duomenų pavyzdžiai
+
+#### Pradinio failo formatas
+
+```
+Vardas Pavarde ND1 ND2 ND3 ... Egz.
+Vardas1 Pavarde1 3 10 6 4 5 ... 8
+```
+
+#### Kietiakiai
+
+```
+Vardas    Pavarde    Galutinis (Vid.)    Galutinis (Med.)
+Vardas174 Pavarde174 5.00                4.60
+...
+```
+
+#### Vargšiukai
+
+```
+Vardas    Pavarde    Galutinis (Vid.)    Galutinis (Med.)
+Vardas46  Pavarde46  2.17                2.20
+...
 ```
 
 ---
 
 ## Paleidimas
 
-```bash
-./programa
+1. Sukompiliuoti projektą (per CMake arba VS Code)
+2. Paleisti programą
+3. Naudotis meniu:
+
+```
+1 - Generuoti failus
+2 - Apdoroti failą
+3 - Spartos tyrimas
+4 - v1.1 tyrimas
+5 - v1.2 testai
+6 - Baigti
 ```
 
 ---
 
 ## Išvada
 
-* Geriausias bendras pasirinkimas: std::vector
-* Efektyviausia strategija: 2 strategija
-* Didėjant duomenų kiekiui skirtumai tarp konteinerių ryškėja
+v1.2 versijoje sėkmingai realizuoti visi reikalavimai:
 
----
+* Pilnai įgyvendinta Rule of Five
+* Realizuoti ir panaudoti įvesties/išvesties operatoriai
+* Sukurtas testavimo mechanizmas
+* Programa išlieka funkcionali ir efektyvi
 
-## Pastaba
+Testų nuotraukos:<img width="669" height="215" alt="a96c972d-316f-4a67-a2a0-c6b2233996c8" src="https://github.com/user-attachments/assets/403eb59c-2b5c-4e3a-aed5-fb448570dc13" />
+<img width="1160" height="1079" alt="a3fa14d9-eb37-4bd4-8e89-68321cc591fb" src="https://github.com/user-attachments/assets/7b381132-2ca3-450f-bc2d-a3acf8b21653" />
+<img width="797" height="259" alt="51580366-0a00-4758-afbd-6c0eaed5d7f3" src="https://github.com/user-attachments/assets/8b8c9c7c-5c72-402c-9564-5ef8891d96ce" />
+<img width="1760" height="1275" alt="7deb828e-2ac9-4c72-b534-b06859453045" src="https://github.com/user-attachments/assets/554c74cf-9747-49ca-9533-30c0f8da992b" />
+<img width="927" height="1048" alt="7bc5e064-cc33-44b2-b879-d581d4495ea3" src="https://github.com/user-attachments/assets/ec54dc21-7555-40a2-a6cb-91069e3b87fb" />
+<img width="1259" height="1130" alt="de8c6e1f-2fdf-4754-8975-5ff2a12520c2" src="https://github.com/user-attachments/assets/b6e48993-1207-47f6-b4c1-7352e2263401" />
+<img width="874" height="375" alt="bf8a8eb3-fad3-46ea-ad75-d71c810ffb83" src="https://github.com/user-attachments/assets/fee7c1cb-a556-47ef-b599-d4cb0ff7b21b" />
 
-Testai atlikti su realiais duomenimis, naudojant 3 kartojimus ir pateikiant vidurkius.
