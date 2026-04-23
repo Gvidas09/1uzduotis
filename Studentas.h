@@ -3,10 +3,10 @@
 #include <vector>
 #include <iosfwd>
 
-class Studentas {
+#include "Zmogus.h"
+
+class Studentas : public Zmogus {
 private:
-    std::string vardas_;
-    std::string pavarde_;
     std::vector<int> paz_;
     int egz_;
     double gal_vid_;
@@ -29,15 +29,11 @@ public:
 
     static bool arTinkamasPazymys(int pazymys);
 
-    const std::string& vardas() const;
-    const std::string& pavarde() const;
     const std::vector<int>& pazymiai() const;
     int egzaminas() const;
     double galutinisVid() const;
     double galutinisMed() const;
 
-    void nustatytiVarda(const std::string& vardas);
-    void nustatytiPavarde(const std::string& pavarde);
     void nustatytiPazymius(const std::vector<int>& paz);
     void nustatytiEgzamina(int egz);
 
