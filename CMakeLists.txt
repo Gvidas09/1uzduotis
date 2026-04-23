@@ -7,6 +7,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 add_executable(studentu_programa
     main.cpp
+    Zmogus.cpp
     Studentas.cpp
     Failai.cpp
     Rikiavimas.cpp
