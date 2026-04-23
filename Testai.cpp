@@ -1,13 +1,26 @@
 #include "Testai.h"
 #include "Studentas.h"
+#include "Zmogus.h"
 #include <iostream>
 #include <sstream>
+#include <type_traits>
 #include <utility>
 
 namespace {
 
 void spausdinti_rezultata(const std::string& testo_pavadinimas, bool pavyko) {
     std::cout << (pavyko ? "[OK] " : "[NEPAVYKO] ") << testo_pavadinimas << "\n";
+}
+
+bool testuoti_ar_zmogus_abstraktus() {
+    return std::is_abstract<Zmogus>::value;
+}
+
+bool testuoti_paveldeta_zmogaus_dali() {
+    Studentas s("Jonas", "Jonaitis", {8, 9, 10}, 9);
+    Zmogus* zmogus = &s;
+
+    return zmogus->vardas() == "Jonas" && zmogus->pavarde() == "Jonaitis";
 }
 
 bool testuoti_numatytaji_konstruktoriu() {
@@ -89,9 +102,11 @@ bool testuoti_ivedimo_operatoriu_su_blogais_duomenimis() {
 
 } // namespace
 
-void vykdyti_v12_testus() {
-    std::cout << "\nV1.2 TESTAI - Rule of Five ir ivesties/isvesties operatoriai\n\n";
+void vykdyti_v15_testus() {
+    std::cout << "\nV1.5 TESTAI - paveldimumas, abstrakti klase ir v1.2 funkcionalumas\n\n";
 
+    spausdinti_rezultata("Zmogus klase yra abstrakti", testuoti_ar_zmogus_abstraktus());
+    spausdinti_rezultata("Studentas paveldi Zmogus duomenis", testuoti_paveldeta_zmogaus_dali());
     spausdinti_rezultata("Numatytasis konstruktorius", testuoti_numatytaji_konstruktoriu());
     spausdinti_rezultata("Konstruktorius su parametrais", testuoti_parametru_konstruktoriu());
     spausdinti_rezultata("Kopijavimo konstruktorius", testuoti_kopijavimo_konstruktoriu());
@@ -103,5 +118,5 @@ void vykdyti_v12_testus() {
     spausdinti_rezultata("Ivesties operatorius >> is failo formato", testuoti_ivedimo_operatoriu_is_failo_formato());
     spausdinti_rezultata("Ivesties operatorius >> su blogais duomenimis", testuoti_ivedimo_operatoriu_su_blogais_duomenimis());
 
-    std::cout << "\nV1.2 testai baigti.\n";
+    std::cout << "\nV1.5 testai baigti.\n";
 }
