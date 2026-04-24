@@ -1,96 +1,93 @@
-# Studentų pažymių analizės programa (v1.2)
+# Studentų pažymių skaičiavimo programa (v1.5)
 
 ## Aprašymas
 
-Ši programa skirta studentų duomenų apdorojimui: pažymių nuskaitymui, galutinio balo skaičiavimui, rūšiavimui bei studentų skirstymui į grupes. Projektas realizuotas naudojant C++ kalbą, laikantis objektinio programavimo principų.
+Ši programa skirta studentų duomenų apdorojimui: pažymių nuskaitymui, galutinio balo skaičiavimui, studentų rūšiavimui bei skirstymui į grupes.
 
-v1.2 versijoje pagrindinis dėmesys skirtas:
+v1.5 versijoje realizuotas objektinis modelis su paveldimumu:
 
-* `Studentas` klasės pilnam **Rule of Five** realizavimui
-* įvesties (`>>`) ir išvesties (`<<`) operatorių perkrovimui
-* šių funkcionalumų testavimui
+* sukurta abstrakti bazinė klasė `Zmogus`
+* klasė `Studentas` paveldi iš `Zmogus`
+* pilnai išlaikytas v1.2 funkcionalumas
 
 ---
 
-## Naudojamos technologijos
+## v1.5 realizacija
 
-* C++17 standartas
-* STL konteineriai (`vector`, `list`, `deque`)
-* Failų skaitymas ir rašymas (`ifstream`, `ofstream`)
-* `stringstream` duomenų apdorojimui
+### Bazinė klasė
+
+Sukurta abstrakti klasė:
+
+```
+class Zmogus
+```
+
+* saugo bendrus duomenis: vardą ir pavardę
+* turi virtualų (pure virtual) destruktorių
+* **objekto sukurti negalima**
+
+### Išvestinė klasė
+
+```
+class Studentas : public Zmogus
+```
+
+* paveldi vardą ir pavardę
+* saugo pažymius ir egzaminą
+* skaičiuoja:
+
+  * galutinį (vid.)
+  * galutinį (med.)
 
 ---
 
 ## Programos funkcionalumas
 
-Programa leidžia:
+### 1. Failų generavimas
 
-1. Generuoti testinius studentų failus
-2. Nuskaityti duomenis iš failo
-3. Apskaičiuoti galutinį pažymį:
+Sugeneruojami failai:
 
-   * pagal vidurkį
-   * pagal medianą
-4. Rūšiuoti studentus pagal:
+* studentai1000.txt
+* studentai10000.txt
+* studentai100000.txt
+* studentai1000000.txt
+* studentai10000000.txt
 
-   * vardą
-   * pavardę
-   * galutinį pažymį (vidurkį arba medianą)
-5. Padalinti studentus į dvi grupes:
+### 2. Duomenų apdorojimas
 
-   * vargsiukai (galutinis < 5)
-   * kietiakiai (galutinis ≥ 5)
-6. Išvesti rezultatus į failus
-7. Vykdyti automatinius v1.2 testus
+Atliekama:
 
----
+* nuskaitymas iš failo
+* rūšiavimas
+* skirstymas į:
 
-## v1.2 patobulinimai
+  * vargšiukus (<5)
+  * kietiakus (>=5)
 
-### Rule of Five realizacija
+### 3. Strategijos
 
-`Studentas` klasėje realizuoti visi būtini metodai:
+* 1 strategija – du nauji konteineriai
+* 2 strategija – vienas naujas konteineris
+* 3 strategija – `stable_partition`
 
-* Numatytasis konstruktorius
-* Konstruktorius su parametrais
-* Kopijavimo konstruktorius
-* Perkėlimo konstruktorius
-* Kopijavimo priskyrimo operatorius
-* Perkėlimo priskyrimo operatorius
-* Destruktorius
+### 4. Konteineriai
 
-Tai užtikrina teisingą objektų kūrimą, kopijavimą, perkėlimą ir išvalymą.
+* `std::vector`
+* `std::list`
+* `std::deque`
 
 ---
 
-### Įvesties ir išvesties operatoriai
+## Testavimas (v1.5)
 
-Realizuoti operatoriai:
+### Abstrakti klasė ir paveldimumas
 
-#### `operator>>`
+```
+[OK] Zmogus klase yra abstrakti
+[OK] Studentas paveldi Zmogus duomenis
+```
 
-* Leidžia nuskaityti studentą iš:
-
-  * failo eilutės
-  * įvesties srauto
-* Tikrina duomenų korektiškumą
-* Netinkami duomenys pažymimi kaip klaida
-
-#### `operator<<`
-
-* Leidžia patogiai išvesti studento informaciją:
-
-  * į ekraną
-  * į failą
-* Naudojamas rezultatų failų generavime
-
----
-
-## Testavimas
-
-Programoje įdiegtas testavimo mechanizmas (meniu punktas 5), kuris patikrina visus v1.2 reikalavimus.
-
-### Testų rezultatai
+### Rule of Five
 
 ```
 [OK] Numatytasis konstruktorius
@@ -100,128 +97,133 @@ Programoje įdiegtas testavimo mechanizmas (meniu punktas 5), kuris patikrina vi
 [OK] Kopijavimo priskyrimo operatorius
 [OK] Perkelimo priskyrimo operatorius
 [OK] Destruktorius
+```
+
+### Operatoriai
+
+```
 [OK] Isvesties operatorius <<
 [OK] Ivesties operatorius >> is failo formato
 [OK] Ivesties operatorius >> su blogais duomenimis
 ```
 
-Visi testai sėkmingai įvykdyti.
-
 ---
 
-## Testavimo scenarijai
+## Spartos tyrimai
 
 ### Failų generavimas
 
-Sugeneruoti failai:
-
-* studentai1000.txt
-* studentai10000.txt
-* studentai100000.txt
-* studentai1000000.txt
-* studentai10000000.txt
-
-Pavyzdinis rezultatas:
-
-```
-Failo studentai1000.txt sukūrimo laikas: 0.0609782 s
-Failo studentai10000.txt sukūrimo laikas: 0.0173738 s
-Failo studentai100000.txt sukūrimo laikas: 0.184254 s
-Failo studentai1000000.txt sukūrimo laikas: 1.65333 s
-Failo studentai10000000.txt sukūrimo laikas: 18.4679 s
-```
+| Failas     | Laikas (s) |
+| ---------- | ---------- |
+| 1 000      | 0.060      |
+| 10 000     | 0.016      |
+| 100 000    | 0.149      |
+| 1 000 000  | 2.07       |
+| 10 000 000 | 14.11      |
 
 ---
 
-### Vieno failo apdorojimas
+### Duomenų apdorojimas (vector, 1 strategija)
 
-Naudotas failas:
+#### studentai1000.txt
 
-* studentai1000.txt
+| Veiksmas   | Laikas (s) |
+| ---------- | ---------- |
+| Skaitymas  | 0.034      |
+| Rikiavimas | 0.0069     |
+| Dalijimas  | 0.0011     |
+| Rašymas    | 0.0086     |
+| Bendras    | 0.0508     |
 
-Pasirinkimai:
+#### studentai10000.txt
 
-* Rikiavimas: pagal galutinį pažymį (vidurkį)
-* Konteineris: `std::vector`
-* Strategija: 1 (du nauji konteineriai)
+| Veiksmas   | Laikas (s) |
+| ---------- | ---------- |
+| Skaitymas  | 1.479      |
+| Rikiavimas | 0.115      |
+| Dalijimas  | 0.598      |
+| Rašymas    | 0.050      |
+| Bendras    | 2.243      |
 
-Rezultatai:
+#### studentai100000.txt
 
-```
-Nuskaityta studentu: 1000
-Praleista eiluciu: 0
-Duomenu nuskaitymo laikas: 0.047584 s
-Studentu rikiavimo laikas: 0.002581 s
-Padalinimo laikas: 0.000993 s
-Isvedimo i failus laikas: 0.007709 s
-Bendras veikimo laikas: 0.058867 s
-```
+| Veiksmas   | Laikas (s) |
+| ---------- | ---------- |
+| Skaitymas  | 5.859      |
+| Rikiavimas | 1.526      |
+| Dalijimas  | 0.065      |
+| Rašymas    | 0.491      |
+| Bendras    | 7.941      |
 
-Sukurti failai:
+#### studentai1000000.txt
 
-* studentai1000_vector_s1_vargsiukai.txt
-* studentai1000_vector_s1_kietiakiai.txt
+| Veiksmas   | Laikas (s) |
+| ---------- | ---------- |
+| Skaitymas  | 23.336     |
+| Rikiavimas | 24.463     |
+| Dalijimas  | 0.863      |
+| Rašymas    | 6.344      |
+| Bendras    | 55.006     |
+
+#### studentai10000000.txt
+
+| Veiksmas   | Laikas (s) |
+| ---------- | ---------- |
+| Skaitymas  | 247.961    |
+| Rikiavimas | 371.619    |
+| Dalijimas  | 10.186     |
+| Rašymas    | 153.343    |
+| Bendras    | 783.109    |
 
 ---
 
-### Duomenų pavyzdžiai
+## v1.1 tyrimo rezultatai
 
-#### Pradinio failo formatas
-
-```
-Vardas Pavarde ND1 ND2 ND3 ... Egz.
-Vardas1 Pavarde1 3 10 6 4 5 ... 8
-```
-
-#### Kietiakiai
-
-```
-Vardas    Pavarde    Galutinis (Vid.)    Galutinis (Med.)
-Vardas174 Pavarde174 5.00                4.60
-...
-```
-
-#### Vargšiukai
-
-```
-Vardas    Pavarde    Galutinis (Vid.)    Galutinis (Med.)
-Vardas46  Pavarde46  2.17                2.20
-...
-```
+| Failas  | Skaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
+| ------- | --------- | ---------- | --------- | ------- | ------- |
+| 10 000  | 0.781     | 0.059      | 0.416     | 0.389   | 1.646   |
+| 100 000 | 41.705    | 1.249      | 8.236     | 17.681  | 68.871  |
 
 ---
 
 ## Paleidimas
 
-1. Sukompiliuoti projektą (per CMake arba VS Code)
-2. Paleisti programą
-3. Naudotis meniu:
+```bash
+cmake -S . -B build
+cmake --build build
+.\build\studentu_programa.exe
+```
+
+---
+
+## Meniu
 
 ```
 1 - Generuoti failus
 2 - Apdoroti failą
-3 - Spartos tyrimas
+3 - Spartos tyrimai
 4 - v1.1 tyrimas
-5 - v1.2 testai
+5 - v1.5 testai
 6 - Baigti
 ```
 
 ---
 
-## Išvada
+## Išvados
 
-v1.2 versijoje sėkmingai realizuoti visi reikalavimai:
+* v1.5 sėkmingai įgyvendintas paveldimumas
+* abstrakti klasė veikia teisingai
+* Studentas klasė pilnai suderinama su v1.2 funkcionalumu
+* didžiausi laiko kaštai atsiranda rūšiavime
+* programa korektiškai veikia su dideliais duomenų kiekiais
 
-* Pilnai įgyvendinta Rule of Five
-* Realizuoti ir panaudoti įvesties/išvesties operatoriai
-* Sukurtas testavimo mechanizmas
-* Programa išlieka funkcionali ir efektyvi
-
-Testų nuotraukos:<img width="669" height="215" alt="a96c972d-316f-4a67-a2a0-c6b2233996c8" src="https://github.com/user-attachments/assets/403eb59c-2b5c-4e3a-aed5-fb448570dc13" />
-<img width="1160" height="1079" alt="a3fa14d9-eb37-4bd4-8e89-68321cc591fb" src="https://github.com/user-attachments/assets/7b381132-2ca3-450f-bc2d-a3acf8b21653" />
-<img width="797" height="259" alt="51580366-0a00-4758-afbd-6c0eaed5d7f3" src="https://github.com/user-attachments/assets/8b8c9c7c-5c72-402c-9564-5ef8891d96ce" />
-<img width="1760" height="1275" alt="7deb828e-2ac9-4c72-b534-b06859453045" src="https://github.com/user-attachments/assets/554c74cf-9747-49ca-9533-30c0f8da992b" />
-<img width="927" height="1048" alt="7bc5e064-cc33-44b2-b879-d581d4495ea3" src="https://github.com/user-attachments/assets/ec54dc21-7555-40a2-a6cb-91069e3b87fb" />
-<img width="1259" height="1130" alt="de8c6e1f-2fdf-4754-8975-5ff2a12520c2" src="https://github.com/user-attachments/assets/b6e48993-1207-47f6-b4c1-7352e2263401" />
-<img width="874" height="375" alt="bf8a8eb3-fad3-46ea-ad75-d71c810ffb83" src="https://github.com/user-attachments/assets/fee7c1cb-a556-47ef-b599-d4cb0ff7b21b" />
-
+---
+Testų nuotraukos:
+<img width="817" height="258" alt="5dcc5c34-0195-40b0-a7e1-9f4ac654aadf" src="https://github.com/user-attachments/assets/2206cc08-acbd-4a5c-868f-e665748e02dc" />
+<img width="730" height="343" alt="0af66f61-24c8-472c-b98d-39e3c0863594" src="https://github.com/user-attachments/assets/94226ac8-4aea-4dd1-b138-84b166e6da0b" />
+<img width="812" height="333" alt="d58b7602-da04-4197-bd57-d5c873eba03b" src="https://github.com/user-attachments/assets/c3469500-6398-44b5-9186-cac559dfa055" />
+<img width="1005" height="1037" alt="c35806cf-9732-4cec-a98a-0cf91e13a1e4" src="https://github.com/user-attachments/assets/0018a183-e0c6-435d-a068-d7005b09c4a4" />
+<img width="823" height="841" alt="abf9c829-4b54-4724-ac62-412ba0f82e74" src="https://github.com/user-attachments/assets/fc6d101b-76a7-4a80-a768-071702e377b7" />
+<img width="1169" height="856" alt="5702954a-f148-49f4-8474-0bfe9827d1f0" src="https://github.com/user-attachments/assets/5be43c74-8ce4-4e96-9dd7-6049f24ff5d6" />
+<img width="1555" height="987" alt="70a0c5ac-fbd8-46c8-84c5-0db92d5dc79e" src="https://github.com/user-attachments/assets/1ae66d16-1369-46a4-bda5-2635e740f324" />
+<img width="1648" height="764" alt="9ea19130-077f-46d0-9e85-143cf0308841" src="https://github.com/user-attachments/assets/97c670b1-ddd6-4208-bc38-c19a1efa8e0a" />
