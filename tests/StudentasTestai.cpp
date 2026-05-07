@@ -212,3 +212,58 @@ TEST_CASE("arVargsiukas - riba ties 5.0") {
     CHECK_FALSE(s.arVargsiukas(false));
     CHECK_FALSE(s.arVargsiukas(true));
 }
+
+// ---------------------------------------------------------------------------
+// Srautų operatoriai
+// ---------------------------------------------------------------------------
+
+TEST_CASE("operator<< - isvedami vardas ir pavarde") {
+    Studentas s("Aiste", "Aistaite", {10, 9, 8}, 10);
+    std::ostringstream out;
+    out << s;
+    std::string tekstas = out.str();
+    CHECK(tekstas.find("Aiste") != std::string::npos);
+    CHECK(tekstas.find("Aistaite") != std::string::npos);
+}
+
+TEST_CASE("operator<< - isvedami galutiniai balai") {
+    Studentas s("A", "B", {10}, 10);
+    std::ostringstream out;
+    out << s;
+    std::string tekstas = out.str();
+    CHECK(tekstas.find("10.00") != std::string::npos);
+}
+
+TEST_CASE("operator>> - nuskaitymas is failo formato") {
+    std::istringstream in("Jonas Jonaitis 8 9 10 9\n");
+    Studentas s;
+    in >> s;
+    CHECK(in.good());
+    CHECK(s.vardas() == "Jonas");
+    CHECK(s.pavarde() == "Jonaitis");
+    CHECK(s.pazymiai().size() == 3);
+    CHECK(s.egzaminas() == 9);
+}
+
+TEST_CASE("operator>> - antraste praleidiama") {
+    std::istringstream in("Vardas Pavarde 8 9 10 9\n");
+    Studentas s;
+    in >> s;
+    CHECK(in.fail());
+}
+
+TEST_CASE("operator>> - netinkamas pazymys nustato failbit") {
+    std::istringstream in("Jonas Jonaitis 8 11 9\n");
+    Studentas s;
+    in >> s;
+    CHECK(in.fail());
+}
+
+TEST_CASE("operator>> - galutinis apskaiciuojamas po nuskaitymo") {
+    std::istringstream in("Jonas Jonaitis 10 10\n");
+    Studentas s;
+    in >> s;
+    CHECK(in.good());
+    // vidurkis = 10, egz = 10, galutinis = 10.0
+    CHECK(s.galutinisVid() == doctest::Approx(10.0));
+}
