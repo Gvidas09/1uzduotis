@@ -115,8 +115,8 @@ Testai parašyti TDD principu naudojant **doctest** framework. Testų failas: `t
 [doctest] doctest version is "2.4.11"
 [doctest] run with "--help" for options
 ===============================================================================
-[doctest] test cases: 32 | 32 passed | 0 failed | 0 skipped
-[doctest] assertions: 78 | 78 passed | 0 failed |
+[doctest] test cases: 33 | 33 passed | 0 failed | 0 skipped
+[doctest] assertions: 73 | 73 passed | 0 failed |
 [doctest] Status: SUCCESS!
 ```
 
@@ -197,12 +197,36 @@ Galutinis balas skaičiuojamas pagal formulę:
 
 ---
 
-## Testų nuotraukos
+## v2.0 ekrano nuotraukos
 
-<img width="669" height="215" alt="a96c972d-316f-4a67-a2a0-c6b2233996c8" src="https://github.com/user-attachments/assets/403eb59c-2b5c-4e3a-aed5-fb448570dc13" />
-<img width="1160" height="1079" alt="a3fa14d9-eb37-4bd4-8e89-68321cc591fb" src="https://github.com/user-attachments/assets/7b381132-2ca3-450f-bc2d-a3acf8b21653" />
-<img width="797" height="259" alt="51580366-0a00-4758-afbd-6c0eaed5d7f3" src="https://github.com/user-attachments/assets/8b8c9c7c-5c72-402c-9564-5ef8891d96ce" />
-<img width="1760" height="1275" alt="7deb828e-2ac9-4c72-b534-b06857453045" src="https://github.com/user-attachments/assets/554c74cf-9747-49ca-9533-30c0f8da992b" />
-<img width="927" height="1048" alt="7bc5e064-cc33-44b2-b879-d581d4495ea3" src="https://github.com/user-attachments/assets/ec54dc21-7555-40a2-a6cb-91069e3b87fb" />
-<img width="1259" height="1130" alt="de8c6e1f-2fdf-4754-8975-5ff2a12520c2" src="https://github.com/user-attachments/assets/b6e48993-1207-47f6-b4c1-7352e2263401" />
-<img width="874" height="375" alt="bf8a8eb3-fad3-46ea-ad75-d71c810ffb83" src="https://github.com/user-attachments/assets/fee7c1cb-a556-47ef-b599-d4cb0ff7b21b" />
+### Build
+
+CMake projekto surinkimas — abu vykdomieji failai sukompiliuoti sėkmingai.
+
+![Build](images/build.png)
+
+---
+
+### Unit testai
+
+doctest framework paleidimas — 33 testai, 0 klaidų.
+
+![Unit testai](images/testai.png)
+
+---
+
+### Programa — meniu ir v1.5 testai
+
+Pagrindinės programos meniu ir v1.5 paveldimumo testų rezultatai.
+
+![Programa meniu](images/programa.png)
+
+![Programa v1.5 testai](images/programa1.png)
+
+---
+
+### Doxygen dokumentacija
+
+Sugeneruota HTML dokumentacija — `Studentas` klasės aprašymas.
+
+![Doxygen dokumentacija](images/doxygen.png)
