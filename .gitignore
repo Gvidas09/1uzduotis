@@ -39,3 +39,6 @@ studentai*.txt
 # OS failai
 .DS_Store
 Thumbs.db
+
+# Claude Code
+.claude/
