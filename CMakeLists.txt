@@ -35,3 +35,14 @@ target_link_libraries(studentu_testai PRIVATE doctest::doctest)
 
 enable_testing()
 add_test(NAME StudentasTestai COMMAND studentu_testai)
+
+# Doxygen dokumentacija
+find_package(Doxygen QUIET)
+if(DOXYGEN_FOUND)
+    add_custom_target(dokumentacija
+        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/Doxyfile
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        COMMENT "Generuojama Doxygen dokumentacija..."
+        VERBATIM
+    )
+endif()

@@ -1,0 +1,24 @@
+# Doxygen konfigūracija — Studentų pažymių programa v2.0
+
+PROJECT_NAME           = "Studentu pazymiu programa"
+PROJECT_NUMBER         = 2.0
+PROJECT_BRIEF          = "Studentu duomenu apdorojimo programa su paveldimumu ir Rule of Five"
+
+OUTPUT_DIRECTORY       = docs
+
+INPUT                  = Zmogus.h Studentas.h
+RECURSIVE              = NO
+
+GENERATE_HTML          = YES
+HTML_OUTPUT            = html
+
+GENERATE_LATEX         = YES
+LATEX_OUTPUT           = latex
+
+EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = YES
+
+HAVE_DOT               = NO
+QUIET                  = YES
+WARNINGS               = YES

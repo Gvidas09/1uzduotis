@@ -1,5 +1,8 @@
 # Build katalogai
 build/
+
+# Sugeneruota Doxygen dokumentacija
+docs/
 cmake-build-*/
 out/
 bin/
