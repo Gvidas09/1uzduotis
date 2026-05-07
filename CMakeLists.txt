@@ -17,6 +17,7 @@ add_executable(studentu_programa
 )
 
 # Unit testai su doctest
+set(CMAKE_POLICY_VERSION_MINIMUM 3.5)
 include(FetchContent)
 FetchContent_Declare(
     doctest
