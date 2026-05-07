@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(StudentuProgramaV1)
+project(StudentuProgramaV2)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -15,3 +15,23 @@ add_executable(studentu_programa
     Tyrimai.cpp
     Testai.cpp
 )
+
+# Unit testai su doctest
+include(FetchContent)
+FetchContent_Declare(
+    doctest
+    GIT_REPOSITORY https://github.com/doctest/doctest.git
+    GIT_TAG v2.4.11
+)
+FetchContent_MakeAvailable(doctest)
+
+add_executable(studentu_testai
+    tests/StudentasTestai.cpp
+    Zmogus.cpp
+    Studentas.cpp
+)
+target_include_directories(studentu_testai PRIVATE ${CMAKE_SOURCE_DIR})
+target_link_libraries(studentu_testai PRIVATE doctest::doctest)
+
+enable_testing()
+add_test(NAME StudentasTestai COMMAND studentu_testai)
