@@ -7,6 +7,9 @@
 template<typename T>
 class Vector {
 public:
+    using iterator       = T*;
+    using const_iterator = const T*;
+
     Vector() : data_(nullptr), size_(0), capacity_(0) {}
 
     ~Vector() {
@@ -71,6 +74,13 @@ public:
 
     T*       data()       noexcept { return data_; }
     const T* data() const noexcept { return data_; }
+
+    iterator       begin()        noexcept { return data_; }
+    iterator       end()          noexcept { return data_ + size_; }
+    const_iterator begin()  const noexcept { return data_; }
+    const_iterator end()    const noexcept { return data_ + size_; }
+    const_iterator cbegin() const noexcept { return data_; }
+    const_iterator cend()   const noexcept { return data_ + size_; }
 
     T&       operator[](size_t i)       { return data_[i]; }
     const T& operator[](size_t i) const { return data_[i]; }
