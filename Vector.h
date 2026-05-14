@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <initializer_list>
+#include <utility>
 
 template<typename T>
 class Vector {
@@ -28,6 +29,19 @@ public:
         : data_(new T[other.capacity_]), size_(other.size_), capacity_(other.capacity_) {
         for (size_t i = 0; i < size_; ++i)
             data_[i] = other.data_[i];
+    }
+
+    Vector(Vector&& other) noexcept
+        : data_(other.data_), size_(other.size_), capacity_(other.capacity_) {
+        other.data_     = nullptr;
+        other.size_     = 0;
+        other.capacity_ = 0;
+    }
+
+    void swap(Vector& other) noexcept {
+        std::swap(data_,     other.data_);
+        std::swap(size_,     other.size_);
+        std::swap(capacity_, other.capacity_);
     }
 
 private:
