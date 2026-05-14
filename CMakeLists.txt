@@ -34,8 +34,15 @@ add_executable(studentu_testai
 target_include_directories(studentu_testai PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(studentu_testai PRIVATE doctest::doctest)
 
+add_executable(vektoriaus_testai
+    tests/VectorTestai.cpp
+)
+target_include_directories(vektoriaus_testai PRIVATE ${CMAKE_SOURCE_DIR})
+target_link_libraries(vektoriaus_testai PRIVATE doctest::doctest)
+
 enable_testing()
 add_test(NAME StudentasTestai COMMAND studentu_testai)
+add_test(NAME VectorTestai    COMMAND vektoriaus_testai)
 
 # Doxygen dokumentacija
 find_package(Doxygen QUIET)
