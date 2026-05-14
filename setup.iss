@@ -10,23 +10,22 @@ OutputBaseFilename=StudentuPrograma_v3.0_setup
 Compression=lzma
 SolidCompression=yes
 WizardStyle=modern
+PrivilegesRequired=admin
 
 [Languages]
 Name: "lithuanian"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
-Name: "desktopicon"; Description: "Sukurti nuorodą darbalaukyje"; GroupDescription: "Papildomos nuorodos:"; Flags: unchecked
+Name: "desktopicon"; Description: "Sukurti nuoroda darbalaukyje"; GroupDescription: "Papildomos nuorodos:"
 
 [Files]
-Source: "build\Release\studentu_programa.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\Release\vektoriaus_testai.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "build\Release\studentu_testai.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "main.exe"; DestDir: "{app}"; DestName: "studentu_programa.exe"; Flags: ignoreversion
 Source: "README.md"; DestDir: "{app}"; Flags: ignoreversion
+Source: "studentai10000.txt"; DestDir: "{app}"; Flags: ignoreversion
+Source: "studentai100000.txt"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\Studentu programa"; Filename: "{app}\studentu_programa.exe"
-Name: "{group}\Vector testai"; Filename: "{app}\vektoriaus_testai.exe"
-Name: "{group}\Studentas testai"; Filename: "{app}\studentu_testai.exe"
 Name: "{group}\{cm:UninstallProgram,Studentu programa}"; Filename: "{uninstallexe}"
 Name: "{autodesktop}\Studentu programa"; Filename: "{app}\studentu_programa.exe"; Tasks: desktopicon
 
