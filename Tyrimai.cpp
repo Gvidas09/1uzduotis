@@ -92,6 +92,25 @@ bool apdoroti_faila_pagal_pasirinkima(const string& failas, int kriterijus, int 
     return apdoroti_faila_su_konteineriu<deque<Studentas>>(failas, kriterijus, strategija, "std::deque", rez);
 }
 
+template<typename Container>
+std::pair<double, int> matuoti_pushback(std::size_t n) {
+    Container c;
+    int perskirstymai = 0;
+    std::size_t prev_cap = c.capacity();
+
+    auto start = high_resolution_clock::now();
+    for (std::size_t i = 0; i < n; ++i) {
+        c.push_back(static_cast<int>(i));
+        if (c.capacity() != prev_cap) {
+            ++perskirstymai;
+            prev_cap = c.capacity();
+        }
+    }
+    auto end = high_resolution_clock::now();
+
+    return { duration<double>(end - start).count(), perskirstymai };
+}
+
 void prideti_i_vidurkius(Vidurkiai& v, const TyrimoRezultatai& rez) {
     v.laikai.nuskaitymo += rez.laikai.nuskaitymo;
     v.laikai.rikiavimo += rez.laikai.rikiavimo;
@@ -307,6 +326,43 @@ void vykdyti_v11_tyrima() {
     }
 
     std::cout << "\nSiuos rezultatus naudok README lentelems, kai lyginsi v1.0 ir v1.1 bei O1/O2/O3.\n";
+}
+
+void vykdyti_pushback_tyrima() {
+    const std::vector<std::pair<std::string, std::size_t>> dydziai = {
+        {"10K",   10'000ULL},
+        {"100K",  100'000ULL},
+        {"1M",    1'000'000ULL},
+        {"10M",   10'000'000ULL},
+        {"100M",  100'000'000ULL}
+    };
+
+    cout << "\nPUSH_BACK TYRIMAS - std::vector<int> vs Vector<int>\n";
+    cout << std::left
+         << std::setw(8)  << "Kiekis"
+         << std::setw(20) << "std::vector (s)"
+         << std::setw(16) << "Vector (s)"
+         << std::setw(22) << "std::vector persk."
+         << std::setw(16) << "Vector persk."
+         << "\n";
+    cout << std::string(82, '-') << "\n";
+    cout << std::fixed << std::setprecision(6);
+
+    for (const auto& [pavadinimas, n] : dydziai) {
+        auto [sv_laikas, sv_persk] = matuoti_pushback<std::vector<int>>(n);
+        auto [v_laikas,  v_persk]  = matuoti_pushback<Vector<int>>(n);
+
+        cout << std::left
+             << std::setw(8)  << pavadinimas
+             << std::setw(20) << sv_laikas
+             << std::setw(16) << v_laikas
+             << std::setw(22) << sv_persk
+             << std::setw(16) << v_persk
+             << "\n";
+    }
+
+    cout << "\nPastaba: abu konteineriai naudoja dvigubinio augimo strategija.\n";
+    cout << "100M atveju reikalinga ~400MB laisvos RAM.\n";
 }
 
 void vykdyti_vector_failu_tyrima() {
