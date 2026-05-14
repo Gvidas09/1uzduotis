@@ -24,6 +24,12 @@ public:
             data_[i++] = val;
     }
 
+    Vector(const Vector& other)
+        : data_(new T[other.capacity_]), size_(other.size_), capacity_(other.capacity_) {
+        for (size_t i = 0; i < size_; ++i)
+            data_[i] = other.data_[i];
+    }
+
 private:
     T*     data_;
     size_t size_;
