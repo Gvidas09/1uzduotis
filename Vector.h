@@ -57,6 +57,23 @@ public:
         return *this;
     }
 
+    void push_back(const T& val) {
+        if (size_ >= capacity_)
+            reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+        data_[size_++] = val;
+    }
+
+    void push_back(T&& val) {
+        if (size_ >= capacity_)
+            reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+        data_[size_++] = std::move(val);
+    }
+
+    void pop_back() {
+        if (size_ > 0)
+            --size_;
+    }
+
     void reserve(size_t n) {
         if (n > capacity_)
             reallocate(n);
