@@ -1,13 +1,15 @@
-# Doxygen konfigūracija — Studentų pažymių programa v2.0
+# Doxygen konfigūracija — Studentų pažymių programa v3.0
 
 PROJECT_NAME           = "Studentu pazymiu programa"
-PROJECT_NUMBER         = 2.0
-PROJECT_BRIEF          = "Studentu duomenu apdorojimo programa su paveldimumu ir Rule of Five"
+PROJECT_NUMBER         = 3.0
+PROJECT_BRIEF          = "Studentu duomenu apdorojimo programa su sava Vector<T> klase"
 
 OUTPUT_DIRECTORY       = docs
 
-INPUT                  = Zmogus.h Studentas.h
-RECURSIVE              = NO
+INPUT                  = .
+RECURSIVE              = YES
+
+FILE_PATTERNS          = *.h *.cpp
 
 GENERATE_HTML          = YES
 HTML_OUTPUT            = html
