@@ -57,8 +57,30 @@ public:
         return *this;
     }
 
+    void reserve(size_t n) {
+        if (n > capacity_)
+            reallocate(n);
+    }
+
+    void resize(size_t n, const T& val = T{}) {
+        if (n > capacity_)
+            reallocate(n);
+        for (size_t i = size_; i < n; ++i)
+            data_[i] = val;
+        size_ = n;
+    }
+
 private:
     T*     data_;
     size_t size_;
     size_t capacity_;
+
+    void reallocate(size_t new_cap) {
+        T* new_data = new T[new_cap];
+        for (size_t i = 0; i < size_; ++i)
+            new_data[i] = std::move(data_[i]);
+        delete[] data_;
+        data_     = new_data;
+        capacity_ = new_cap;
+    }
 };
