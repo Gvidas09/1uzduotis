@@ -150,19 +150,88 @@ Iš viso: **38 testų, 118 teiginių, 0 klaidų.**
 
 ---
 
+## `Vector<T>` naudojimo pavyzdžiai
+
+### 1. `push_back` — elementų pridėjimas
+
+```cpp
+Vector<int> v;
+v.push_back(10);
+v.push_back(20);
+v.push_back(30);
+// v = {10, 20, 30}, size=3
+```
+
+### 2. `reserve` ir `capacity` — atminties rezervavimas
+
+```cpp
+Vector<int> v;
+v.reserve(100);            // rezervuoja vietą 100 elementų
+// v.size() == 0, v.capacity() == 100
+for (int i = 0; i < 100; ++i)
+    v.push_back(i);        // nė vieno perskirstymo
+```
+
+### 3. `resize` — dydžio keitimas su numatytąja reikšme
+
+```cpp
+Vector<int> v = {1, 2, 3};
+v.resize(6, 99);           // {1, 2, 3, 99, 99, 99}
+v.resize(2);               // {1, 2}
+```
+
+### 4. `insert` — įterpimas į nurodytą poziciją
+
+```cpp
+Vector<int> v = {1, 3, 4};
+auto it = v.insert(v.begin() + 1, 2);  // {1, 2, 3, 4}
+// *it == 2
+```
+
+### 5. `erase` — elemento pašalinimas
+
+```cpp
+Vector<int> v = {10, 20, 30, 40};
+auto it = v.erase(v.begin() + 1);  // pašalina 20 → {10, 30, 40}
+// *it == 30
+```
+
+### 6. `at` ir `operator[]` — prieiga prie elementų
+
+```cpp
+Vector<int> v = {5, 10, 15};
+int x = v[0];              // 5 — be patikrinimo
+int y = v.at(2);           // 15 — su patikrinimų
+v.at(5);                   // meta std::out_of_range
+```
+
+### 7. `shrink_to_fit` — atminties sumažinimas iki dydžio
+
+```cpp
+Vector<int> v;
+v.reserve(1000);
+v.push_back(1);
+v.push_back(2);
+// v.capacity() == 1000, v.size() == 2
+v.shrink_to_fit();
+// v.capacity() == 2
+```
+
+---
+
 ## Greičio palyginimas: `push_back`
 
-`Vector<int>` vs `std::vector<int>` — `push_back` operacijos laikas (s):
+`Vector<int>` vs `std::vector<int>` — `push_back` operacijos laikas (s) ir perskirstymų skaičius:
 
-| Elementų skaičius | `std::vector` (s) | `Vector<T>` (s) | Perskirstymai |
-|---|---|---|---|
-| 10 000 | ~0.000 | ~0.000 | 14 |
-| 100 000 | ~0.001 | ~0.001 | 17 |
-| 1 000 000 | ~0.010 | ~0.010 | 20 |
-| 10 000 000 | ~0.100 | ~0.100 | 24 |
-| 100 000 000 | ~1.000 | ~1.000 | 27 |
+| Elementų skaičius | `std::vector` (s) | `Vector<T>` (s) | `std::vector` persk. | `Vector` persk. |
+|---|---|---|---|---|
+| 10 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
+| 100 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
+| 1 000 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
+| 10 000 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
+| 100 000 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
 
-> Perskirstymų skaičius tinka abiem konteineriams (dvigubėjimo strategija: ⌈log₂(n)⌉ + 1).
+> Rezultatai gaunami paleidus meniu punktą **6**. Abu konteineriai naudoja dvigubėjimo augimo strategiją.
 
 ---
 
@@ -170,29 +239,31 @@ Iš viso: **38 testų, 118 teiginių, 0 klaidų.**
 
 `std::vector<Studentas>` vs `Vector<Studentas>` — visų etapų laikas (s):
 
+Visos operacijos matuojamos viename paleidime su tuo pačiu konteineriu. Laikai sekundėmis.
+
 ### studentai100000.txt (100 000 įrašų)
 
-| Strategija | Konteineris | Skaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
+| Strategija | Konteineris | Skaitymas (s) | Rikiavimas (s) | Skirstymas (s) | Rašymas (s) | Bendras (s) |
 |---|---|---|---|---|---|---|
-| 1 | std::vector | — | — | — | — | — |
-| 1 | Vector | — | — | — | — | — |
-| 2 | std::vector | — | — | — | — | — |
-| 2 | Vector | — | — | — | — | — |
-| 3 | std::vector | — | — | — | — | — |
-| 3 | Vector | — | — | — | — | — |
+| 1 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 1 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 2 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 2 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 3 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 3 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
 
 ### studentai1000000.txt (1 000 000 įrašų)
 
-| Strategija | Konteineris | Skaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
+| Strategija | Konteineris | Skaitymas (s) | Rikiavimas (s) | Skirstymas (s) | Rašymas (s) | Bendras (s) |
 |---|---|---|---|---|---|---|
-| 1 | std::vector | — | — | — | — | — |
-| 1 | Vector | — | — | — | — | — |
-| 2 | std::vector | — | — | — | — | — |
-| 2 | Vector | — | — | — | — | — |
-| 3 | std::vector | — | — | — | — | — |
-| 3 | Vector | — | — | — | — | — |
+| 1 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 1 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 2 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 2 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 3 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
+| 3 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
 
-> Tikslius rezultatus galima gauti paleidus meniu punktą **7** arba **6**.
+> Rezultatai gaunami paleidus meniu punktą **7** su sugeneruotais failais.
 
 ---
 
