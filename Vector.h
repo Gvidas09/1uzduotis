@@ -44,6 +44,19 @@ public:
         std::swap(capacity_, other.capacity_);
     }
 
+    Vector& operator=(const Vector& other) {
+        if (this != &other) {
+            Vector tmp(other);
+            swap(tmp);
+        }
+        return *this;
+    }
+
+    Vector& operator=(Vector&& other) noexcept {
+        swap(other);
+        return *this;
+    }
+
 private:
     T*     data_;
     size_t size_;
