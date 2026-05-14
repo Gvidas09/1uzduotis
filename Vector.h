@@ -1,6 +1,7 @@
 #pragma once
 #include <cstddef>
 #include <initializer_list>
+#include <stdexcept>
 #include <utility>
 
 template<typename T>
@@ -70,6 +71,18 @@ public:
 
     T*       data()       noexcept { return data_; }
     const T* data() const noexcept { return data_; }
+
+    T&       operator[](size_t i)       { return data_[i]; }
+    const T& operator[](size_t i) const { return data_[i]; }
+
+    T& at(size_t i) {
+        if (i >= size_) throw std::out_of_range("Vector::at: indeksas uz ribo");
+        return data_[i];
+    }
+    const T& at(size_t i) const {
+        if (i >= size_) throw std::out_of_range("Vector::at: indeksas uz ribo");
+        return data_[i];
+    }
 
     void shrink_to_fit() {
         if (size_ < capacity_)
