@@ -44,5 +44,5 @@ Thumbs.db
 # Inno Setup sukurtas diegimo paketas
 installer/
 
-# Claude Code
+# Lokali konfigūracija
 .claude/
