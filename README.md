@@ -4,13 +4,18 @@
 
 Ši programa skirta studentų duomenų apdorojimui: pažymių nuskaitymui, galutinio balo skaičiavimui, rūšiavimui bei studentų skirstymui į grupes. Projektas realizuotas naudojant C++17, laikantis objektinio programavimo principų.
 
+Ši v3.0 versija yra ankstesnių v1.5/v2.0 projekto versijų tęsinys.
+
 v3.0 versijoje pridėta:
 
-* **Savos `Vector<T>` klasės** implementacija — pilnas `std::vector` analogas su savo atminties valdymu
-* **Unit testai** `Vector<T>` klasei naudojant [doctest](https://github.com/doctest/doctest) (38 testai, 118 teiginių)
-* **`std::vector<Studentas>` pakeistas `Vector<Studentas>`** pagrindiniam failų apdorojimui
-* **Greičio palyginimas** — `Vector<T>` vs `std::vector` `push_back` operacija
-* **Studentų failų apdorojimo palyginimas** — `Vector<Studentas>` vs `std::vector<Studentas>`
+* Savos `Vector<T>` klasės implementacija — `std::vector` tipo konteineris, padengiantis didžiąją dalį pagrindinio funkcionalumo
+* Unit testai `Vector<T>` klasei naudojant [doctest](https://github.com/doctest/doctest)
+* `std::vector<Studentas>` pakeistas `Vector<Studentas>` spartos tyrimuose
+* Greičio palyginimas — `Vector<T>` vs `std::vector`
+* Studentų failų apdorojimo palyginimas
+* Doxygen dokumentacija
+* CMake projektas
+* Setup.exe diegimo paketo paruošimas naudojant Inno Setup
 
 ---
 
@@ -18,9 +23,9 @@ v3.0 versijoje pridėta:
 
 | Klasė | Tipas | Aprašymas |
 |---|---|---|
-| `Zmogus` | Abstrakti bazinė | Saugo vardą ir pavardę; grynai virtualus destruktorius |
-| `Studentas` | Išvestinė iš `Zmogus` | Namų darbų pažymiai, egzaminas, galutinis balas |
-| `Vector<T>` | Šabloninis konteineris | Savos `std::vector` implementacija su Rule of Five |
+| `Zmogus` | Abstrakti bazinė | Saugo vardą ir pavardę; turi virtualų destruktorių |
+| `Studentas` | Išvestinė klasė | Namų darbų pažymiai, egzaminas, galutinis balas |
+| `Vector<T>` | Šabloninis konteineris | Savos realizacijos dinaminis konteineris |
 
 ---
 
@@ -35,7 +40,7 @@ v3.0 versijoje pridėta:
 | 5 | v1.5 paveldimumo ir abstrakčios klasės testai |
 | 6 | `Vector<T>` push_back greičio palyginimas su `std::vector` |
 | 7 | `Vector<Studentas>` vs `std::vector<Studentas>` failų apdorojimas |
-| 8 | Baigti |
+| 8 | Baigti programą |
 
 ---
 
@@ -44,12 +49,13 @@ v3.0 versijoje pridėta:
 | Technologija | Paskirtis |
 |---|---|
 | C++17 | Pagrindinis standartas |
-| `Vector<T>` (savas) | Pagrindinis v3.0 konteineris studentų apdorojimui |
-| STL (`vector`, `list`, `deque`) | Konteineriai greičio palyginimui |
+| `Vector<T>` | Savos realizacijos konteineris |
+| STL (`vector`, `list`, `deque`) | Konteineriai palyginimams |
 | `ifstream` / `ofstream` | Failų skaitymas ir rašymas |
-| [doctest v2.4.11](https://github.com/doctest/doctest) | Unit testų framework |
-| Doxygen | Kodo dokumentacija |
-| CMake 3.16+ | Projekto surinkimas |
+| doctest | Unit testų framework |
+| Doxygen | Dokumentacijos generavimas |
+| CMake | Projekto surinkimas |
+| Inno Setup | Setup.exe generavimas |
 
 ---
 
@@ -57,45 +63,40 @@ v3.0 versijoje pridėta:
 
 ### Reikalavimai
 
-* CMake 3.16 ar naujesnė versija
-* C++17 palaikantis kompiliatorius (GCC, Clang, MSVC)
-* Interneto ryšys (pirmo surinkimo metu CMake atsisiunčia doctest)
-* Doxygen (neprivaloma, dokumentacijos generavimui)
+* CMake 3.16+
+* C++17 palaikantis kompiliatorius
+* Git
+* Doxygen (nebūtina)
+* Inno Setup (nebūtina setup.exe generavimui)
 
-### Surinkimo žingsniai
+---
+
+### Projekto klonavimas
 
 ```bash
-# 1. Klonuoti repozitoriją
 git clone https://github.com/Gvidas09/1uzduotis.git
 cd 1uzduotis
-
-# 2. Sukurti build katalogą ir konfigūruoti
-cmake -B build
-
-# 3. Sukompiliuoti
-cmake --build build
 ```
 
-Po surinkimo `build/` kataloge bus trys vykdomieji failai:
+### Surinkimas
 
-| Failas | Paskirtis |
-|---|---|
-| `studentu_programa` | Pagrindinė programa |
-| `studentu_testai` | `Studentas` unit testai |
-| `vektoriaus_testai` | `Vector<T>` unit testai |
+```bash
+cmake -B build
+cmake --build build --config Release
+```
 
 ---
 
 ## Paleidimas
 
 ```bash
-# Pagrindinė programa
 ./build/studentu_programa
+```
 
-# Studentas unit testai
+Unit testai:
+
+```bash
 ./build/studentu_testai
-
-# Vector<T> unit testai
 ./build/vektoriaus_testai
 ```
 
@@ -105,211 +106,278 @@ Po surinkimo `build/` kataloge bus trys vykdomieji failai:
 
 ### `Studentas` testai
 
-Testų failas: `tests/StudentasTestai.cpp`.
+Testų failas: `tests/StudentasTestai.cpp`
 
 | Sritis | Testų skaičius |
 |---|---|
 | Konstruktoriai ir Rule of Five | 9 |
-| `Zmogus` abstrakcija ir paveldimumas | 2 |
-| Skaičiavimai (vidurkis, mediana, galutinis) | 7 |
-| Validacija (`arTinkamasPazymys`, exception) | 3 |
-| `arVargsiukas` (abu kriterijai, riba) | 5 |
-| Srautų operatoriai (`>>`, `<<`) | 6 |
+| Paveldimumas ir abstrakcija | 2 |
+| Galutinio balo skaičiavimai | 7 |
+| Validacija ir exception | 3 |
+| `arVargsiukas()` testai | 5 |
+| Srautų operatoriai | 6 |
+
+---
 
 ### `Vector<T>` testai
 
-Testų failas: `tests/VectorTestai.cpp`.
+Testų failas: `tests/VectorTestai.cpp`
 
 | Sritis | Testų skaičius |
 |---|---|
-| Konstruktoriai (numatytasis, dydis+reikšmė, initializer_list) | 3 |
-| Rule of Five (kopijavimas, perkėlimas, priskyrimas, destruktorius) | 6 |
-| `push_back` (augimas, capacity dvigubėjimas, po pop_back) | 5 |
-| `pop_back` (dydžio mažinimas, tuščias vektorius) | 3 |
-| `reserve` ir `resize` | 5 |
-| `operator[]`, `at`, `front`, `back`, `data` | 4 |
-| Iteratoriai (`begin`/`end`, `std::sort`, `cbegin`/`cend`) | 3 |
-| `insert` (pradžia, pabaiga, vidurys, perskirstymas) | 5 |
-| `erase` (pirmas, paskutinis, vidurys, iki tuščio) | 4 |
+| Konstruktoriai | 3 |
+| Rule of Five | 6 |
+| `push_back` | 5 |
+| `pop_back` | 3 |
+| `reserve` / `resize` | 5 |
+| `operator[]`, `at`, `front`, `back` | 4 |
+| Iteratoriai | 3 |
+| `insert` | 5 |
+| `erase` | 4 |
 
-Iš viso: **38 testų, 118 teiginių, 0 klaidų.**
+Iš viso:
+
+* **38 testai**
+* **118 teiginių**
+* **0 klaidų**
 
 ---
 
-## `Vector<T>` implementacija
+# `Vector<T>` implementacija
 
-`Vector<T>` klasė realizuota `Vector.h` faile kaip C++17 šabloninė klasė. Pagrindiniai aspektai:
+`Vector<T>` realizuotas `Vector.h` faile kaip šabloninė C++17 klasė.
+
+## Pagrindinės savybės
 
 | Savybė | Realizacija |
 |---|---|
-| Atminties valdymas | Žalieji rodykliai (`new[]` / `delete[]`) |
-| Augimo strategija | Dvigubėjimas (`capacity * 2`) |
-| Rule of Five | Kopijavimas, perkėlimas, priskyrimas, destruktorius |
-| Iteratoriai | Žalieji rodykliai (`T*`) |
-| `value_type` alias | Reikalingas `std::back_inserter` palaikymui |
+| Atminties valdymas | `new[]` / `delete[]` |
+| Augimo strategija | Capacity dvigubėjimas |
+| Rule of Five | Pilnai realizuota |
+| Iteratoriai | `T*` pagrindu |
+| `value_type` | Palaikomas |
 
 ---
 
-## `Vector<T>` naudojimo pavyzdžiai
+# `Vector<T>` naudojimo pavyzdžiai
 
-### 1. `push_back` — elementų pridėjimas
+## 1. `push_back`
 
 ```cpp
 Vector<int> v;
+
 v.push_back(10);
 v.push_back(20);
 v.push_back(30);
-// v = {10, 20, 30}, size=3
 ```
 
-### 2. `reserve` ir `capacity` — atminties rezervavimas
+---
+
+## 2. `reserve`
 
 ```cpp
 Vector<int> v;
-v.reserve(100);            // rezervuoja vietą 100 elementų
-// v.size() == 0, v.capacity() == 100
+
+v.reserve(100);
+
 for (int i = 0; i < 100; ++i)
-    v.push_back(i);        // nė vieno perskirstymo
+    v.push_back(i);
 ```
 
-### 3. `resize` — dydžio keitimas su numatytąja reikšme
+---
+
+## 3. `resize`
 
 ```cpp
 Vector<int> v = {1, 2, 3};
-v.resize(6, 99);           // {1, 2, 3, 99, 99, 99}
-v.resize(2);               // {1, 2}
+
+v.resize(6, 99);
+v.resize(2);
 ```
 
-### 4. `insert` — įterpimas į nurodytą poziciją
+---
+
+## 4. `insert`
 
 ```cpp
 Vector<int> v = {1, 3, 4};
-auto it = v.insert(v.begin() + 1, 2);  // {1, 2, 3, 4}
-// *it == 2
+
+v.insert(v.begin() + 1, 2);
 ```
 
-### 5. `erase` — elemento pašalinimas
+---
+
+## 5. `erase`
 
 ```cpp
 Vector<int> v = {10, 20, 30, 40};
-auto it = v.erase(v.begin() + 1);  // pašalina 20 → {10, 30, 40}
-// *it == 30
+
+v.erase(v.begin() + 1);
 ```
 
-### 6. `at` ir `operator[]` — prieiga prie elementų
+---
+
+## 6. `at` ir `operator[]`
 
 ```cpp
 Vector<int> v = {5, 10, 15};
-int x = v[0];              // 5 — be patikrinimo
-int y = v.at(2);           // 15 — su patikrinimų
-v.at(5);                   // meta std::out_of_range
+
+int x = v[0];
+int y = v.at(2);
 ```
 
-### 7. `shrink_to_fit` — atminties sumažinimas iki dydžio
+---
+
+## 7. `shrink_to_fit`
 
 ```cpp
 Vector<int> v;
+
 v.reserve(1000);
+
 v.push_back(1);
 v.push_back(2);
-// v.capacity() == 1000, v.size() == 2
+
 v.shrink_to_fit();
-// v.capacity() == 2
 ```
 
 ---
 
-## Greičio palyginimas: `push_back`
+# Greičio palyginimas: `push_back`
 
-`Vector<int>` vs `std::vector<int>` — `push_back` operacijos laikas (s) ir perskirstymų skaičius:
+`Vector<int>` vs `std::vector<int>`
 
 | Elementų skaičius | `std::vector` (s) | `Vector<T>` (s) | `std::vector` persk. | `Vector` persk. |
 |---|---|---|---|---|
-| 10 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
-| 100 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
-| 1 000 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
-| 10 000 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
-| 100 000 000 | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO | REIKIA ĮRAŠYTI PO TESTAVIMO |
+| 10 000 | 0.000278 | 0.000144 | 15 | 15 |
+| 100 000 | 0.002930 | 0.001571 | 18 | 18 |
+| 1 000 000 | 0.025181 | 0.009547 | 21 | 21 |
+| 10 000 000 | 0.246713 | 0.103607 | 25 | 25 |
+| 100 000 000 | 2.656239 | 1.110131 | 28 | 28 |
 
-> Rezultatai gaunami paleidus meniu punktą **6**. Abu konteineriai naudoja dvigubėjimo augimo strategiją.
-
----
-
-## Greičio palyginimas: studentų failų apdorojimas
-
-`std::vector<Studentas>` vs `Vector<Studentas>` — visų etapų laikas (s):
-
-Visos operacijos matuojamos viename paleidime su tuo pačiu konteineriu. Laikai sekundėmis.
-
-### studentai100000.txt (100 000 įrašų)
-
-| Strategija | Konteineris | Skaitymas (s) | Rikiavimas (s) | Skirstymas (s) | Rašymas (s) | Bendras (s) |
-|---|---|---|---|---|---|---|
-| 1 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 1 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 2 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 2 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 3 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 3 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-
-### studentai1000000.txt (1 000 000 įrašų)
-
-| Strategija | Konteineris | Skaitymas (s) | Rikiavimas (s) | Skirstymas (s) | Rašymas (s) | Bendras (s) |
-|---|---|---|---|---|---|---|
-| 1 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 1 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 2 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 2 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 3 | std::vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-| 3 | Vector | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI | REIKIA ĮRAŠYTI |
-
-> Rezultatai gaunami paleidus meniu punktą **7** su sugeneruotais failais.
+> Abu konteineriai naudoja dvigubėjimo augimo strategiją (`capacity * 2`).
 
 ---
 
-## Failų struktūra
+# Studentų failų apdorojimo palyginimas
 
-```
+## studentai100000.txt
+
+| Strategija | Konteineris | Skaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
+|---|---|---|---|---|---|---|
+| 1 | std::vector | 0.5025 | 1.0588 | 0.0349 | 0.2389 | 1.8350 |
+| 1 | Vector | 0.6485 | 1.5131 | 0.0696 | 0.2881 | 2.5193 |
+| 2 | std::vector | 0.7600 | 1.4534 | 0.0445 | 0.2745 | 2.5324 |
+| 2 | Vector | 0.8281 | 1.7050 | 0.0623 | 0.2873 | 2.8828 |
+| 3 | std::vector | 0.7896 | 1.5045 | 0.1002 | 0.2704 | 2.6647 |
+| 3 | Vector | 0.8760 | 1.5919 | 0.1101 | 0.2854 | 2.8633 |
+
+---
+
+## studentai1000000.txt
+
+| Strategija | Konteineris | Skaitymas | Rikiavimas | Dalijimas | Rašymas | Bendras |
+|---|---|---|---|---|---|---|
+| 1 | std::vector | 6.7690 | 22.0255 | 0.5339 | 3.5838 | 32.9123 |
+| 1 | Vector | 8.2865 | 20.3472 | 0.6542 | 3.0310 | 32.3189 |
+| 2 | std::vector | 6.8462 | 20.6628 | 0.4666 | 2.7872 | 30.7628 |
+| 2 | Vector | 6.9422 | 20.2643 | 0.5504 | 2.9898 | 30.7466 |
+| 3 | std::vector | 6.6424 | 20.2209 | 0.9084 | 2.7765 | 30.5482 |
+| 3 | Vector | 6.8620 | 19.8426 | 1.0544 | 2.7935 | 30.5525 |
+
+---
+
+# Failų struktūra
+
+```text
 1uzduotis/
-├── Vector.h                     ← savas std::vector analogas (v3.0)
-├── Zmogus.h / Zmogus.cpp        ← abstrakti bazinė klasė
-├── Studentas.h / Studentas.cpp  ← pagrindinė klasė
-├── Failai.h / Failai.cpp        ← failų I/O ir skirstymo strategijos
-├── Rikiavimas.h / Rikiavimas.cpp← rikiavimo funkcijos
-├── Ivedimas.h / Ivedimas.cpp    ← meniu ir vartotojo įvedimas
-├── Tyrimai.h / Tyrimai.cpp      ← spartos tyrimai ir palyginimai
-├── Testai.h / Testai.cpp        ← v1.5 paveldimumo testai
-├── main.cpp                     ← programos įėjimo taškas
+├── Vector.h
+├── Studentas.h
+├── Studentas.cpp
+├── Zmogus.h
+├── Failai.cpp
+├── Failai.h
+├── Tyrimai.cpp
+├── Tyrimai.h
 ├── tests/
-│   ├── StudentasTestai.cpp      ← Studentas doctest testai
-│   └── VectorTestai.cpp         ← Vector<T> doctest testai (v3.0)
-├── CMakeLists.txt               ← surinkimo konfigūracija
-├── Doxyfile                     ← Doxygen konfigūracija
-└── .gitignore
+├── docs/
+├── installer/
+├── README.md
+├── CMakeLists.txt
+└── Doxyfile
 ```
 
 ---
 
-## Duomenų failo formatas
+# Duomenų failo formatas
 
-```
+```text
 Vardas Pavarde ND1 ND2 ND3 ... Egz.
-Jonas  Jonaitis 8   9  10    9
+Jonas Jonaitis 8 9 10 9
 ```
 
-Galutinis balas skaičiuojamas pagal formulę:
+Galutinio balo formulė:
 
-> **Galutinis = 0.4 × ND_vidurkis + 0.6 × Egzaminas**
+```text
+Galutinis = 0.4 * ND_vidurkis + 0.6 * Egzaminas
+```
 
 ---
 
-## Versijų istorija
+# Doxygen dokumentacija
 
-| Versija | Pagrindiniai pakeitimai |
+Dokumentacija generuojama naudojant:
+
+```bash
+doxygen Doxyfile
+```
+
+Sugeneruoti HTML failai:
+
+```text
+docs/html/
+```
+
+---
+
+# Setup.exe
+
+Projektui paruoštas Inno Setup skriptas:
+
+```text
+installer/setup.iss
+```
+
+Setup.exe sugeneravimas:
+
+```bash
+build_installer.bat
+```
+
+Diegimo paketas:
+
+* sukuria Start Menu nuorodas,
+* leidžia uninstall,
+* įdiegia programą į `Program Files`,
+* gali sukurti desktop shortcut.
+
+---
+
+# Versijų istorija
+
+| Versija | Pakeitimai |
 |---|---|
-| v3.0 | Savas `Vector<T>`, 38 unit testai, greičio palyginimai |
-| v2.0 | doctest unit testai, Doxygen dokumentacija |
-| v1.5 | `Zmogus` abstrakti bazinė klasė, paveldimumas |
-| v1.2 | Rule of Five, `operator>>`, `operator<<` |
-| v1.1 | Spartos tyrimas su `vector`, `list`, `deque` |
-| v1.0 | Pagrindinė studentų apdorojimo programa |
+| v3.0 | Savos `Vector<T>` klasės realizacija, benchmarkai, testai |
+| v2.0 | Unit testai ir Doxygen |
+| v1.5 | Paveldimumas ir abstrakti klasė |
+| v1.2 | Rule of Five |
+| v1.1 | Spartos tyrimai |
+| v1.0 | Pradinė programos versija |
+
+---
+
+# Autorius
+
+**Gvidas Kučinskas**  
+Vilniaus universitetas  
+Objektinis programavimas (C++)
