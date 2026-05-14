@@ -2,7 +2,8 @@
 build/
 
 # Sugeneruota Doxygen dokumentacija
-docs/
+docs/html/
+docs/latex/
 cmake-build-*/
 out/
 bin/

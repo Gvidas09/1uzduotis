@@ -345,7 +345,7 @@ docs/html/
 Projektui paruoštas Inno Setup skriptas:
 
 ```text
-installer/setup.iss
+setup.iss
 ```
 
 Setup.exe sugeneravimas:
