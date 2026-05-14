@@ -117,6 +117,18 @@ public:
             --size_;
     }
 
+    iterator insert(iterator pos, const T& val) {
+        size_t idx = static_cast<size_t>(pos - data_);
+        if (size_ >= capacity_)
+            reserve(capacity_ == 0 ? 1 : capacity_ * 2);
+        pos = data_ + idx;
+        for (size_t i = size_; i > idx; --i)
+            data_[i] = std::move(data_[i - 1]);
+        data_[idx] = val;
+        ++size_;
+        return data_ + idx;
+    }
+
     void reserve(size_t n) {
         if (n > capacity_)
             reallocate(n);
