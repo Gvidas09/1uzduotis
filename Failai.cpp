@@ -74,7 +74,16 @@ bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int 
 
 void sudaryti_rezultatu_failu_vardus(const std::string& pradinis_failas, const std::string& konteinerio_vardas, int strategija, std::string& vargsiuku_failas, std::string& kietiaku_failas) {
     std::size_t taskas = pradinis_failas.rfind('.');
-    std::string priedas = "_" + konteinerio_vardas + "_s" + std::to_string(strategija);
+
+    std::string saugus_vardas;
+    for (char c : konteinerio_vardas) {
+        if (std::isalnum(static_cast<unsigned char>(c)) || c == '_' || c == '-')
+            saugus_vardas += c;
+        else
+            saugus_vardas += '_';
+    }
+
+    std::string priedas = "_" + saugus_vardas + "_s" + std::to_string(strategija);
 
     if (taskas == std::string::npos) {
         vargsiuku_failas = pradinis_failas + priedas + "_vargsiukai.txt";
