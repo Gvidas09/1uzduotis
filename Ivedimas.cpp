@@ -64,8 +64,10 @@ int meniu() {
     cout << "3 - Vykdyti spartos tyrima visiems sugeneruotiems failams\n";
     cout << "4 - Vykdyti v1.1 fiksuota tyrima README lentelems\n";
     cout << "5 - Vykdyti v1.5 testus\n";
-    cout << "6 - Baigti\n";
-    return ivesti_skaiciu("Pasirinkimas: ", 1, 6);
+    cout << "6 - Vector<T> push_back greicio palyginimas su std::vector\n";
+    cout << "7 - Vector<Studentas> vs std::vector<Studentas> failu apdorojimas\n";
+    cout << "8 - Baigti\n";
+    return ivesti_skaiciu("Pasirinkimas: ", 1, 8);
 }
 
 int pasirinkti_rikiavimo_kriteriju() {

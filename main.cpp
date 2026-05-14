@@ -22,6 +22,12 @@ int main() {
             vykdyti_v15_testus();
         }
         else if (p == 6) {
+            vykdyti_pushback_tyrima();
+        }
+        else if (p == 7) {
+            vykdyti_studentu_palyginima();
+        }
+        else if (p == 8) {
             break;
         }
     }
