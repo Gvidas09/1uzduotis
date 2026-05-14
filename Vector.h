@@ -57,6 +57,25 @@ public:
         return *this;
     }
 
+    size_t size()     const noexcept { return size_; }
+    size_t capacity() const noexcept { return capacity_; }
+    bool   empty()    const noexcept { return size_ == 0; }
+
+    void clear() noexcept { size_ = 0; }
+
+    T&       front()       { return data_[0]; }
+    const T& front() const { return data_[0]; }
+    T&       back()        { return data_[size_ - 1]; }
+    const T& back()  const { return data_[size_ - 1]; }
+
+    T*       data()       noexcept { return data_; }
+    const T* data() const noexcept { return data_; }
+
+    void shrink_to_fit() {
+        if (size_ < capacity_)
+            reallocate(size_);
+    }
+
     void push_back(const T& val) {
         if (size_ >= capacity_)
             reserve(capacity_ == 0 ? 1 : capacity_ * 2);
