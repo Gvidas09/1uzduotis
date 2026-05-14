@@ -269,3 +269,89 @@ TEST_CASE("cbegin ir cend - const iteratoriai") {
         suma += *it;
     CHECK(suma == 60);
 }
+
+// ---------------------------------------------------------------------------
+// insert
+// ---------------------------------------------------------------------------
+
+TEST_CASE("insert pradžioje") {
+    Vector<int> v = {2, 3, 4};
+    auto it = v.insert(v.begin(), 1);
+    CHECK(v.size() == 4);
+    CHECK(v[0] == 1);
+    CHECK(v[1] == 2);
+    CHECK(*it == 1);
+}
+
+TEST_CASE("insert pabaigoje") {
+    Vector<int> v = {1, 2, 3};
+    auto it = v.insert(v.end(), 4);
+    CHECK(v.size() == 4);
+    CHECK(v[3] == 4);
+    CHECK(*it == 4);
+}
+
+TEST_CASE("insert viduryje") {
+    Vector<int> v = {1, 3, 4};
+    auto it = v.insert(v.begin() + 1, 2);
+    CHECK(v.size() == 4);
+    CHECK(v[0] == 1);
+    CHECK(v[1] == 2);
+    CHECK(v[2] == 3);
+    CHECK(*it == 2);
+}
+
+TEST_CASE("insert i tuščią vektorių") {
+    Vector<int> v;
+    auto it = v.insert(v.begin(), 42);
+    CHECK(v.size() == 1);
+    CHECK(v[0] == 42);
+    CHECK(*it == 42);
+}
+
+TEST_CASE("insert su perskirstymu") {
+    Vector<int> v = {1, 2, 3};
+    v.reserve(3);
+    v.insert(v.begin(), 0);
+    CHECK(v.size() == 4);
+    CHECK(v[0] == 0);
+    CHECK(v[1] == 1);
+}
+
+// ---------------------------------------------------------------------------
+// erase
+// ---------------------------------------------------------------------------
+
+TEST_CASE("erase pirmą elementą") {
+    Vector<int> v = {1, 2, 3};
+    auto it = v.erase(v.begin());
+    CHECK(v.size() == 2);
+    CHECK(v[0] == 2);
+    CHECK(*it == 2);
+}
+
+TEST_CASE("erase paskutinį elementą") {
+    Vector<int> v = {1, 2, 3};
+    auto it = v.erase(v.end() - 1);
+    CHECK(v.size() == 2);
+    CHECK(v[1] == 2);
+    CHECK(it == v.end());
+}
+
+TEST_CASE("erase viduryje") {
+    Vector<int> v = {1, 2, 3, 4};
+    auto it = v.erase(v.begin() + 1);
+    CHECK(v.size() == 3);
+    CHECK(v[0] == 1);
+    CHECK(v[1] == 3);
+    CHECK(*it == 3);
+}
+
+TEST_CASE("erase iki tuščio") {
+    Vector<int> v = {1, 2, 3};
+    v.erase(v.begin());
+    v.erase(v.begin());
+    v.erase(v.begin());
+    CHECK(v.size() == 0);
+    CHECK(v.empty());
+}
