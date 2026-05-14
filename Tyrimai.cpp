@@ -328,6 +328,62 @@ void vykdyti_v11_tyrima() {
     std::cout << "\nSiuos rezultatus naudok README lentelems, kai lyginsi v1.0 ir v1.1 bei O1/O2/O3.\n";
 }
 
+void vykdyti_studentu_palyginima() {
+    const std::vector<std::string> failai = {
+        "studentai100000.txt",
+        "studentai1000000.txt"
+    };
+
+    cout << "\nSTUDENTU FAILU PALYGINIMAS - std::vector<Studentas> vs Vector<Studentas>\n";
+    cout << std::fixed << std::setprecision(4);
+
+    for (const auto& failas : failai) {
+        cout << "\nFailas: " << failas << "\n";
+        cout << std::left
+             << std::setw(12) << "Strategija"
+             << std::setw(14) << "Konteineris"
+             << std::setw(14) << "Skaitymas"
+             << std::setw(14) << "Rikiavimas"
+             << std::setw(14) << "Dalijimas"
+             << std::setw(14) << "Rasymas"
+             << std::setw(12) << "Bendras"
+             << "\n";
+        cout << std::string(94, '-') << "\n";
+
+        for (int s = 1; s <= 3; s++) {
+            TyrimoRezultatai sv_rez, v_rez;
+
+            bool sv_ok = apdoroti_faila_su_konteineriu<vector<Studentas>>(
+                failas, 3, s, "std::vector", sv_rez);
+            bool v_ok = apdoroti_faila_su_konteineriu<Vector<Studentas>>(
+                failas, 3, s, "Vector", v_rez);
+
+            auto spausdinti_eile = [&](const string& konteineris, const TyrimoRezultatai& rez, bool ok) {
+                if (!ok) {
+                    cout << std::setw(12) << s
+                         << std::setw(14) << konteineris
+                         << "nepavyko\n";
+                    return;
+                }
+                cout << std::setw(12) << s
+                     << std::setw(14) << konteineris
+                     << std::setw(14) << rez.laikai.nuskaitymo
+                     << std::setw(14) << rez.laikai.rikiavimo
+                     << std::setw(14) << rez.laikai.dalijimo
+                     << std::setw(14) << rez.laikai.rasymo
+                     << std::setw(12) << rez.laikai.bendras
+                     << "\n";
+            };
+
+            spausdinti_eile("std::vector", sv_rez, sv_ok);
+            spausdinti_eile("Vector",      v_rez,  v_ok);
+            cout << "\n";
+        }
+    }
+
+    cout << "Pastaba: rikiavimo kriterijus - galutinis vidurkis (3).\n";
+}
+
 void vykdyti_pushback_tyrima() {
     const std::vector<std::pair<std::string, std::size_t>> dydziai = {
         {"10K",   10'000ULL},

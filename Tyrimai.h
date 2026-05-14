@@ -46,5 +46,6 @@ void vykdyti_visu_failu_tyrima();
 void vykdyti_v11_tyrima();
 void vykdyti_vector_failu_tyrima();
 void vykdyti_pushback_tyrima();
+void vykdyti_studentu_palyginima();
 void spausdinti_rezultatus(const std::string& failas, const TyrimoRezultatai& rez, bool trumpai = false);
 bool vykdyti_v11_scenariju(const V11TyrimoScenarijus& scenarijus, V11TyrimoEilute& eilute);
