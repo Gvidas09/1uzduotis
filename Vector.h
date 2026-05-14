@@ -117,6 +117,14 @@ public:
             --size_;
     }
 
+    iterator erase(iterator pos) {
+        size_t idx = static_cast<size_t>(pos - data_);
+        for (size_t i = idx; i < size_ - 1; ++i)
+            data_[i] = std::move(data_[i + 1]);
+        --size_;
+        return data_ + idx;
+    }
+
     iterator insert(iterator pos, const T& val) {
         size_t idx = static_cast<size_t>(pos - data_);
         if (size_ >= capacity_)
