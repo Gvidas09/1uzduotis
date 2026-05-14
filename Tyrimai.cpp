@@ -84,12 +84,12 @@ bool apdoroti_faila_su_konteineriu(const string& failas, int kriterijus, int str
 
 bool apdoroti_faila_pagal_pasirinkima(const string& failas, int kriterijus, int strategija, int konteineris, TyrimoRezultatai& rez) {
     if (konteineris == 1) {
-        return apdoroti_faila_su_konteineriu<vector<Studentas>>(failas, kriterijus, strategija, "vector", rez);
+        return apdoroti_faila_su_konteineriu<vector<Studentas>>(failas, kriterijus, strategija, "std::vector", rez);
     }
     if (konteineris == 2) {
-        return apdoroti_faila_su_konteineriu<list<Studentas>>(failas, kriterijus, strategija, "list", rez);
+        return apdoroti_faila_su_konteineriu<list<Studentas>>(failas, kriterijus, strategija, "std::list", rez);
     }
-    return apdoroti_faila_su_konteineriu<deque<Studentas>>(failas, kriterijus, strategija, "deque", rez);
+    return apdoroti_faila_su_konteineriu<deque<Studentas>>(failas, kriterijus, strategija, "std::deque", rez);
 }
 
 void prideti_i_vidurkius(Vidurkiai& v, const TyrimoRezultatai& rez) {
@@ -166,7 +166,7 @@ void spausdinti_rezultatus(const string& failas, const TyrimoRezultatai& rez, bo
 
     cout << std::fixed << std::setprecision(6);
     cout << "\nFailas: " << failas << '\n';
-    cout << "Konteineris: std::" << rez.konteineris << '\n';
+    cout << "Konteineris: " << rez.konteineris << '\n';
     cout << "Strategija: " << gauti_strategijos_varda(rez.strategija) << '\n';
     cout << "Nuskaityta studentu: " << rez.studentu_kiekis << '\n';
     cout << "Praleista eiluciu: " << rez.praleista << '\n';
@@ -307,6 +307,45 @@ void vykdyti_v11_tyrima() {
     }
 
     std::cout << "\nSiuos rezultatus naudok README lentelems, kai lyginsi v1.0 ir v1.1 bei O1/O2/O3.\n";
+}
+
+void vykdyti_vector_failu_tyrima() {
+    int kriterijus = pasirinkti_rikiavimo_kriteriju();
+    int kartojimai = ivesti_kieki("Kiek kartu kartoti kiekviena testa? ");
+
+    cout << "\nVECTOR TYRIMAS - Vector<Studentas> failu apdorojimas\n";
+    cout << "Konteineris: Vector<Studentas> (nuosavas)\n\n";
+
+    for (const auto& failas : TESTINIAI_FAILAI) {
+        for (int s = 1; s <= 3; s++) {
+            Vidurkiai vid;
+            TyrimoRezultatai paskutinis;
+            bool pavyko = true;
+
+            for (int i = 0; i < kartojimai; i++) {
+                TyrimoRezultatai rez;
+                if (!apdoroti_faila_su_konteineriu<Vector<Studentas>>(failas, kriterijus, s, "Vector<Studentas>", rez)) {
+                    pavyko = false;
+                    break;
+                }
+                prideti_i_vidurkius(vid, rez);
+                paskutinis = rez;
+            }
+
+            if (!pavyko) {
+                cout << "Nepavyko apdoroti: " << failas
+                     << ", strategija " << s << "\n";
+                continue;
+            }
+
+            padalinti_is_kiek(vid, kartojimai);
+            paskutinis.laikai = vid.laikai;
+            spausdinti_rezultatus(failas, paskutinis, true);
+            cout << "Kartojimu skaicius: " << kartojimai << "\n";
+        }
+    }
+
+    cout << "\nVector tyrimas baigtas.\n";
 }
 
 bool vykdyti_v11_scenariju(const V11TyrimoScenarijus& scenarijus, V11TyrimoEilute& eilute) {

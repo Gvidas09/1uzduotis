@@ -147,6 +147,24 @@ void padalinti_studentus_2(Container& visi, Container& vargsiukai, Container& ki
     kietiakiai = std::move(visi);
 }
 
+inline void padalinti_studentus_2(Vector<Studentas>& visi, Vector<Studentas>& vargsiukai, Vector<Studentas>& kietiakiai, bool naudoti_mediana = false) {
+    vargsiukai.clear();
+    kietiakiai.clear();
+    rezervuoti_vieta(vargsiukai, visi.size());
+
+    Vector<Studentas> likusieji;
+    rezervuoti_vieta(likusieji, visi.size());
+
+    for (size_t i = 0; i < visi.size(); ++i) {
+        if (visi[i].arVargsiukas(naudoti_mediana))
+            vargsiukai.push_back(std::move(visi[i]));
+        else
+            likusieji.push_back(std::move(visi[i]));
+    }
+
+    kietiakiai = std::move(likusieji);
+}
+
 inline void padalinti_studentus_2(std::list<Studentas>& visi, std::list<Studentas>& vargsiukai, std::list<Studentas>& kietiakiai, bool naudoti_mediana = false) {
     vargsiukai.clear();
     kietiakiai.clear();

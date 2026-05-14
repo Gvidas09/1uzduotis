@@ -7,6 +7,7 @@
 template<typename T>
 class Vector {
 public:
+    using value_type     = T;
     using iterator       = T*;
     using const_iterator = const T*;
 
