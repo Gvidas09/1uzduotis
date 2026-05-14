@@ -92,3 +92,73 @@ TEST_CASE("Perkelimo priskyrimas") {
 TEST_CASE("Destruktorius - nemetantis") {
     CHECK(std::is_nothrow_destructible<Vector<int>>::value);
 }
+
+// ---------------------------------------------------------------------------
+// push_back, pop_back, size, capacity
+// ---------------------------------------------------------------------------
+
+TEST_CASE("push_back didina size") {
+    Vector<int> v;
+    CHECK(v.size() == 0);
+    v.push_back(1);
+    CHECK(v.size() == 1);
+    v.push_back(2);
+    CHECK(v.size() == 2);
+    v.push_back(3);
+    CHECK(v.size() == 3);
+}
+
+TEST_CASE("push_back issaugo reiksmes") {
+    Vector<int> v;
+    v.push_back(10);
+    v.push_back(20);
+    v.push_back(30);
+    CHECK(v[0] == 10);
+    CHECK(v[1] == 20);
+    CHECK(v[2] == 30);
+}
+
+TEST_CASE("push_back capacity dvigubejimas") {
+    Vector<int> v;
+    CHECK(v.capacity() == 0);
+    v.push_back(1);
+    CHECK(v.capacity() == 1);
+    v.push_back(2);
+    CHECK(v.capacity() == 2);
+    v.push_back(3);
+    CHECK(v.capacity() == 4);
+    v.push_back(4);
+    CHECK(v.capacity() == 4);
+    v.push_back(5);
+    CHECK(v.capacity() == 8);
+}
+
+TEST_CASE("pop_back mazina size") {
+    Vector<int> v = {1, 2, 3};
+    CHECK(v.size() == 3);
+    v.pop_back();
+    CHECK(v.size() == 2);
+    v.pop_back();
+    CHECK(v.size() == 1);
+}
+
+TEST_CASE("pop_back issaugo likusius elementus") {
+    Vector<int> v = {10, 20, 30};
+    v.pop_back();
+    CHECK(v[0] == 10);
+    CHECK(v[1] == 20);
+}
+
+TEST_CASE("pop_back ant tusto vektoriaus nekrinta") {
+    Vector<int> v;
+    v.pop_back();
+    CHECK(v.size() == 0);
+}
+
+TEST_CASE("push_back po pop_back") {
+    Vector<int> v = {1, 2, 3};
+    v.pop_back();
+    v.push_back(99);
+    CHECK(v.size() == 3);
+    CHECK(v[2] == 99);
+}
