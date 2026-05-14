@@ -13,6 +13,7 @@
 #include <sstream>
 
 #include "Studentas.h"
+#include "Vector.h"
 
 bool nuskaityti_studenta_is_eilutes(const std::string& eilute, Studentas& a, bool& praleisti);
 bool generuoti_studentu_faila(const std::string& failas, int kiek_studentu, int kiek_nd);
@@ -110,8 +111,9 @@ template <typename Container>
 void rezervuoti_vieta(Container&, std::size_t) {}
 
 inline void rezervuoti_vieta(std::vector<Studentas>& c, std::size_t n) { c.reserve(n); }
-inline void rezervuoti_vieta(std::deque<Studentas>&, std::size_t) {}
-inline void rezervuoti_vieta(std::list<Studentas>&, std::size_t) {}
+inline void rezervuoti_vieta(std::deque<Studentas>&,   std::size_t) {}
+inline void rezervuoti_vieta(std::list<Studentas>&,    std::size_t) {}
+inline void rezervuoti_vieta(Vector<Studentas>& c,     std::size_t n) { c.reserve(n); }
 
 template <typename Container>
 void padalinti_studentus_1(const Container& visi, Container& vargsiukai, Container& kietiakiai, bool naudoti_mediana = false) {

@@ -89,3 +89,8 @@ void rikiuoti(std::list<Studentas>& grupe, int kriterijus) {
     if (grupe.empty()) return;
     grupe.sort(gauti_komparatoriu(kriterijus));
 }
+
+void rikiuoti(Vector<Studentas>& grupe, int kriterijus) {
+    if (grupe.empty()) return;
+    std::sort(grupe.begin(), grupe.end(), gauti_komparatoriu(kriterijus));
+}
