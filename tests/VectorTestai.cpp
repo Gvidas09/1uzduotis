@@ -1,6 +1,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <doctest/doctest.h>
 #include "Vector.h"
+#include <algorithm>
 #include <type_traits>
 
 // ---------------------------------------------------------------------------
@@ -161,4 +162,110 @@ TEST_CASE("push_back po pop_back") {
     v.push_back(99);
     CHECK(v.size() == 3);
     CHECK(v[2] == 99);
+}
+
+// ---------------------------------------------------------------------------
+// reserve, resize
+// ---------------------------------------------------------------------------
+
+TEST_CASE("reserve padidina capacity") {
+    Vector<int> v;
+    v.reserve(10);
+    CHECK(v.capacity() == 10);
+    CHECK(v.size()     == 0);
+    CHECK(v.empty());
+}
+
+TEST_CASE("reserve nemažina capacity") {
+    Vector<int> v;
+    v.reserve(10);
+    v.reserve(5);
+    CHECK(v.capacity() == 10);
+}
+
+TEST_CASE("reserve nekeicia elementu") {
+    Vector<int> v = {1, 2, 3};
+    v.reserve(20);
+    CHECK(v.size() == 3);
+    CHECK(v[0] == 1);
+    CHECK(v[2] == 3);
+}
+
+TEST_CASE("resize padidina su numatyta reiksme") {
+    Vector<int> v = {1, 2};
+    v.resize(5, 99);
+    CHECK(v.size() == 5);
+    CHECK(v[0] == 1);
+    CHECK(v[2] == 99);
+    CHECK(v[4] == 99);
+}
+
+TEST_CASE("resize sumazina") {
+    Vector<int> v = {1, 2, 3, 4, 5};
+    v.resize(2);
+    CHECK(v.size() == 2);
+    CHECK(v[0] == 1);
+    CHECK(v[1] == 2);
+}
+
+// ---------------------------------------------------------------------------
+// operator[], at, front, back, data
+// ---------------------------------------------------------------------------
+
+TEST_CASE("operator[] skaito ir raso") {
+    Vector<int> v = {10, 20, 30};
+    CHECK(v[0] == 10);
+    v[1] = 99;
+    CHECK(v[1] == 99);
+}
+
+TEST_CASE("at meta out_of_range") {
+    Vector<int> v = {1, 2, 3};
+    CHECK_THROWS_AS(v.at(3),  std::out_of_range);
+    CHECK_THROWS_AS(v.at(10), std::out_of_range);
+    CHECK_NOTHROW(v.at(2));
+}
+
+TEST_CASE("front ir back") {
+    Vector<int> v = {5, 10, 15};
+    CHECK(v.front() == 5);
+    CHECK(v.back()  == 15);
+    v.front() = 99;
+    CHECK(v[0] == 99);
+    v.back() = 77;
+    CHECK(v[2] == 77);
+}
+
+TEST_CASE("data grąžina teisingą rodyklę") {
+    Vector<int> v = {1, 2, 3};
+    int* p = v.data();
+    CHECK(p[0] == 1);
+    p[1] = 42;
+    CHECK(v[1] == 42);
+}
+
+// ---------------------------------------------------------------------------
+// begin, end, iteratoriai
+// ---------------------------------------------------------------------------
+
+TEST_CASE("begin ir end range-for") {
+    Vector<int> v = {1, 2, 3, 4, 5};
+    int suma = 0;
+    for (int x : v) suma += x;
+    CHECK(suma == 15);
+}
+
+TEST_CASE("begin ir end su std::sort") {
+    Vector<int> v = {5, 3, 1, 4, 2};
+    std::sort(v.begin(), v.end());
+    CHECK(v[0] == 1);
+    CHECK(v[4] == 5);
+}
+
+TEST_CASE("cbegin ir cend - const iteratoriai") {
+    const Vector<int> v = {10, 20, 30};
+    int suma = 0;
+    for (auto it = v.cbegin(); it != v.cend(); ++it)
+        suma += *it;
+    CHECK(suma == 60);
 }
